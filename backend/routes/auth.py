@@ -1,0 +1,73 @@
+from flask import Blueprint, request, jsonify
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from werkzeug.security import generate_password_hash, check_password_hash
+from extensions import db
+from models.models import User
+
+auth_bp = Blueprint("auth", __name__)
+
+# ──────────────────────────────────────────────
+# POST /api/auth/register
+# Body: { "username": "...", "password": "..." }
+# ──────────────────────────────────────────────
+@auth_bp.route("/register", methods=["POST"])
+def register():
+    data = request.get_json()
+
+    username = data.get("username", "").strip()
+    password = data.get("password", "").strip()
+
+    if not username or not password:
+        return jsonify({"message": "Username dan password wajib diisi"}), 400
+
+    if User.query.filter_by(username=username).first():
+        return jsonify({"message": "Username sudah digunakan"}), 409
+
+    hashed_pw = generate_password_hash(password)
+    new_user  = User(username=username, password=hashed_pw)
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({
+        "message": "Registrasi berhasil",
+        "user": new_user.to_dict()
+    }), 201
+
+
+# ──────────────────────────────────────────────
+# POST /api/auth/login
+# Body: { "username": "...", "password": "..." }
+# ──────────────────────────────────────────────
+@auth_bp.route("/login", methods=["POST"])
+def login():
+    data = request.get_json()
+
+    username = data.get("username", "").strip()
+    password = data.get("password", "").strip()
+
+    user = User.query.filter_by(username=username).first()
+
+    if not user or not check_password_hash(user.password, password):
+        return jsonify({"message": "Username atau password salah"}), 401
+
+    access_token = create_access_token(identity=str(user.id))
+
+    return jsonify({
+        "message":      "Login berhasil",
+        "access_token": access_token,
+        "user":         user.to_dict()
+    }), 200
+
+
+# ──────────────────────────────────────────────
+# GET /api/auth/me
+# Header: Authorization: Bearer <token>
+# ──────────────────────────────────────────────
+@auth_bp.route("/me", methods=["GET"])
+@jwt_required()
+def me():
+    user_id = get_jwt_identity()
+    user    = User.query.get_or_404(user_id)
+
+    return jsonify({"user": user.to_dict()}), 200
