@@ -9,6 +9,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  get: ^4.7.3
+  http: ^1.6.0
+  shared_preferences: ^2.5.5
 
 dev_dependencies:
   flutter_test:
@@ -19,6 +22,7 @@ flutter:
   uses-material-design: true
   assets:
     - lib/assets/bab1_anwaul_kalimah.json
+    - lib/assets/
 
 flutter_launcher_icons:
   android: "launcher_icon"
