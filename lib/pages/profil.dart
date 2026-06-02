@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tanqiy/controllers/auth_controller.dart';
 import 'package:tanqiy/core/colors.dart';
+import 'package:tanqiy/data/auth_local.dart';
 import 'package:tanqiy/pages/auth.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -11,8 +13,9 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final auth_controller = Get.find<AuthController>();
   bool _isEditing = false;
-  final _usernameController = TextEditingController(text: 'admin');
+  late TextEditingController _usernameController;
   final _formKey = GlobalKey<FormState>();
 
   // simulasi level & XP
@@ -28,6 +31,15 @@ class _ProfilePageState extends State<ProfilePage> {
       return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
     }
     return name.substring(0, name.length >= 2 ? 2 : 1).toUpperCase();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _usernameController = TextEditingController(
+      text: auth_controller.currentUser.value?.username,
+    );
   }
 
   @override
@@ -134,26 +146,33 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                       decoration: InputDecoration(
                                         isDense: true,
-                                        contentPadding: const EdgeInsets.symmetric(
-                                          horizontal: 12,
-                                          vertical: 10,
-                                        ),
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 10,
+                                            ),
                                         filled: true,
                                         fillColor: AppColors.cardFillLight,
                                         border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
                                           borderSide: const BorderSide(
                                             color: AppColors.cardBorder,
                                           ),
                                         ),
                                         enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
                                           borderSide: const BorderSide(
                                             color: AppColors.cardBorder,
                                           ),
                                         ),
                                         focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
                                           borderSide: const BorderSide(
                                             color: AppColors.appBarTitle,
                                             width: 1.5,
@@ -182,20 +201,17 @@ class _ProfilePageState extends State<ProfilePage> {
                             const SizedBox(width: 8),
                             // Tombol Edit / Simpan
                             GestureDetector(
-                              onTap: () {
+                              onTap: () async {
                                 if (_isEditing) {
                                   if (_formKey.currentState!.validate()) {
-                                    setState(() => _isEditing = false);
-                                    Get.snackbar(
-                                      'Berhasil',
-                                      'Username berhasil diperbarui',
-                                      snackPosition: SnackPosition.TOP,
-                                      backgroundColor: AppColors.gradientTop,
-                                      colorText: AppColors.textP,
-                                      borderRadius: 12,
-                                      margin: const EdgeInsets.all(16),
-                                      duration: const Duration(seconds: 2),
-                                    );
+                                    final success = await auth_controller
+                                        .updateUsername(
+                                          _usernameController.text,
+                                        );
+
+                                    if (success) {
+                                      setState(() => _isEditing = false);
+                                    }
                                   }
                                 } else {
                                   setState(() => _isEditing = true);
@@ -352,7 +368,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Level $_level' '',
+                            'Level $_level'
+                            '',
                             style: const TextStyle(
                               color: AppColors.textS,
                               fontSize: 11,
@@ -451,12 +468,18 @@ class _ProfilePageState extends State<ProfilePage> {
                     decoration: BoxDecoration(
                       color: AppColors.cardFillLight,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFFEF4444).withOpacity(0.5)),
+                      border: Border.all(
+                        color: const Color(0xFFEF4444).withOpacity(0.5),
+                      ),
                     ),
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.logout_rounded, color: Color(0xFFEF4444), size: 20),
+                        Icon(
+                          Icons.logout_rounded,
+                          color: Color(0xFFEF4444),
+                          size: 20,
+                        ),
                         SizedBox(width: 8),
                         Text(
                           'Logout',
