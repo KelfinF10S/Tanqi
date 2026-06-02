@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:tanqiy/core/colors.dart';
+import 'package:tanqiy/pages/splashscreen.dart';
 import 'pages/bab1.dart';
 import 'pages/page2.dart';
 import 'pages/page3.dart';
@@ -14,20 +17,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'TANQI Learning App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: '/',
+      initialRoute: '/splash',
       routes: {
-        '/': (context) => const MenuPage(),
+        '/menu': (context) => const MenuPage(),
         '/page1': (context) => Page1(),
         '/page2': (context) => Page2(),
         '/page3': (context) => Page3(),
         '/page4': (context) => Page4(),
         '/page5': (context) => Page5(),
+        '/splash': (context) => SplashScreen(),
       },
     );
   }
@@ -52,15 +56,15 @@ class _MenuPageState extends State<MenuPage> {
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 30,
-            color: Color.fromARGB(255, 255, 208, 169),
+            color: AppColors.appBarTitle,
           ),
         ),
-        backgroundColor: const Color.fromARGB(255, 189, 108, 54),
+        backgroundColor: AppColors.appBarBg,
         elevation: 0,
-        foregroundColor: Colors.white,
+        foregroundColor: AppColors.textP,
         actions: [
           IconButton(
-            icon: const Icon(Icons.search, color: Colors.white),
+            icon: const Icon(Icons.search, color: AppColors.textP),
             onPressed: () {
               setState(() {
                 _isSearchVisible = !_isSearchVisible;
@@ -68,20 +72,13 @@ class _MenuPageState extends State<MenuPage> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.notifications_none, color: Colors.white),
+            icon: const Icon(Icons.notifications_none, color: AppColors.textP),
             onPressed: () {},
           ),
         ],
         flexibleSpace: Container(
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color.fromARGB(255, 197, 112, 16),
-                Color.fromARGB(255, 168, 106, 88),
-              ],
-            ),
+            gradient: AppColors.appBarGradient,
           ),
         ),
         bottom: _isSearchVisible
@@ -92,20 +89,18 @@ class _MenuPageState extends State<MenuPage> {
                   child: TextField(
                     decoration: InputDecoration(
                       hintText: 'Cari kursus...',
-                      hintStyle: const TextStyle(color: Colors.white70),
+                      hintStyle: const TextStyle(color: AppColors.textS),
                       filled: true,
-                      fillColor: Colors.white24,
+                      fillColor: AppColors.cardFill,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon:
-                          const Icon(Icons.search, color: Colors.white70),
-                      contentPadding:
-                          const EdgeInsets.symmetric(vertical: 16.0),
+                      prefixIcon: const Icon(Icons.search, color: AppColors.textS),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
                     ),
-                    style: const TextStyle(color: Colors.white),
-                    cursorColor: Colors.white,
+                    style: const TextStyle(color: AppColors.textP),
+                    cursorColor: AppColors.textP,
                   ),
                 ),
               )
@@ -113,14 +108,7 @@ class _MenuPageState extends State<MenuPage> {
       ),
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color.fromARGB(255, 202, 124, 51),
-              Color.fromARGB(255, 0, 0, 0),
-            ],
-          ),
+          gradient: AppColors.bodyGradient,
         ),
         child: ListView(
           padding: const EdgeInsets.all(16.0),
@@ -131,7 +119,7 @@ class _MenuPageState extends State<MenuPage> {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: AppColors.textP,
               ),
             ),
             const SizedBox(height: 8),
@@ -139,7 +127,7 @@ class _MenuPageState extends State<MenuPage> {
               '',
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.white70,
+                color: AppColors.textS,
               ),
             ),
             const SizedBox(height: 24),
@@ -148,7 +136,7 @@ class _MenuPageState extends State<MenuPage> {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: AppColors.textP,
               ),
             ),
             const SizedBox(height: 16),
@@ -159,75 +147,27 @@ class _MenuPageState extends State<MenuPage> {
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
               children: [
-                _buildCourseCard(
-                  context,
-                  'أنواع الكلمات',
-                  'الباب الأول',
-                  'assets/images/flutter.png', // Placeholder
-                  '/page1',
-                ),
-                _buildCourseCard(
-                  context,
-                  'دليل الاستخدام ',
-                  '',
-                  'assets/images/design.png', // Placeholder
-                  '/page2',
-                ),
-                _buildCourseCard(
-                  context,
-                  'الباب الثاني',
-                  'المعرب والمبني',
-                  'assets/images/business.png', // Placeholder
-                  '/page3',
-                ),
-                _buildCourseCard(
-                  context,
-                  'الباب الثالث',
-                  'انواع الجمل ',
-                  'assets/images/language.png', // Placeholder
-                  '/page4',
-                ),
-                _buildCourseCard(
-                  context,
-                  ' الباب الرابع',
-                  'انواع التراكيب والأساليب ',
-                  'assets/images/music.png', // Placeholder
-                  '/page5',
-                ),
-                _buildCourseCard(
-                  context,
-                  'لعبة إلكترونية ',
-                  '',
-                  'assets/images/time.png', // Placeholder
-                  '/page1',
-                ),
+                _buildCourseCard(context, 'أنواع الكلمات', 'الباب الأول', 'assets/images/flutter.png', '/page1'),
+                _buildCourseCard(context, 'دليل الاستخدام ', '', 'assets/images/design.png', '/page2'),
+                _buildCourseCard(context, 'الباب الثاني', 'المعرب والمبني', 'assets/images/business.png', '/page3'),
+                _buildCourseCard(context, 'الباب الثالث', 'انواع الجمل ', 'assets/images/language.png', '/page4'),
+                _buildCourseCard(context, ' الباب الرابع', 'انواع التراكيب والأساليب ', 'assets/images/music.png', '/page5'),
+                _buildCourseCard(context, 'لعبة إلكترونية ', '', 'assets/images/time.png', '/page1'),
               ],
             ),
           ],
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color.fromARGB(255, 163, 77, 26),
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white70,
+        backgroundColor: AppColors.bottomNavBg,
+        selectedItemColor: AppColors.textP,
+        unselectedItemColor: AppColors.textS,
         type: BottomNavigationBarType.fixed,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Beranda',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.explore),
-            label: 'Jelajahi',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.library_books),
-            label: 'Kelas Saya',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profil',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
+          BottomNavigationBarItem(icon: Icon(Icons.explore), label: 'Jelajahi'),
+          BottomNavigationBarItem(icon: Icon(Icons.library_books), label: 'Kelas Saya'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
         ],
       ),
     );
@@ -235,11 +175,8 @@ class _MenuPageState extends State<MenuPage> {
 
   Widget _buildCategoryChip(String label) {
     return Chip(
-      label: Text(
-        label,
-        style: const TextStyle(color: Colors.white),
-      ),
-      backgroundColor: Colors.white24,
+      label: Text(label, style: const TextStyle(color: AppColors.textP)),
+      backgroundColor: AppColors.cardFill,
       labelPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
     );
   }
@@ -252,13 +189,10 @@ class _MenuPageState extends State<MenuPage> {
           gradient: const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Colors.white24,
-              Colors.white12,
-            ],
+            colors: [AppColors.cardFill, AppColors.cardFillLight],
           ),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white24),
+          border: Border.all(color: AppColors.cardBorder),
         ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -270,7 +204,7 @@ class _MenuPageState extends State<MenuPage> {
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: AppColors.textP,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -279,7 +213,7 @@ class _MenuPageState extends State<MenuPage> {
                 description,
                 style: const TextStyle(
                   fontSize: 14,
-                  color: Colors.white70,
+                  color: AppColors.textS,
                 ),
                 textAlign: TextAlign.center,
               ),
