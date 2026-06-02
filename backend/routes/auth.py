@@ -71,3 +71,51 @@ def me():
     user    = User.query.get_or_404(user_id)
 
     return jsonify({"user": user.to_dict()}), 200
+
+
+# ──────────────────────────────────────────────
+# PUT /api/auth/update-username
+# Authorization: Bearer TOKEN
+# ──────────────────────────────────────────────
+@auth_bp.route("/update-username", methods=["PUT"])
+@jwt_required()
+def update_username():
+    user_id = get_jwt_identity()
+    user = User.query.get_or_404(user_id)
+
+    data = request.get_json()
+
+    new_username = data.get("username", "").strip()
+
+    # validasi kosong
+    if not new_username:
+        return jsonify({
+            "message": "Username wajib diisi"
+        }), 400
+
+    # validasi panjang minimal
+    if len(new_username) < 3:
+        return jsonify({
+            "message": "Username minimal 3 karakter"
+        }), 400
+
+    # cek apakah username sudah dipakai user lain
+    username_exist = User.query.filter(
+        User.username == new_username,
+        User.id != user.id
+    ).first()
+
+    if username_exist:
+        return jsonify({
+            "message": "Username sudah digunakan"
+        }), 409
+
+    # update username
+    user.username = new_username
+
+    db.session.commit()
+
+    return jsonify({
+        "message": "Username berhasil diperbarui",
+        "user": user.to_dict()
+    }), 200
