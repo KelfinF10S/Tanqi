@@ -7,8 +7,6 @@ class UserModel {
   final int currentXP;
   final int maxXP;
   final int babSelesai;
-  final int pencapaian;
-  final int streak;
 
   const UserModel({
     this.id,
@@ -17,8 +15,6 @@ class UserModel {
     this.currentXP = 0,
     this.maxXP = 100,
     this.babSelesai = 0,
-    this.pencapaian = 0,
-    this.streak = 0,
   });
 
   // ── Dari JSON API ─────────────────────────────────────
@@ -27,11 +23,9 @@ class UserModel {
       id:         json['id'] as int?,
       username:   json['username'] as String? ?? '',
       level:      json['level'] as int? ?? 1,
-      currentXP:  json['current_xp'] as int? ?? 0,
-      maxXP:      json['max_xp'] as int? ?? 100,
+      currentXP:  json['xp'] as int? ?? 0, 
+      maxXP:      json['max_xp'] as int? ?? 100, // TODO: Update real time max xp
       babSelesai: json['bab_selesai'] as int? ?? 0,
-      pencapaian: json['pencapaian'] as int? ?? 0,
-      streak:     json['streak'] as int? ?? 0,
     );
   }
 
@@ -41,11 +35,9 @@ class UserModel {
       'id':          id,
       'username':    username,
       'level':       level,
-      'current_xp':  currentXP,
+      'xp':  currentXP,
       'max_xp':      maxXP,
       'bab_selesai': babSelesai,
-      'pencapaian':  pencapaian,
-      'streak':      streak,
     };
   }
 
@@ -67,8 +59,7 @@ class UserModel {
       currentXP:  currentXP ?? this.currentXP,
       maxXP:      maxXP ?? this.maxXP,
       babSelesai: babSelesai ?? this.babSelesai,
-      pencapaian: pencapaian ?? this.pencapaian,
-      streak:     streak ?? this.streak,
+
     );
   }
 

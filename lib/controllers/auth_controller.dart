@@ -72,7 +72,6 @@ class AuthController extends GetxController {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        // Simpan sebagai UserModel
         currentUser.value = UserModel.fromJson(
           data['user'] as Map<String, dynamic>,
         );
@@ -85,6 +84,35 @@ class AuthController extends GetxController {
     } catch (_) {
       return false;
     }
+  }
+
+  // ── REFRESH USER ─────────────────────────────────────
+  Future<void> refreshUser() async {
+    final token = await AuthStorage.getToken();
+    if (token == null || token.isEmpty) return;
+
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/api/auth/me'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final newUser = UserModel.fromJson(
+          data['user'] as Map<String, dynamic>,
+        );
+
+        // null trick: paksa Obx rebuild tanpa flicker
+        // karena ProfilePage pakai _lastUser saat value null
+        currentUser.value = null;
+        await Future.delayed(Duration.zero);
+        currentUser.value = newUser;
+      }
+    } catch (_) {}
   }
 
   // ── LOGOUT ────────────────────────────────────────────
@@ -114,18 +142,10 @@ class AuthController extends GetxController {
 
       if (response.statusCode == 200) {
         final token = data['access_token'] ?? data['token'] ?? '';
-
-        // Parse dan simpan UserModel
         final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
         currentUser.value = user;
 
-        // Simpan token ke local storage
         await AuthStorage.saveToken(token, username: user.username);
-
-        print('=== LOGIN BERHASIL ===');
-        print('User: ${user.username} (id: ${user.id})');
-        print('Token: $token');
-        print('=====================');
 
         _showSnackbar(
           'Berhasil',
@@ -183,7 +203,7 @@ class AuthController extends GetxController {
     }
   }
 
-  // ── UPDATE USERNAME ──────────────────────────
+  // ── UPDATE USERNAME ───────────────────────────────────
   Future<bool> updateUsername(String newUsername) async {
     isLoading.value = true;
 
@@ -207,14 +227,14 @@ class AuthController extends GetxController {
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        // update current user
         final updatedUser = UserModel.fromJson(
           data['user'] as Map<String, dynamic>,
         );
 
+        currentUser.value = null;
+        await Future.delayed(Duration.zero);
         currentUser.value = updatedUser;
 
-        // update username di local storage
         await AuthStorage.saveToken(token, username: updatedUser.username);
 
         _showSnackbar(
@@ -222,16 +242,16 @@ class AuthController extends GetxController {
           'Username berhasil diperbarui',
           isError: false,
         );
-
         return true;
       } else {
-        _showSnackbar('Gagal', data['message'] ?? 'Gagal memperbarui username');
-
+        _showSnackbar(
+          'Gagal',
+          data['message'] ?? 'Gagal memperbarui username',
+        );
         return false;
       }
     } catch (e) {
       _showSnackbar('Error', 'Tidak dapat terhubung ke server: $e');
-
       return false;
     } finally {
       isLoading.value = false;
@@ -243,9 +263,7 @@ class AuthController extends GetxController {
       title,
       message,
       snackPosition: SnackPosition.TOP,
-      backgroundColor: isError
-          ? const Color(0xFFEF4444)
-          : AppColors.gradientTop,
+      backgroundColor: isError ? const Color(0xFFEF4444) : AppColors.gradientTop,
       colorText: AppColors.textP,
       borderRadius: 12,
       margin: const EdgeInsets.all(16),
