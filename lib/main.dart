@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:tanqiy/controllers/auth_controller.dart';
 import 'package:tanqiy/core/colors.dart';
 import 'package:tanqiy/pages/jelajahi.dart';
 import 'package:tanqiy/pages/kelas.dart';
@@ -84,21 +86,31 @@ class _MenuPageState extends State<MenuPage> {
               actions: [
                 IconButton(
                   icon: const Icon(Icons.search, color: AppColors.textP),
-                  onPressed: () => setState(() => _isSearchVisible = !_isSearchVisible),
+                  onPressed: () =>
+                      setState(() => _isSearchVisible = !_isSearchVisible),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.notifications_none, color: AppColors.textP),
+                  icon: const Icon(
+                    Icons.notifications_none,
+                    color: AppColors.textP,
+                  ),
                   onPressed: () {},
                 ),
               ],
               flexibleSpace: Container(
-                decoration: const BoxDecoration(gradient: AppColors.appBarGradient),
+                decoration: const BoxDecoration(
+                  gradient: AppColors.appBarGradient,
+                ),
               ),
               bottom: _isSearchVisible
                   ? PreferredSize(
                       preferredSize: const Size.fromHeight(60.0),
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 16.0, bottom: 8.0, top: 8),
+                        padding: const EdgeInsets.only(
+                          left: 16.0,
+                          bottom: 8.0,
+                          top: 8,
+                        ),
                         child: TextField(
                           decoration: InputDecoration(
                             hintText: 'Cari kursus...',
@@ -109,8 +121,13 @@ class _MenuPageState extends State<MenuPage> {
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide.none,
                             ),
-                            prefixIcon: const Icon(Icons.search, color: AppColors.textS),
-                            contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
+                            prefixIcon: const Icon(
+                              Icons.search,
+                              color: AppColors.textS,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 16.0,
+                            ),
                           ),
                           style: const TextStyle(color: AppColors.textP),
                           cursorColor: AppColors.textP,
@@ -120,24 +137,30 @@ class _MenuPageState extends State<MenuPage> {
                   : null,
             )
           : null,
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _pages,
-      ),
+      body: IndexedStack(index: _currentIndex, children: _pages),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: AppColors.bottomNavBg,
         selectedItemColor: AppColors.textP,
         unselectedItemColor: AppColors.textS,
         type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
-        onTap: (index) => setState(() {
-          _currentIndex = index;
-          if (index != 0) _isSearchVisible = false;
-        }),
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+            if (index != 0) _isSearchVisible = false;
+          });
+
+          if (index == 3) {
+            Get.find<AuthController>().refreshUser();
+          }
+        },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
           BottomNavigationBarItem(icon: Icon(Icons.explore), label: 'Jelajahi'),
-          BottomNavigationBarItem(icon: Icon(Icons.library_books), label: 'Kelas Saya'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.library_books),
+            label: 'Kelas Saya',
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
         ],
       ),
@@ -189,11 +212,31 @@ class _HomeBody extends StatelessWidget {
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
             children: [
-              _buildCourseCard(context, 'أنواع الكلمات', 'الباب الأول', '/page1'),
+              _buildCourseCard(
+                context,
+                'أنواع الكلمات',
+                'الباب الأول',
+                '/page1',
+              ),
               _buildCourseCard(context, 'دليل الاستخدام', '', '/page2'),
-              _buildCourseCard(context, 'الباب الثاني', 'المعرب والمبني', '/page3'),
-              _buildCourseCard(context, 'الباب الثالث', 'انواع الجمل', '/page4'),
-              _buildCourseCard(context, 'الباب الرابع', 'انواع التراكيب والأساليب', '/page5'),
+              _buildCourseCard(
+                context,
+                'الباب الثاني',
+                'المعرب والمبني',
+                '/page3',
+              ),
+              _buildCourseCard(
+                context,
+                'الباب الثالث',
+                'انواع الجمل',
+                '/page4',
+              ),
+              _buildCourseCard(
+                context,
+                'الباب الرابع',
+                'انواع التراكيب والأساليب',
+                '/page5',
+              ),
               _buildCourseCard(context, 'لعبة إلكترونية', '', '/page1'),
             ],
           ),
@@ -202,7 +245,12 @@ class _HomeBody extends StatelessWidget {
     );
   }
 
-  Widget _buildCourseCard(BuildContext context, String title, String description, String route) {
+  Widget _buildCourseCard(
+    BuildContext context,
+    String title,
+    String description,
+    String route,
+  ) {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, route),
       child: Container(
