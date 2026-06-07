@@ -59,7 +59,7 @@ class _MenuPageState extends State<MenuPage> {
   final List<Widget> _pages = [
     const _HomeBody(),
     Jelajahi(),
-    Kelas(),
+    kelas(),
     ProfilePage(),
   ];
 
