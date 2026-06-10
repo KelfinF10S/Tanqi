@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tanqiy/models/materibab_model.dart';
 
 class Page4 extends StatelessWidget {
-  const Page4({super.key});
+  final MateriBAB materi;
+  
+  const Page4({super.key, required this.materi});
 
   @override
   Widget build(BuildContext context) {

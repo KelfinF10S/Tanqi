@@ -406,6 +406,14 @@ class _ProfilePageState extends State<ProfilePage> {
                           value: '${user.babSelesai}',
                         ),
                       ),
+                      SizedBox(width: 15),
+                      Expanded(
+                        child: _buildStatCard(
+                          icon: Icons.military_tech_rounded,
+                          label: 'Badges',
+                          value: '${user.babSelesai}',
+                        ),
+                      ),
                     ],
                   ),
 

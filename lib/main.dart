@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:tanqiy/controllers/auth_controller.dart';
 import 'package:tanqiy/core/colors.dart';
+import 'package:tanqiy/pages/beranda.dart';
+import 'package:tanqiy/pages/games.dart';
 import 'package:tanqiy/pages/jelajahi.dart';
 import 'package:tanqiy/pages/kelas.dart';
 import 'package:tanqiy/pages/profil.dart';
@@ -24,6 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'TANQI Learning App',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
@@ -31,11 +34,12 @@ class MyApp extends StatelessWidget {
       initialRoute: '/splash',
       routes: {
         '/menu': (context) => const MenuPage(),
-        '/page1': (context) => Page1(),
-        '/page2': (context) => Page2(),
-        '/page3': (context) => Page3(),
-        '/page4': (context) => Page4(),
-        '/page5': (context) => Page5(),
+        // '/page1': (context) => Page1(),
+        '/panduan': (context) => Page2(),
+        // '/page3': (context) => Page3(),
+        // '/page4': (context) => Page4(),
+        // '/page5': (context) => Page5(),
+        '/games': (context) => GamesPage(),
         '/splash': (context) => SplashScreen(),
       },
     );
@@ -57,9 +61,9 @@ class _MenuPageState extends State<MenuPage> {
   bool _isSearchVisible = false;
 
   final List<Widget> _pages = [
-    const _HomeBody(),
+    Beranda(),
     Jelajahi(),
-    Kelas(),
+    KelasPage(),
     ProfilePage(),
   ];
 
@@ -90,11 +94,24 @@ class _MenuPageState extends State<MenuPage> {
                       setState(() => _isSearchVisible = !_isSearchVisible),
                 ),
                 IconButton(
-                  icon: const Icon(
-                    Icons.notifications_none,
-                    color: AppColors.textP,
-                  ),
-                  onPressed: () {},
+                  icon: const Icon(Icons.settings, color: AppColors.textP),
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (context) {
+                        return DraggableScrollableSheet(
+                          expand: false,
+                          builder: (context, scrollController) {
+                            return ListView(
+                              controller: scrollController,
+                              children: [ListTile(title: Text("Pengaturan"))],
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },
                 ),
               ],
               flexibleSpace: Container(
