@@ -23,27 +23,29 @@ class User(db.Model):
             "created_at": self.created_at.isoformat(),
         }
 
+class UserBab(db.Model):
+    __tablename__ = "user_bab"
+
+    id           = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    userid       = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    babid        = db.Column(db.Integer, db.ForeignKey("bab.id"),  nullable=False)
+    locked       = db.Column(db.Boolean, default=True)
+    is_completed = db.Column(db.Boolean, default=False)
+
 
 class Bab(db.Model):
     __tablename__ = "bab"
 
-    id     = db.Column(db.Integer,     primary_key=True, autoincrement=True)
-    judul  = db.Column(db.String(255), nullable=False)
-    locked = db.Column(db.Boolean,     default=True)
-    is_completed  = db.Column(db.Boolean, default=False, nullable=False)
-    total_attempt = db.Column(db.Integer, default=0,     nullable=False)
+    id    = db.Column(db.Integer,     primary_key=True, autoincrement=True)
+    judul = db.Column(db.String(255), nullable=False)
 
-    soal   = db.relationship("Soal", backref="bab", lazy=True)
+    soal  = db.relationship("Soal", backref="bab", lazy=True)
 
     def to_dict(self):
         return {
-            "id":     self.id,
-            "judul":  self.judul,
-            "locked": self.locked,
-            "is_completed":  self.is_completed,
-            "total_attempt": self.total_attempt,
+            "id":    self.id,
+            "judul": self.judul,
         }
-
 
 class Soal(db.Model):
     __tablename__ = "soal"

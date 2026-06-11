@@ -6,11 +6,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:tanqiy/core/colors.dart';
 import 'package:tanqiy/core/const.dart';
 import 'package:tanqiy/data/auth_local.dart';
 import 'package:tanqiy/models/user_model.dart';
 import 'package:tanqiy/pages/auth.dart';
+import 'package:tanqiy/widgets/snackbar.dart';
 
 class AuthController extends GetxController {
   final String _baseUrl = AppConst.baseUrl;
@@ -120,7 +120,7 @@ class AuthController extends GetxController {
     await AuthStorage.clearAll();
     currentUser.value = null;
     Get.offAll(() => const AuthPage());
-    _showSnackbar('Logout', 'Kamu telah keluar dari akun', isError: false);
+    showSnackbar('Logout', 'Kamu telah keluar dari akun', isError: false);
   }
 
   // ── LOGIN ─────────────────────────────────────────────
@@ -147,20 +147,20 @@ class AuthController extends GetxController {
 
         await AuthStorage.saveToken(token, username: user.username);
 
-        _showSnackbar(
+        showSnackbar(
           'Berhasil',
           'Selamat datang, ${user.username}! 👋',
           isError: false,
         );
         Get.offAllNamed('/menu');
       } else {
-        _showSnackbar(
+        showSnackbar(
           'Gagal Login',
           data['msg'] ?? data['message'] ?? 'Terjadi kesalahan',
         );
       }
     } catch (e) {
-      _showSnackbar('Error', 'Tidak dapat terhubung ke server: $e');
+      showSnackbar('Error', 'Tidak dapat terhubung ke server: $e');
     } finally {
       isLoading.value = false;
     }
@@ -184,20 +184,20 @@ class AuthController extends GetxController {
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        _showSnackbar(
+        showSnackbar(
           'Berhasil',
           'Akun berhasil dibuat! Silakan login 🎉',
           isError: false,
         );
         switchMode(true);
       } else {
-        _showSnackbar(
+        showSnackbar(
           'Gagal Daftar',
           data['msg'] ?? data['message'] ?? 'Terjadi kesalahan',
         );
       }
     } catch (e) {
-      _showSnackbar('Error', 'Tidak dapat terhubung ke server: $e');
+      showSnackbar('Error', 'Tidak dapat terhubung ke server: $e');
     } finally {
       isLoading.value = false;
     }
@@ -211,7 +211,7 @@ class AuthController extends GetxController {
       final token = await AuthStorage.getToken();
 
       if (token == null || token.isEmpty) {
-        _showSnackbar('Error', 'Token tidak ditemukan');
+        showSnackbar('Error', 'Token tidak ditemukan');
         return false;
       }
 
@@ -237,43 +237,21 @@ class AuthController extends GetxController {
 
         await AuthStorage.saveToken(token, username: updatedUser.username);
 
-        _showSnackbar(
+        showSnackbar(
           'Berhasil',
           'Username berhasil diperbarui',
           isError: false,
         );
         return true;
       } else {
-        _showSnackbar(
-          'Gagal',
-          data['message'] ?? 'Gagal memperbarui username',
-        );
+        showSnackbar('Gagal', data['message'] ?? 'Gagal memperbarui username');
         return false;
       }
     } catch (e) {
-      _showSnackbar('Error', 'Tidak dapat terhubung ke server: $e');
+      showSnackbar('Error', 'Tidak dapat terhubung ke server: $e');
       return false;
     } finally {
       isLoading.value = false;
     }
-  }
-
-  void _showSnackbar(String title, String message, {bool isError = true}) {
-    Get.snackbar(
-      title,
-      message,
-      snackPosition: SnackPosition.TOP,
-      backgroundColor: isError ? const Color(0xFFEF4444) : AppColors.gradientTop,
-      colorText: AppColors.textP,
-      borderRadius: 12,
-      margin: const EdgeInsets.all(16),
-      duration: const Duration(seconds: 3),
-      icon: Icon(
-        isError
-            ? Icons.error_outline_rounded
-            : Icons.check_circle_outline_rounded,
-        color: AppColors.textP,
-      ),
-    );
   }
 }

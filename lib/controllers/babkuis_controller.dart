@@ -87,10 +87,21 @@ class BabController extends GetxController {
 
   // ── Internal: GET /api/bab ───────────────────────────
   Future<List<BabModel>> _fetchBabFromApi() async {
-    final res = await http.get(
-      Uri.parse('$_baseUrl/bab/'),
-      headers: await _headers(),
-    );
+    final url = '$_baseUrl/api/bab/';
+    debugPrint('[API] URL: $url');
+
+    final token = await AuthStorage.getToken();
+    debugPrint('[API] Token: $token'); // ← cek token ada atau tidak
+
+    final res = await http.get(Uri.parse(url), headers: await _headers());
+
+    debugPrint('[API] Status: ${res.statusCode}');
+    debugPrint('[API] Body: ${res.body}'); // ← print full body
+
+    if (res.statusCode != 200) {
+      throw Exception('API error ${res.statusCode}');
+    }
+
     final body = jsonDecode(res.body);
     final list = body['data'] as List<dynamic>;
     return list
@@ -104,7 +115,7 @@ class BabController extends GetxController {
       isLoading.value = true;
 
       final res = await http.delete(
-        Uri.parse('$_baseUrl/jawaban/reset/$babId'),
+        Uri.parse('$_baseUrl/api/jawaban/reset/$babId'),
         headers: await _headers(),
       );
       final body = jsonDecode(res.body);
@@ -136,7 +147,7 @@ class BabController extends GetxController {
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
-// QuizController  (tidak berubah signifikan — hanya loadSoal menerima int babId)
+// QuizController 
 // ──────────────────────────────────────────────────────────────────────────────
 class QuizController extends GetxController {
   // ── State ────────────────────────────────────────────
@@ -180,7 +191,7 @@ class QuizController extends GetxController {
       selectedDbLabel.value = '';
 
       final res = await http.get(
-        Uri.parse('$_baseUrl/bab/$babId/soal'),
+        Uri.parse('$_baseUrl/api/bab/$babId/soal'),
         headers: await _headers(),
       );
       final body = jsonDecode(res.body);
@@ -208,7 +219,7 @@ class QuizController extends GetxController {
       isSubmitting.value = true;
 
       final res = await http.post(
-        Uri.parse('$_baseUrl/jawaban/'),
+        Uri.parse('$_baseUrl/api/jawaban/'),
         headers: await _headers(),
         body: jsonEncode({
           'soal_id': soalAktif!.id,

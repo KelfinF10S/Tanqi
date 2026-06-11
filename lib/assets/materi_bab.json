@@ -497,5 +497,44 @@
       ]
     }
   ]
+},
+ {
+  "id": "2",
+  "judul": "المعرب والمبني",
+  "judul_latin": "BAB 2: - ",
+  "aplikasi": "TANQĪ (تَنْقِي) — Tahlilun Nahwi Bil Ayaatil Quraniyyah",
+  "stimulus": {
+    "ayat_arab": "-",
+    "terjemah": "-",
+    "sumber": "QS. -",
+    "narasi": "-"
+  },
+  "bab": []
+},
+{
+  "id": "3",
+  "judul": "انواع الجمل",
+  "judul_latin": "BAB 3: - ",
+  "aplikasi": "TANQĪ (تَنْقِي) — Tahlilun Nahwi Bil Ayaatil Quraniyyah",
+  "stimulus": {
+    "ayat_arab": "-",
+    "terjemah": "-",
+    "sumber": "QS. -",
+    "narasi": "-"
+  },
+  "bab": []
+},
+{
+  "id": "4",
+  "judul": "انواع التراكيب والأساليب",
+  "judul_latin": "BAB 4: - ",
+  "aplikasi": "TANQĪ (تَنْقِي) — Tahlilun Nahwi Bil Ayaatil Quraniyyah",
+  "stimulus": {
+    "ayat_arab": "-",
+    "terjemah": "-",
+    "sumber": "QS. -",
+    "narasi": "-"
+  },
+  "bab": []
 }
 ]

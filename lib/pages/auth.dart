@@ -16,7 +16,7 @@ class AuthPage extends StatelessWidget {
     final controller = Get.put(AuthController());
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.scaffoldBg,
       body: Container(
         decoration: const BoxDecoration(gradient: AppColors.splashGradient),
         child: SafeArea(

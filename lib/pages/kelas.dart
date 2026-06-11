@@ -603,7 +603,7 @@ class _MemberCard extends StatelessWidget {
                         const SizedBox(height: 3),
                         Row(
                           children: [
-                            _roleChip(),
+                            roleChip(),
                             const SizedBox(width: 8),
                             Text(
                               'Level ${member.level}',
@@ -647,7 +647,7 @@ class _MemberCard extends StatelessWidget {
     );
   }
 
-  Widget _roleChip() {
+  Widget roleChip() {
     final isGuru = member.role == MemberRole.guru;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),

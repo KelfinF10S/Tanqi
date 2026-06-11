@@ -761,6 +761,9 @@ class _KategoriDetail extends StatelessWidget {
                 ),
               ),
             ],
+
+            //TODO : Debug
+            Align(child: ElevatedButton(onPressed: (){}, child: Text('Selesaikan Bab')),alignment: AlignmentGeometry.centerRight,)
           ],
         ),
       ),

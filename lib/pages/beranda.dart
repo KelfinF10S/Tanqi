@@ -8,6 +8,7 @@ import 'package:tanqiy/pages/page2.dart';
 import 'package:tanqiy/pages/page3.dart';
 import 'package:tanqiy/pages/page4.dart';
 import 'package:tanqiy/pages/page5.dart';
+import 'package:tanqiy/widgets/snackbar.dart';
 
 class Beranda extends StatelessWidget {
   Beranda({super.key});
@@ -21,7 +22,9 @@ class Beranda extends StatelessWidget {
         decoration: const BoxDecoration(gradient: AppColors.splashGradient),
         child: Obx(() {
           if (controller.isLoading.value) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.textSecondary),
+            );
           }
 
           return ListView(
@@ -64,14 +67,24 @@ class Beranda extends StatelessWidget {
                   ),
 
                   // CARD PANDUAN
-                  _buildStaticCard(context, 'دليل الاستخدام', 'Panduan Penggunaan', () {
-                    Get.toNamed('/panduan');
-                  }),
+                  _buildStaticCard(
+                    context,
+                    'دليل الاستخدام',
+                    'Panduan Penggunaan',
+                    () {
+                      Get.toNamed('/panduan');
+                    },
+                  ),
 
                   // CARD GAME
-                  _buildStaticCard(context, 'لعبة إلكترونية', 'Permainan Digital', () {
-                    Get.toNamed('/games');
-                  }),
+                  _buildStaticCard(
+                    context,
+                    'لعبة إلكترونية',
+                    'Permainan Digital',
+                    () {
+                      Get.toNamed('/games');
+                    },
+                  ),
                 ],
               ),
             ],
@@ -85,16 +98,34 @@ class Beranda extends StatelessWidget {
 Widget _buildBabCard(BuildContext context, BabMerged bab) {
   return GestureDetector(
     onTap: () {
-      Get.to(() => getBabPage(bab));
+      debugPrint('🔍 RAW LOCKED : ${bab.quiz?.locked}');
+      debugPrint('🔍 TYPE : ${bab.quiz?.locked.runtimeType}');
+      debugPrint('🤔 KONDISI LOCKED : ${bab.locked}');
+      if (bab.locked) {
+        showSnackbar(
+          'Peringatan : تحذير',
+          'لا تزال الفصول مغلقة، أكمل الفصل السابق أولاً\nBab masih terkunci, selesaikan bab sebelumnya terlebih dahulu',
+        );
+      } else {
+        Get.to(() => getBabPage(bab));
+      }
     },
     child: Container(
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.cardFill, AppColors.cardFillLight],
-        ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.cardBorder),
-      ),
+      decoration: bab.locked
+          ? BoxDecoration(
+              gradient: LinearGradient(
+                colors: [AppColors.cardFillLightLocked, AppColors.cardFillLightLocked],
+              ),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.cardBorderLocked),
+            )
+          : BoxDecoration(
+              gradient: LinearGradient(
+                colors: [AppColors.cardFill, AppColors.cardFillLight],
+              ),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.cardBorder),
+            ),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -103,10 +134,10 @@ Widget _buildBabCard(BuildContext context, BabMerged bab) {
             Text(
               bab.materi.judulArab,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: AppColors.textP,
+                color: bab.locked ? AppColors.textDisabled : AppColors.textP,
               ),
             ),
 
