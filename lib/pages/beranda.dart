@@ -1,155 +1,189 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:tanqiy/controllers/babkuis_controller.dart';
 import 'package:tanqiy/core/colors.dart';
+import 'package:tanqiy/models/bab_merged_model.dart';
+import 'package:tanqiy/pages/bab1.dart';
+import 'package:tanqiy/pages/page2.dart';
+import 'package:tanqiy/pages/page3.dart';
+import 'package:tanqiy/pages/page4.dart';
+import 'package:tanqiy/pages/page5.dart';
 
-class Beranda extends StatefulWidget {
-  const Beranda({super.key});
+class Beranda extends StatelessWidget {
+  Beranda({super.key});
+
+  final BabController controller = Get.put(BabController());
 
   @override
-  State<Beranda> createState() => _BerandaState();
-}
-
-class _BerandaState extends State<Beranda> {
-   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.bodyGradient),
-        child: ListView(
-          padding: const EdgeInsets.all(16.0),
-          children: [
-            const SizedBox(height: 15),
-            const Text(
-              'اهلا و سهلا',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textP,
+        decoration: const BoxDecoration(gradient: AppColors.splashGradient),
+        child: Obx(() {
+          if (controller.isLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          return ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              const SizedBox(height: 15),
+
+              const Text(
+                'اهلا و سهلا',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textP,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              '',
-              style: TextStyle(fontSize: 16, color: AppColors.textS),
-            ),
-            const SizedBox(height: 15),
-            const Text(
-              'المحتويات',
-              style: TextStyle(
+
+              const SizedBox(height: 15),
+
+              const Text(
+                'المحتويات',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textP,
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                children: [
+                  // CARD BAB DARI JSON
+                  ...controller.babList.map(
+                    (bab) => _buildBabCard(context, bab),
+                  ),
+
+                  // CARD PANDUAN
+                  _buildStaticCard(context, 'دليل الاستخدام', 'Panduan Penggunaan', () {
+                    Get.toNamed('/panduan');
+                  }),
+
+                  // CARD GAME
+                  _buildStaticCard(context, 'لعبة إلكترونية', 'Permainan Digital', () {
+                    Get.toNamed('/games');
+                  }),
+                ],
+              ),
+            ],
+          );
+        }),
+      ),
+    );
+  }
+}
+
+Widget _buildBabCard(BuildContext context, BabMerged bab) {
+  return GestureDetector(
+    onTap: () {
+      Get.to(() => getBabPage(bab));
+    },
+    child: Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [AppColors.cardFill, AppColors.cardFillLight],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.cardBorder),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              bab.materi.judulArab,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textP,
               ),
             ),
-            const SizedBox(height: 16),
-            GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              children: [
-                _buildCourseCard(
-                  context,
-                  'أنواع الكلمات',
-                  'الباب الأول',
-                  'assets/images/flutter.png',
-                  '/page1',
-                ),
-                _buildCourseCard(
-                  context,
-                  'دليل الاستخدام ',
-                  '',
-                  'assets/images/design.png',
-                  '/page2',
-                ),
-                _buildCourseCard(
-                  context,
-                  'الباب الثاني',
-                  'المعرب والمبني',
-                  'assets/images/business.png',
-                  '/page3',
-                ),
-                _buildCourseCard(
-                  context,
-                  'الباب الثالث',
-                  'انواع الجمل ',
-                  'assets/images/language.png',
-                  '/page4',
-                ),
-                _buildCourseCard(
-                  context,
-                  ' الباب الرابع',
-                  'انواع التراكيب والأساليب ',
-                  'assets/images/music.png',
-                  '/page5',
-                ),
-                _buildCourseCard(
-                  context,
-                  'لعبة إلكترونية ',
-                  '',
-                  'assets/images/time.png',
-                  '/page1',
-                ),
-              ],
+
+            const SizedBox(height: 8),
+
+            Text(
+              bab.materi.judulLatin,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 12, color: AppColors.textS),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 3,
             ),
           ],
         ),
       ),
-      
-    );
-  }
+    ),
+  );
+}
 
-  Widget _buildCategoryChip(String label) {
-    return Chip(
-      label: Text(label, style: const TextStyle(color: AppColors.textP)),
-      backgroundColor: AppColors.cardFill,
-      labelPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-    );
-  }
-
-  Widget _buildCourseCard(
-    BuildContext context,
-    String title,
-    String description,
-    String imagePath,
-    String route,
-  ) {
-    return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, route),
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [AppColors.cardFill, AppColors.cardFillLight],
-          ),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.cardBorder),
+Widget _buildStaticCard(
+  BuildContext context,
+  String title,
+  String subtitle,
+  VoidCallback onTap,
+) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [AppColors.cardFill, AppColors.cardFillLight],
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textP,
-                ),
-                textAlign: TextAlign.center,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.cardBorder),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textP,
               ),
-              const SizedBox(height: 8),
-              Text(
-                description,
-                style: const TextStyle(fontSize: 14, color: AppColors.textS),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              subtitle,
+              style: const TextStyle(fontSize: 12, color: AppColors.textS),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
-    );
+    ),
+  );
+}
+
+Widget getBabPage(BabMerged bab) {
+  switch (bab.id) {
+    case '1':
+      return Page1(bab: bab);
+
+    case '2':
+      return Page3(materi: bab.materi);
+
+    case '3':
+      return Page4(materi: bab.materi);
+
+    case '4':
+      return Page5(materi: bab.materi);
+
+    default:
+      return const Scaffold(body: Center(child: Text('Bab tidak ditemukan')));
   }
 }

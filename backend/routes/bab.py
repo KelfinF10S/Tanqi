@@ -12,11 +12,26 @@ bab_bp = Blueprint("bab", __name__)
 @bab_bp.route("/", methods=["GET"])
 @jwt_required()
 def get_all_bab():
+    user_id  = get_jwt_identity()
     bab_list = Bab.query.order_by(Bab.id).all()
 
+    result = []
+    for b in bab_list:
+        soal_ids      = [s.id for s in Soal.query.filter_by(babid=b.id).all()]
+        total_soal    = len(soal_ids)
+        sudah_dijawab = UserJawaban.query.filter(
+            UserJawaban.userid  == user_id,
+            UserJawaban.soalid.in_(soal_ids)
+        ).count() if soal_ids else 0
+
+        bab_data = b.to_dict()
+        bab_data["total_soal"]    = total_soal
+        bab_data["sudah_dijawab"] = sudah_dijawab
+        result.append(bab_data)
+
     return jsonify({
-        "total": len(bab_list),
-        "data":  [b.to_dict() for b in bab_list]
+        "total": len(result),
+        "data":  result
     }), 200
 
 
@@ -36,20 +51,30 @@ def get_soal_by_bab(bab_id):
         return jsonify({"message": "Bab ini masih terkunci"}), 403
 
     soal_list = Soal.query.filter_by(babid=bab_id).all()
+    soal_ids  = [s.id for s in soal_list]
 
-    # Tandai soal yang sudah dijawab user
+    # Filter jawaban hanya untuk soal di bab ini
     answered_ids = {
-        uj.soalid for uj in UserJawaban.query.filter_by(userid=user_id).all()
+        uj.soalid for uj in UserJawaban.query.filter(
+            UserJawaban.userid  == user_id,
+            UserJawaban.soalid.in_(soal_ids)
+        ).all()
     }
 
     result = []
     for s in soal_list:
-        soal_data            = s.to_dict(hide_answer=True)   # jawaban_benar tersembunyi
+        soal_data                  = s.to_dict(hide_answer=True)
         soal_data["sudah_dijawab"] = s.id in answered_ids
         result.append(soal_data)
 
+    # Info progress bab ini
+    bab_data                   = bab.to_dict()
+    bab_data["total_soal"]     = len(soal_list)
+    bab_data["sudah_dijawab"]  = len(answered_ids)
+    bab_data["sisa_soal"]      = len(soal_list) - len(answered_ids)
+
     return jsonify({
-        "bab":   bab.to_dict(),
+        "bab":   bab_data,
         "total": len(result),
         "soal":  result
     }), 200

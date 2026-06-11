@@ -30,6 +30,8 @@ class Bab(db.Model):
     id     = db.Column(db.Integer,     primary_key=True, autoincrement=True)
     judul  = db.Column(db.String(255), nullable=False)
     locked = db.Column(db.Boolean,     default=True)
+    is_completed  = db.Column(db.Boolean, default=False, nullable=False)
+    total_attempt = db.Column(db.Integer, default=0,     nullable=False)
 
     soal   = db.relationship("Soal", backref="bab", lazy=True)
 
@@ -38,6 +40,8 @@ class Bab(db.Model):
             "id":     self.id,
             "judul":  self.judul,
             "locked": self.locked,
+            "is_completed":  self.is_completed,
+            "total_attempt": self.total_attempt,
         }
 
 

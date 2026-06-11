@@ -1,6 +1,7 @@
 import 'package:tanqiy/models/kategori_kata_model.dart';
 import 'package:tanqiy/models/stimulus_data_model.dart';
 
+// Data materi bab lokal dari JSON
 class MateriBAB {
   final String id;
   final String judulArab;

@@ -21,7 +21,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - lib/assets/bab1_anwaul_kalimah.json
+    - lib/assets/materi_bab.json
     - lib/assets/
 
 flutter_launcher_icons:

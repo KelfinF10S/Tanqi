@@ -61,7 +61,7 @@ class AppColors {
   static const LinearGradient splashGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: [gradientTop, gradientMid, gradientBottom],
+    colors: [gradientTop, Color.fromARGB(255, 168, 116, 88), Color.fromARGB(255, 40, 24, 24)],
     stops: [0.0, 0.5, 1.0],
   );
 
