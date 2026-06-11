@@ -2,7 +2,9 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 from extensions import db
-from models.models import User
+from models.models import User, UserJawaban, Soal
+from sqlalchemy import func
+
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -64,9 +66,62 @@ def login():
 # GET /api/auth/me
 # Header: Authorization: Bearer <token>
 # ──────────────────────────────────────────────
+
 @auth_bp.route("/me", methods=["GET"])
 @jwt_required()
 def me():
+    user_id = int(get_jwt_identity())
+    user = User.query.get_or_404(user_id)
+
+    total_soal_per_bab = (
+        db.session.query(
+            Soal.babid,
+            func.count(Soal.id)
+        )
+        .group_by(Soal.babid)
+        .all()
+    )
+
+    soal_user_dijawab = (
+        db.session.query(
+            Soal.babid,
+            func.count(func.distinct(UserJawaban.soalid))
+        )
+        .join(
+            UserJawaban,
+            Soal.id == UserJawaban.soalid
+        )
+        .filter(
+            UserJawaban.userid == user_id
+        )
+        .group_by(
+            Soal.babid
+        )
+        .all()
+    )
+
+    dict_total = {
+        bab_id: total
+        for bab_id, total in total_soal_per_bab
+    }
+
+    dict_user = {
+        bab_id: dijawab
+        for bab_id, dijawab in soal_user_dijawab
+    }
+
+    bab_selesai = 0
+
+    for bab_id, total in dict_total.items():
+        if dict_user.get(bab_id, 0) >= total:
+            bab_selesai += 1
+
+    user_data = user.to_dict()
+    user_data["bab_selesai"] = bab_selesai
+
+    return jsonify({
+        "user": user_data
+    }), 200
     user_id = get_jwt_identity()
     user    = User.query.get_or_404(user_id)
 
