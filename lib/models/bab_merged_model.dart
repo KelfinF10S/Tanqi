@@ -10,23 +10,24 @@ import 'bab_model.dart';
 //
 // Penggabungan dilakukan via id: MateriBAB.id (String) == BabModel.id.toString()
 // ──────────────────────────────────────────────────────────────────────────────
+
 class BabMerged {
   final MateriBAB materi;
   final BabModel? quiz;
 
   BabMerged({required this.materi, this.quiz});
 
-  String get id         => materi.id;
-  String get judulArab  => materi.judulArab;
-  String get judulLatin => materi.judulLatin;
-  String get aplikasi   => materi.aplikasi;
+  String get id          => materi.id;
+  String get judulArab   => materi.judulArab;
+  String get judulLatin  => materi.judulLatin;
+  String get aplikasi    => materi.aplikasi;
 
-  bool   get locked       => quiz?.locked      ?? true;
-  bool   get isCompleted  => quiz?.isCompleted ?? false;
-  // totalAttempt dihapus
-  int    get totalSoal    => quiz?.totalSoal   ?? 0;
-  int    get sudahDijawab => quiz?.sudahDijawab ?? 0;
-  int    get sisaSoal     => quiz?.sisaSoal    ?? 0;
+  bool   get locked        => quiz?.locked       ?? true;
+  bool   get isCompleted   => quiz?.isCompleted  ?? false;
+  double get nilai         => quiz?.nilai         ?? 0.0;  // ← baru
+  int    get totalSoal     => quiz?.totalSoal    ?? 0;
+  int    get sudahDijawab  => quiz?.sudahDijawab ?? 0;
+  int    get sisaSoal      => quiz?.sisaSoal     ?? 0;
   double get progressPersen => quiz?.progressPersen ?? 0.0;
 
   bool get hasQuiz => quiz != null;

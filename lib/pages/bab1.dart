@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:get/get.dart';
+import 'package:tanqiy/controllers/babkuis_controller.dart';
 import 'package:tanqiy/core/colors.dart';
 import 'package:tanqiy/models/kategori_kata_model.dart';
 import 'package:tanqiy/models/materibab_model.dart';
+import 'package:tanqiy/models/soal_model.dart';
 import 'package:tanqiy/models/stimulus_data_model.dart';
 import 'package:tanqiy/models/bab_merged_model.dart';
 
@@ -29,6 +32,8 @@ class _Page1State extends State<Page1> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _future = Future.value(widget.bab.materi);
+    final babId = int.tryParse(widget.bab.id) ?? 1;
+    Get.find<BabController>().loadSlugMap(babId);
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
@@ -74,6 +79,7 @@ class _Page1State extends State<Page1> with SingleTickerProviderStateMixin {
               babMerged: widget.bab,
               activeKategori: _activeKategori,
               onKategoriChange: (i) => setState(() => _activeKategori = i),
+              slugToMateriId: Get.find<BabController>().slugToMateriId,
             ),
           );
         },
@@ -203,12 +209,14 @@ class _MateriBody extends StatelessWidget {
   final BabMerged babMerged;
   final int activeKategori;
   final ValueChanged<int> onKategoriChange;
+  final Map<String, int> slugToMateriId;
 
   const _MateriBody({
     required this.materi,
     required this.babMerged,
     required this.activeKategori,
     required this.onKategoriChange,
+    required this.slugToMateriId,
   });
 
   @override
@@ -232,7 +240,10 @@ class _MateriBody extends StatelessWidget {
           ),
         ),
         SliverToBoxAdapter(
-          child: _KategoriDetail(kategori: materi.bab[activeKategori]),
+          child: _KategoriDetail(
+            kategori: materi.bab[activeKategori],
+            slugToMateriId: slugToMateriId,
+          ),
         ),
         const SliverToBoxAdapter(child: SizedBox(height: 80)),
       ],
@@ -712,7 +723,9 @@ class _KategoriPicker extends StatelessWidget {
 // ─────────────────────────────────────────
 class _KategoriDetail extends StatelessWidget {
   final KategoriKata kategori;
-  const _KategoriDetail({required this.kategori});
+  final Map<String, int> slugToMateriId;
+
+  const _KategoriDetail({required this.kategori, required this.slugToMateriId});
 
   @override
   Widget build(BuildContext context) {
@@ -734,10 +747,8 @@ class _KategoriDetail extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Judul & definisi
             _SectionHeader(kategori: kategori),
             const SizedBox(height: 16),
-            // Tanda umum (jika ada)
             if (kategori.tandaUmum.isNotEmpty) ...[
               _SectionLabel(
                 label: 'Tanda-tanda Umum',
@@ -749,21 +760,20 @@ class _KategoriDetail extends StatelessWidget {
               ),
               const SizedBox(height: 16),
             ],
-            // Sub-bab
             if (kategori.subBab.isNotEmpty) ...[
               _SectionLabel(label: 'Pembahasan', color: kategori.accentColor),
               const SizedBox(height: 10),
-              ...kategori.subBab.asMap().entries.map(
-                (e) => _SubBabCard(
+              ...kategori.subBab.asMap().entries.map((e) {
+                final subId =
+                    (e.value as Map<String, dynamic>)['id'] as String? ?? '';
+                return _SubBabCard(
                   sub: e.value,
                   index: e.key,
                   accent: kategori.accentColor,
-                ),
-              ),
+                  materiId: slugToMateriId[subId], // ← lookup
+                );
+              }),
             ],
-
-            //TODO : Debug
-            Align(child: ElevatedButton(onPressed: (){}, child: Text('Selesaikan Bab')),alignment: AlignmentGeometry.centerRight,)
           ],
         ),
       ),
@@ -980,21 +990,48 @@ class _TandaUmumCard extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────
-//  SUB BAB CARD
+//  SUB BAB CARD (updated)
 // ─────────────────────────────────────────
-class _SubBabCard extends StatelessWidget {
+class _SubBabCard extends StatefulWidget {
   final dynamic sub;
   final int index;
   final Color accent;
+  final int? materiId;
+
   const _SubBabCard({
     required this.sub,
     required this.index,
     required this.accent,
+    this.materiId,
   });
 
   @override
+  State<_SubBabCard> createState() => _SubBabCardState();
+}
+
+class _SubBabCardState extends State<_SubBabCard> {
+  late final QuizController _quizCtrl;
+  bool _quizLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // pakai tag unik per materi supaya tidak bentrok
+    _quizCtrl = Get.put(
+      QuizController(),
+      tag: 'quiz_${widget.materiId ?? widget.index}',
+    );
+  }
+
+  void _loadQuiz() {
+    if (widget.materiId == null || _quizLoaded) return;
+    _quizCtrl.loadSoal(widget.materiId!);
+    _quizLoaded = true;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final s = sub as Map<String, dynamic>;
+    final s = widget.sub as Map<String, dynamic>;
     final judulArab = s['judul_arab'] as String? ?? '';
     final judulLatin =
         s['judul_latin'] as String? ?? s['judul'] as String? ?? '';
@@ -1011,7 +1048,7 @@ class _SubBabCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: accent.withOpacity(0.2)),
+        border: Border.all(color: widget.accent.withOpacity(0.2)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.2),
@@ -1024,18 +1061,21 @@ class _SubBabCard extends StatelessWidget {
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
           tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          onExpansionChanged: (expanded) {
+            if (expanded) _loadQuiz();
+          },
           leading: Container(
             width: 28,
             height: 28,
             decoration: BoxDecoration(
-              color: accent.withOpacity(0.15),
+              color: widget.accent.withOpacity(0.15),
               shape: BoxShape.circle,
             ),
             child: Center(
               child: Text(
-                '${index + 1}',
+                '${widget.index + 1}',
                 style: TextStyle(
-                  color: accent,
+                  color: widget.accent,
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                 ),
@@ -1045,7 +1085,9 @@ class _SubBabCard extends StatelessWidget {
           title: Text(
             judulArab.isNotEmpty ? judulArab : judulLatin,
             style: TextStyle(
-              color: judulArab.isNotEmpty ? accent : AppColors.textSecondary,
+              color: judulArab.isNotEmpty
+                  ? widget.accent
+                  : AppColors.textSecondary,
               fontSize: 17,
               fontWeight: FontWeight.bold,
             ),
@@ -1060,7 +1102,7 @@ class _SubBabCard extends StatelessWidget {
               fontSize: 11,
             ),
           ),
-          backgroundColor: accent.withOpacity(0.04),
+          backgroundColor: widget.accent.withOpacity(0.04),
           collapsedBackgroundColor: Colors.transparent,
           children: [
             Padding(
@@ -1068,14 +1110,12 @@ class _SubBabCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Definisi
                   if (defArab.isNotEmpty || defLatin.isNotEmpty)
                     _DefinisiBox(
                       arab: defArab,
                       latin: defLatin,
-                      accent: accent,
+                      accent: widget.accent,
                     ),
-                  // Stimulus ayat
                   if (stimulus != null) ...[
                     const SizedBox(height: 12),
                     _AyatTile(
@@ -1083,44 +1123,49 @@ class _SubBabCard extends StatelessWidget {
                       sumber: stimulus['sumber'] ?? '',
                       terjemah: stimulus['terjemah'] ?? '',
                       tag: 'Contoh',
-                      accent: accent,
+                      accent: widget.accent,
                     ),
                   ],
-                  // Tanda-tanda
                   if (tandaList != null && tandaList.isNotEmpty) ...[
                     const SizedBox(height: 14),
-                    _SectionLabel(label: 'Tanda-tanda', color: accent),
+                    _SectionLabel(label: 'Tanda-tanda', color: widget.accent),
                     const SizedBox(height: 8),
                     ...tandaList.map(
                       (t) => _TandaDetailTile(
                         tanda: t as Map<String, dynamic>,
-                        accent: accent,
+                        accent: widget.accent,
                       ),
                     ),
                   ],
-                  // Jenis (isim)
                   if (jenisList != null && jenisList.isNotEmpty) ...[
                     const SizedBox(height: 14),
-                    _SectionLabel(label: 'Jenis', color: accent),
+                    _SectionLabel(label: 'Jenis', color: widget.accent),
                     const SizedBox(height: 8),
                     ...jenisList.map(
                       (j) => _JenisTile(
                         jenis: j as Map<String, dynamic>,
-                        accent: accent,
+                        accent: widget.accent,
                       ),
                     ),
                   ],
-                  // Huruf (harf)
                   if (hurufList != null && hurufList.isNotEmpty) ...[
                     const SizedBox(height: 14),
-                    _SectionLabel(label: 'Daftar Huruf', color: accent),
+                    _SectionLabel(label: 'Daftar Huruf', color: widget.accent),
                     const SizedBox(height: 8),
                     ...hurufList.map(
                       (h) => _HurufTile(
                         huruf: h as Map<String, dynamic>,
-                        accent: accent,
+                        accent: widget.accent,
                       ),
                     ),
+                  ],
+
+                  // ── QUIZ SECTION ──
+                  if (widget.materiId != null) ...[
+                    const SizedBox(height: 20),
+                    _SectionLabel(label: 'Kuis', color: widget.accent),
+                    const SizedBox(height: 10),
+                    _InlineQuiz(controller: _quizCtrl, accent: widget.accent),
                   ],
                 ],
               ),
@@ -1129,6 +1174,734 @@ class _SubBabCard extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+// ─────────────────────────────────────────
+//  INLINE QUIZ
+// ─────────────────────────────────────────
+class _InlineQuiz extends StatelessWidget {
+  final QuizController controller;
+  final Color accent;
+
+  const _InlineQuiz({required this.controller, required this.accent});
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: CircularProgressIndicator(color: accent, strokeWidth: 2),
+          ),
+        );
+      }
+
+      if (controller.soalList.isEmpty) {
+        return Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: AppColors.bg.withOpacity(0.5),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: accent.withOpacity(0.2)),
+          ),
+          child: const Text(
+            'Belum ada soal untuk materi ini.',
+            style: TextStyle(color: AppColors.textMuted, fontSize: 12),
+            textAlign: TextAlign.center,
+          ),
+        );
+      }
+
+      final total = controller.soalList.length;
+
+      return Column(
+        children: [
+          // ── Progress dots (klik untuk navigasi) ──
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(total, (i) {
+              final answered = controller.hasilPerSoal.containsKey(i);
+              final isCorrect =
+                  answered && controller.hasilPerSoal[i]!.isCorrect;
+              final isCurrent = controller.currentIndex.value == i;
+
+              Color dotColor;
+              if (!answered) {
+                dotColor = isCurrent ? accent : accent.withOpacity(0.25);
+              } else {
+                dotColor = isCorrect ? Colors.green : Colors.red;
+              }
+
+              return GestureDetector(
+                onTap: () => controller.goToSoal(i),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  width: isCurrent ? 18 : 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: dotColor,
+                    borderRadius: BorderRadius.circular(4),
+                    border: isCurrent
+                        ? Border.all(color: accent, width: 1.5)
+                        : null,
+                  ),
+                ),
+              );
+            }),
+          ),
+          const SizedBox(height: 12),
+
+          // ── Kartu soal aktif ──
+          _SoalCard(
+            soal: controller.soalList[controller.currentIndex.value],
+            controller: controller,
+            accent: accent,
+          ),
+
+          // ── Panel hasil (muncul setelah semua selesai) ──
+          if (controller.quizSelesai.value) ...[
+            const SizedBox(height: 20),
+            _HasilPanel(controller: controller, accent: accent),
+          ],
+        ],
+      );
+    });
+  }
+}
+
+class _HasilPanel extends StatelessWidget {
+  final QuizController controller;
+  final Color accent;
+
+  const _HasilPanel({required this.controller, required this.accent});
+
+  @override
+  Widget build(BuildContext context) {
+    final total = controller.soalList.length;
+    final benar = controller.hasilPerSoal.values
+        .where((h) => h.isCorrect)
+        .length;
+    final salah = total - benar;
+    final xp = controller.totalXp.value;
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [accent.withOpacity(0.12), AppColors.surface],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: accent.withOpacity(0.35)),
+      ),
+      child: Column(
+        children: [
+          // Judul
+          Row(
+            children: [
+              Icon(Icons.emoji_events_rounded, color: accent, size: 20),
+              const SizedBox(width: 8),
+              Text(
+                'Hasil Kuis',
+                style: TextStyle(
+                  color: accent,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // XP badge
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: accent.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(40),
+                  border: Border.all(color: accent.withOpacity(0.4)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.bolt_rounded, color: accent, size: 18),
+                    const SizedBox(width: 6),
+                    Text(
+                      '+$xp XP',
+                      style: TextStyle(
+                        color: accent,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              _StatChip(
+                icon: Icons.bar_chart_rounded,
+                label: '${controller.nilaiAkhir.value.toStringAsFixed(0)}',
+                color: accent,
+                sublabel: 'Nilai',
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // Benar / Salah
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _StatChip(
+                icon: Icons.check_circle_outline,
+                label: '$benar Benar',
+                color: Colors.green,
+              ),
+              const SizedBox(width: 12),
+              _StatChip(
+                icon: Icons.cancel_outlined,
+                label: '$salah Salah',
+                color: Colors.red,
+              ),
+              const SizedBox(width: 12),
+            ],
+          ),
+
+          const SizedBox(height: 20),
+
+          // Tombol Review
+          Obx(
+            () => controller.showReview.value
+                ? const SizedBox.shrink()
+                : SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () => controller.showReview.value = true,
+                      icon: Icon(
+                        Icons.rate_review_outlined,
+                        color: accent,
+                        size: 16,
+                      ),
+                      label: Text(
+                        'Lihat Review Jawaban',
+                        style: TextStyle(color: accent, fontSize: 13),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: accent.withOpacity(0.6)),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+          ),
+
+          // Panel review
+          Obx(
+            () => controller.showReview.value
+                ? _ReviewPanel(controller: controller, accent: accent)
+                : const SizedBox.shrink(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Chip kecil statistik
+class _StatChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final String? sublabel;
+
+  const _StatChip({
+    required this.icon,
+    required this.label,
+    required this.color,
+    this.sublabel,
+  });
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+    decoration: BoxDecoration(
+      color: color.withOpacity(0.1),
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: color.withOpacity(0.3)),
+    ),
+    child: Column(
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: color, size: 14),
+            const SizedBox(width: 4),
+            Text(
+              label,
+              style: TextStyle(
+                color: color,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        if (sublabel != null)
+          Text(
+            sublabel!,
+            style: TextStyle(color: color.withOpacity(0.7), fontSize: 10),
+          ),
+      ],
+    ),
+  );
+}
+
+class _ReviewPanel extends StatelessWidget {
+  final QuizController controller;
+  final Color accent;
+
+  const _ReviewPanel({required this.controller, required this.accent});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 20),
+        Divider(color: accent.withOpacity(0.2)),
+        const SizedBox(height: 12),
+        Text(
+          'REVIEW JAWABAN',
+          style: TextStyle(
+            color: accent,
+            fontSize: 10,
+            letterSpacing: 2,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 12),
+        ...List.generate(controller.soalList.length, (i) {
+          final soal = controller.soalList[i];
+          final hasil = controller.hasilPerSoal[i];
+          if (hasil == null) return const SizedBox.shrink();
+
+          final isCorrect = hasil.isCorrect;
+          final color = isCorrect ? Colors.green : Colors.red;
+          final selectedLabel = controller.selectedPerSoal[i] ?? '';
+
+          // Cari teks opsi yang dipilih & jawaban benar
+          final opsi = controller.opsiPerSoal[i] ?? [];
+          String selectedTeks = '';
+          String benarTeks = '';
+          for (final o in opsi) {
+            if (o['dbLabel'] == selectedLabel) selectedTeks = o['text'] ?? '';
+            if (o['dbLabel'] == hasil.jawabanBenar) benarTeks = o['text'] ?? '';
+          }
+
+          return Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.06),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: color.withOpacity(0.3)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Nomor + status
+                Row(
+                  children: [
+                    Container(
+                      width: 24,
+                      height: 24,
+                      decoration: BoxDecoration(
+                        color: color.withOpacity(0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Text(
+                          '${i + 1}',
+                          style: TextStyle(
+                            color: color,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Icon(
+                      isCorrect ? Icons.check_circle : Icons.cancel_rounded,
+                      color: color,
+                      size: 16,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      isCorrect ? 'Benar' : 'Salah',
+                      style: TextStyle(
+                        color: color,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+
+                // Pertanyaan
+                Text(
+                  soal.pertanyaan,
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 13,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 10),
+
+                // Jawaban yang dipilih
+                _ReviewOpsiRow(
+                  label: 'Jawabanmu',
+                  teks: selectedTeks,
+                  color: color,
+                ),
+
+                // Jawaban benar (tambahkan ! jika ingin selalu tampil)
+                if (isCorrect) ...[
+                  const SizedBox(height: 6),
+                  _ReviewOpsiRow(
+                    label: 'Jawaban benar',
+                    teks: benarTeks,
+                    color: Colors.green,
+                  ),
+                ],
+
+                // Di _ReviewPanel, setelah blok "Jawaban benar", tambah:
+                if (isCorrect &&
+                    hasil.penjelasan != null &&
+                    hasil.penjelasan!.isNotEmpty) ...[
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withOpacity(0.07),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.green.withOpacity(0.25)),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(
+                          Icons.lightbulb_outline,
+                          color: Colors.green,
+                          size: 14,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            hasil.penjelasan!,
+                            style: const TextStyle(
+                              color: AppColors.textSecondary,
+                              fontSize: 12,
+                              height: 1.5,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+
+                // Penjelasan hanya untuk yang BENAR
+                // (yang salah tidak ada penjelasan sesuai permintaan)
+                // ← kosongkan saja, tidak ada blok penjelasan untuk yang salah
+              ],
+            ),
+          );
+        }),
+      ],
+    );
+  }
+}
+
+class _ReviewOpsiRow extends StatelessWidget {
+  final String label, teks;
+  final Color color;
+
+  const _ReviewOpsiRow({
+    required this.label,
+    required this.teks,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) => Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        '$label: ',
+        style: TextStyle(
+          color: color.withOpacity(0.8),
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      Expanded(
+        child: Text(
+          teks,
+          style: TextStyle(color: color, fontSize: 12, height: 1.4),
+        ),
+      ),
+    ],
+  );
+}
+
+// ─────────────────────────────────────────
+//  SOAL CARD
+// ─────────────────────────────────────────
+class _SoalCard extends StatelessWidget {
+  final SoalModel soal;
+  final QuizController controller;
+  final Color accent;
+
+  const _SoalCard({
+    required this.soal,
+    required this.controller,
+    required this.accent,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      final idx = controller.currentIndex.value;
+      final opsi = controller.opsiPerSoal[idx] ?? [];
+      final selected = controller.selectedLabel;
+      final status = controller.statusAktif;
+      final hasil = controller.hasilAktif;
+      final quizSelesai = controller.quizSelesai.value;
+
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.bg.withOpacity(0.6),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: accent.withOpacity(0.3)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Label soal ke-N
+            Text(
+              'Soal ${idx + 1} dari ${controller.soalList.length}',
+              style: TextStyle(
+                color: accent.withOpacity(0.7),
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1,
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            // Pertanyaan
+            Text(
+              soal.pertanyaan,
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 14,
+                height: 1.6,
+              ),
+            ),
+            const SizedBox(height: 14),
+
+            // Pilihan jawaban
+            ...opsi.map((e) {
+              final label = e['dbLabel']!;
+              final teks = e['text']!;
+              final isSelected = selected == label;
+
+              // Warna reveal HANYA setelah quiz selesai semua
+              Color borderColor = accent.withOpacity(0.2);
+              Color bgColor = AppColors.bg.withOpacity(0.3);
+              Color textColor = AppColors.textSecondary;
+
+              if (quizSelesai && hasil != null) {
+                if (hasil.isCorrect) {
+                  if (label == hasil.jawabanBenar) {
+                    borderColor = Colors.green;
+                    bgColor = Colors.green.withOpacity(0.1);
+                    textColor = Colors.green;
+                  }
+                } else {
+                  if (isSelected) {
+                    borderColor = Colors.red;
+                    bgColor = Colors.red.withOpacity(0.1);
+                    textColor = Colors.red;
+                  }
+                }
+              } else if (isSelected) {
+                borderColor = accent;
+                bgColor = accent.withOpacity(0.1);
+                textColor = accent;
+              }
+
+              return GestureDetector(
+                onTap: () => controller.pilihJawaban(label),
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: bgColor,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: borderColor),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 22,
+                        height: 22,
+                        decoration: BoxDecoration(
+                          color: borderColor.withOpacity(0.15),
+                          shape: BoxShape.circle,
+                          border: Border.all(color: borderColor),
+                        ),
+                        child: Center(
+                          child: Text(
+                            e['displayLabel']!,
+                            style: TextStyle(
+                              color: textColor,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          teks,
+                          style: TextStyle(color: textColor, fontSize: 13),
+                        ),
+                      ),
+                      // Ikon benar/salah setelah quiz selesai
+                      if (quizSelesai &&
+                          hasil != null &&
+                          hasil.isCorrect &&
+                          label == hasil.jawabanBenar)
+                        const Icon(
+                          Icons.check_circle,
+                          color: Colors.green,
+                          size: 16,
+                        )
+                      else if (isSelected)
+                        const Icon(Icons.cancel, color: Colors.red, size: 16),
+                    ],
+                  ),
+                ),
+              );
+            }),
+
+            const SizedBox(height: 8),
+
+            // Tombol navigasi + submit
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Tombol Kembali
+                if (!controller.isFirstSoal)
+                  OutlinedButton.icon(
+                    onPressed: controller.prevSoal,
+                    icon: const Icon(Icons.arrow_back_ios_new, size: 12),
+                    label: const Text('Kembali'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: accent,
+                      side: BorderSide(color: accent.withOpacity(0.5)),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 8,
+                      ),
+                      textStyle: const TextStyle(fontSize: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  )
+                else
+                  const SizedBox.shrink(),
+
+                // Tombol kanan: Konfirmasi / Lanjut / (kosong jika soal terakhir sudah dijawab)
+                if (status != 'answered') ...[
+                  ElevatedButton(
+                    onPressed: selected.isEmpty
+                        ? null
+                        : controller.submitJawaban,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: accent,
+                      foregroundColor: Colors.white,
+                      disabledBackgroundColor: accent.withOpacity(0.3),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: controller.isSubmitting.value
+                        ? const SizedBox(
+                            width: 14,
+                            height: 14,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Text(
+                            'Konfirmasi',
+                            style: TextStyle(fontSize: 13),
+                          ),
+                  ),
+                ] else if (!controller.isLastSoal) ...[
+                  ElevatedButton.icon(
+                    onPressed: controller.nextSoal,
+                    icon: const Icon(Icons.arrow_forward_ios, size: 12),
+                    label: const Text('Lanjut'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: accent,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                ],
+                // Soal terakhir & sudah dijawab → panel hasil akan muncul
+              ],
+            ),
+          ],
+        ),
+      );
+    });
   }
 }
 
@@ -1243,6 +2016,7 @@ class _AyatTile extends StatelessWidget {
                 style: const TextStyle(
                   color: AppColors.textMuted,
                   fontSize: 10,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
           ],

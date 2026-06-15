@@ -1,30 +1,36 @@
-class BabModel {
+class MateriModel {
   final int id;
-  final String nama;
-  final bool locked;
+  final int babid;
+  final String judul;
+  final int urutan;
   final bool isCompleted;
-  final double nilai;
+  final int xpDidapat;
+  final int attempt;
   final int totalSoal;
   final int sudahDijawab;
   final int sisaSoal;
 
-  BabModel({
+  MateriModel({
     required this.id,
-    required this.nama,
-    required this.locked,
+    required this.babid,
+    required this.judul,
+    required this.urutan,
     required this.isCompleted,
-    required this.nilai,
+    required this.xpDidapat,
+    required this.attempt,
     required this.totalSoal,
     required this.sudahDijawab,
     required this.sisaSoal,
   });
 
-  factory BabModel.fromJson(Map<String, dynamic> json) => BabModel(
+  factory MateriModel.fromJson(Map<String, dynamic> json) => MateriModel(
     id:           json['id'],
-    nama:         json['judul'] ?? '',
-    locked:       json['locked'] == true || json['locked'] == 1,
+    babid:        json['babid'] ?? 0,
+    judul:        json['judul'] ?? '',
+    urutan:       json['urutan'] ?? 0,
     isCompleted:  json['is_completed'] == true || json['is_completed'] == 1,
-    nilai:        (json['nilai'] ?? 0).toDouble(),
+    xpDidapat:    json['xp_didapat'] ?? 0,
+    attempt:      json['attempt'] ?? 0,
     totalSoal:    json['total_soal'] ?? 0,
     sudahDijawab: json['sudah_dijawab'] ?? 0,
     sisaSoal:     json['sisa_soal'] ?? 0,
