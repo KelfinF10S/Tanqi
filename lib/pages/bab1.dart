@@ -1,16 +1,24 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:get/get.dart';
+import 'package:tanqiy/controllers/babkuis_controller.dart';
 import 'package:tanqiy/core/colors.dart';
 import 'package:tanqiy/models/kategori_kata_model.dart';
 import 'package:tanqiy/models/materibab_model.dart';
+import 'package:tanqiy/models/soal_model.dart';
 import 'package:tanqiy/models/stimulus_data_model.dart';
+import 'package:tanqiy/models/bab_merged_model.dart';
+import 'package:tanqiy/pages/loading.dart';
+import 'package:tanqiy/widgets/background_painter.dart';
 
 // ─────────────────────────────────────────
 //  PAGE 1  (entry point)
 // ─────────────────────────────────────────
 class Page1 extends StatefulWidget {
-  const Page1({super.key});
+  final BabMerged bab;
+
+  const Page1({super.key, required this.bab});
 
   @override
   State<Page1> createState() => _Page1State();
@@ -18,17 +26,41 @@ class Page1 extends StatefulWidget {
 
 class _Page1State extends State<Page1> with SingleTickerProviderStateMixin {
   Future<MateriBAB>? _future;
-  late AnimationController _controller;
-  late Animation<double> _fadeIn;
+
+  late final AnimationController _controller;
+
+  Animation<double>? _fadeIn;
+
   int _activeKategori = 0;
 
   @override
   void initState() {
     super.initState();
-    _future = _loadMateri();
-    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
+
+    final babId = int.tryParse(widget.bab.id) ?? 1;
+
+    // Animasi
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+
     _fadeIn = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
+
     _controller.forward();
+
+    // Load data
+    _future = _initPage(babId);
+  }
+
+  Future<MateriBAB> _initPage(int babId) async {
+    await Get.find<BabController>().loadSlugMap(babId);
+
+    if (!mounted) {
+      throw Exception('Widget sudah tidak aktif');
+    }
+
+    return widget.bab.materi;
   }
 
   @override
@@ -37,34 +69,47 @@ class _Page1State extends State<Page1> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  Future<MateriBAB> _loadMateri() async {
-    String data = await rootBundle.loadString('lib/assets/bab1_anwaul_kalimah.json');
-    if (data.startsWith('\uFEFF')) data = data.substring(1);
-    return MateriBAB.fromJson(jsonDecode(data));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.bg,
+
       body: FutureBuilder<MateriBAB>(
         future: _future,
+
         builder: (context, snap) {
           if (snap.connectionState == ConnectionState.waiting) {
-            return const _LoadingScreen();
+            return const LoadingScreen();
           }
+
           if (snap.hasError) {
-            return _ErrorScreen(error: snap.error.toString());
+            return ErrorScreen(error: snap.error.toString());
           }
+
           if (!snap.hasData) {
-            return const _ErrorScreen(error: 'Data tidak tersedia');
+            return const ErrorScreen(error: 'Data tidak tersedia');
           }
+
           return FadeTransition(
-            opacity: _fadeIn,
+            // fallback supaya tidak crash
+            opacity: _fadeIn ?? const AlwaysStoppedAnimation<double>(1),
+
             child: _MateriBody(
-              materi:           snap.data!,
-              activeKategori:   _activeKategori,
-              onKategoriChange: (i) => setState(() => _activeKategori = i),
+              materi: snap.data!,
+
+              babMerged: widget.bab,
+
+              activeKategori: _activeKategori,
+
+              onKategoriChange: (i) {
+                if (!mounted) return;
+
+                setState(() {
+                  _activeKategori = i;
+                });
+              },
+
+              slugToMateriId: Get.find<BabController>().slugToMateriId,
             ),
           );
         },
@@ -74,92 +119,21 @@ class _Page1State extends State<Page1> with SingleTickerProviderStateMixin {
 }
 
 // ─────────────────────────────────────────
-//  LOADING SCREEN
-// ─────────────────────────────────────────
-class _LoadingScreen extends StatefulWidget {
-  const _LoadingScreen();
-  @override
-  State<_LoadingScreen> createState() => _LoadingScreenState();
-}
-
-class _LoadingScreenState extends State<_LoadingScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _c;
-  late Animation<double> _pulse;
-
-  @override
-  void initState() {
-    super.initState();
-    _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200))
-      ..repeat(reverse: true);
-    _pulse = CurvedAnimation(parent: _c, curve: Curves.easeInOut);
-  }
-
-  @override
-  void dispose() { _c.dispose(); super.dispose(); }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.bg,
-      child: Center(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          ScaleTransition(
-            scale: Tween<double>(begin: 0.85, end: 1.0).animate(_pulse),
-            child: Container(
-              width: 80, height: 80,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.surface,
-                border: Border.all(color: AppColors.gold, width: 2),
-                boxShadow: [BoxShadow(color: AppColors.gold.withOpacity(0.3), blurRadius: 24, spreadRadius: 4)],
-              ),
-              child: const Center(
-                child: Text('ن', style: TextStyle(fontSize: 36, color: AppColors.gold, fontFamily: 'serif')),
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-          const Text('Memuat materi…', style: TextStyle(color: AppColors.textSecondary, fontSize: 14)),
-        ]),
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────
-//  ERROR SCREEN
-// ─────────────────────────────────────────
-class _ErrorScreen extends StatelessWidget {
-  final String error;
-  const _ErrorScreen({required this.error});
-  @override
-  Widget build(BuildContext context) => Container(
-        color: AppColors.bg,
-        child: Center(
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            const Icon(Icons.warning_amber_rounded, color: AppColors.rose, size: 48),
-            const SizedBox(height: 12),
-            Text('Gagal memuat data', style: const TextStyle(color: AppColors.textPrimary, fontSize: 16)),
-            const SizedBox(height: 6),
-            Text(error, style: const TextStyle(color: AppColors.textMuted, fontSize: 12)),
-          ]),
-        ),
-      );
-}
-
-// ─────────────────────────────────────────
 //  MAIN BODY
 // ─────────────────────────────────────────
 class _MateriBody extends StatelessWidget {
   final MateriBAB materi;
+  final BabMerged babMerged;
   final int activeKategori;
   final ValueChanged<int> onKategoriChange;
+  final Map<String, int> slugToMateriId;
 
   const _MateriBody({
     required this.materi,
+    required this.babMerged,
     required this.activeKategori,
     required this.onKategoriChange,
+    required this.slugToMateriId,
   });
 
   @override
@@ -168,14 +142,24 @@ class _MateriBody extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       slivers: [
         _buildSliverAppBar(context),
-        SliverToBoxAdapter(child: _ProgressBanner(total: materi.bab.length, done: activeKategori)),
+        SliverToBoxAdapter(
+          child: _ProgressBanner(
+            total: materi.bab.length,
+            done: activeKategori,
+          ),
+        ),
         SliverToBoxAdapter(child: _StimulusSection(stimulus: materi.stimulus)),
-        SliverToBoxAdapter(child: _KategoriPicker(
-          bab: materi.bab, active: activeKategori, onTap: onKategoriChange,
-        )),
+        SliverToBoxAdapter(
+          child: _KategoriPicker(
+            bab: materi.bab,
+            active: activeKategori,
+            onTap: onKategoriChange,
+          ),
+        ),
         SliverToBoxAdapter(
           child: _KategoriDetail(
             kategori: materi.bab[activeKategori],
+            slugToMateriId: slugToMateriId,
           ),
         ),
         const SliverToBoxAdapter(child: SizedBox(height: 80)),
@@ -189,7 +173,11 @@ class _MateriBody extends StatelessWidget {
       expandedHeight: 200,
       backgroundColor: AppColors.bg,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new, size: 18, color: AppColors.textPrimary),
+        icon: const Icon(
+          Icons.arrow_back_ios_new,
+          size: 18,
+          color: AppColors.textPrimary,
+        ),
         onPressed: () => Navigator.pop(context),
       ),
       flexibleSpace: FlexibleSpaceBar(
@@ -198,7 +186,7 @@ class _MateriBody extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             // Geometric pattern background
-            CustomPaint(painter: _GeomPainter()),
+            CustomPaint(painter: GeomPainter()),
             // Gradient overlay
             Container(
               decoration: const BoxDecoration(
@@ -217,15 +205,24 @@ class _MateriBody extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.gold.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.gold.withOpacity(0.4)),
+                      border: Border.all(
+                        color: AppColors.gold.withOpacity(0.4),
+                      ),
                     ),
                     child: const Text(
                       'TANQĪ • Nahwu Qurani',
-                      style: TextStyle(color: AppColors.gold, fontSize: 10, letterSpacing: 2),
+                      style: TextStyle(
+                        color: AppColors.gold,
+                        fontSize: 10,
+                        letterSpacing: 2,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -240,7 +237,10 @@ class _MateriBody extends StatelessWidget {
                   ),
                   const Text(
                     'Anwāul Kalimah — Jenis-Jenis Kata',
-                    style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 13,
+                    ),
                   ),
                 ],
               ),
@@ -250,56 +250,6 @@ class _MateriBody extends StatelessWidget {
       ),
     );
   }
-}
-
-// ─────────────────────────────────────────
-//  GEOMETRIC BACKGROUND PAINTER
-// ─────────────────────────────────────────
-class _GeomPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = AppColors.gold.withOpacity(0.06)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
-
-    // octagonal Islamic pattern
-    for (double x = -40; x < size.width + 40; x += 60) {
-      for (double y = -40; y < size.height + 40; y += 60) {
-        final r = 22.0;
-        final path = Path();
-        for (int i = 0; i < 8; i++) {
-          final angle = (i * 45 - 22.5) * 3.14159 / 180;
-          final px = x + r * 1.3 * (i == 0 ? 1 : (i < 5 ? (i % 2 == 0 ? 1 : -1) : (i % 2 == 0 ? 1 : -1)));
-          final py = y + r * (i == 0 ? 1 : (i < 5 ? (i % 2 == 0 ? -1 : 1) : (i % 2 == 0 ? -1 : 1)));
-          if (i == 0) path.moveTo(x + r * 0.7, y - r);
-          path.lineTo(x + r * _cos(i * 45), y + r * _sin(i * 45));
-        }
-        path.close();
-        canvas.drawPath(path, paint);
-
-        // simple diamond
-        final d = Paint()..color = AppColors.gold.withOpacity(0.04)..style = PaintingStyle.fill;
-        final dp = Path()
-          ..moveTo(x, y - 16)
-          ..lineTo(x + 16, y)
-          ..lineTo(x, y + 16)
-          ..lineTo(x - 16, y)
-          ..close();
-        canvas.drawPath(dp, d);
-      }
-    }
-  }
-
-  double _cos(int deg) => (deg == 0) ? 1 : (deg == 45) ? 0.707 : (deg == 90) ? 0 :
-      (deg == 135) ? -0.707 : (deg == 180) ? -1 : (deg == 225) ? -0.707 :
-      (deg == 270) ? 0 : 0.707;
-  double _sin(int deg) => (deg == 0) ? 0 : (deg == 45) ? 0.707 : (deg == 90) ? 1 :
-      (deg == 135) ? 0.707 : (deg == 180) ? 0 : (deg == 225) ? -0.707 :
-      (deg == 270) ? -1 : -0.707;
-
-  @override
-  bool shouldRepaint(_) => false;
 }
 
 // ─────────────────────────────────────────
@@ -314,24 +264,26 @@ class _ProgressBanner extends StatelessWidget {
     final pct = total == 0 ? 0.0 : done / total;
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
-      child: Row(children: [
-        Expanded(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: pct,
-              minHeight: 4,
-              backgroundColor: AppColors.divider,
-              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.gold),
+      child: Row(
+        children: [
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: pct,
+                minHeight: 4,
+                backgroundColor: AppColors.divider,
+                valueColor: const AlwaysStoppedAnimation<Color>(AppColors.gold),
+              ),
             ),
           ),
-        ),
-        const SizedBox(width: 10),
-        Text(
-          '${(pct * 100).toInt()}% dijelajahi',
-          style: const TextStyle(color: AppColors.textMuted, fontSize: 11),
-        ),
-      ]),
+          const SizedBox(width: 10),
+          Text(
+            '${(pct * 100).toInt()}% dijelajahi',
+            style: const TextStyle(color: AppColors.textMuted, fontSize: 11),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -356,7 +308,13 @@ class _StimulusSection extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: AppColors.gold.withOpacity(0.25)),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 16, offset: const Offset(0, 6))],
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 16,
+              offset: const Offset(0, 6),
+            ),
+          ],
         ),
         child: Column(
           children: [
@@ -365,46 +323,79 @@ class _StimulusSection extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
                 color: AppColors.gold.withOpacity(0.1),
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                border: Border(bottom: BorderSide(color: AppColors.gold.withOpacity(0.2))),
-              ),
-              child: Row(children: [
-                const Icon(Icons.auto_stories_rounded, color: AppColors.gold, size: 16),
-                const SizedBox(width: 8),
-                const Text('Ayat Stimulus', style: TextStyle(color: AppColors.gold, fontSize: 12, letterSpacing: 1)),
-                const Spacer(),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: AppColors.gold.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(stimulus.sumber, style: const TextStyle(color: AppColors.goldLight, fontSize: 10)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(20),
                 ),
-              ]),
+                border: Border(
+                  bottom: BorderSide(color: AppColors.gold.withOpacity(0.2)),
+                ),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.auto_stories_rounded,
+                    color: AppColors.gold,
+                    size: 16,
+                  ),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'Ayat Stimulus',
+                    style: TextStyle(
+                      color: AppColors.gold,
+                      fontSize: 12,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                  const Spacer(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.gold.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      stimulus.sumber,
+                      style: const TextStyle(
+                        color: AppColors.goldLight,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             // Ayat
             Padding(
               padding: const EdgeInsets.all(20),
-              child: Column(children: [
-                Text(
-                  stimulus.ayatArab,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 22,
-                    height: 2.2,
-                    fontWeight: FontWeight.w600,
+              child: Column(
+                children: [
+                  Text(
+                    stimulus.ayatArab,
+                    style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: 22,
+                      height: 2.2,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    textDirection: TextDirection.rtl,
+                    textAlign: TextAlign.center,
                   ),
-                  textDirection: TextDirection.rtl,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  '"${stimulus.terjemah}"',
-                  style: const TextStyle(color: AppColors.textSecondary, fontSize: 13, fontStyle: FontStyle.italic, height: 1.6),
-                  textAlign: TextAlign.center,
-                ),
-              ]),
+                  const SizedBox(height: 12),
+                  Text(
+                    '"${stimulus.terjemah}"',
+                    style: const TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 13,
+                      fontStyle: FontStyle.italic,
+                      height: 1.6,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
             // Narasi
             Container(
@@ -420,13 +411,21 @@ class _StimulusSection extends StatelessWidget {
                 children: [
                   const Padding(
                     padding: EdgeInsets.only(top: 2),
-                    child: Icon(Icons.lightbulb_outline, color: AppColors.goldDark, size: 16),
+                    child: Icon(
+                      Icons.lightbulb_outline,
+                      color: AppColors.goldDark,
+                      size: 16,
+                    ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       stimulus.narasi,
-                      style: const TextStyle(color: AppColors.textMuted, fontSize: 12, height: 1.7),
+                      style: const TextStyle(
+                        color: AppColors.textMuted,
+                        fontSize: 12,
+                        height: 1.7,
+                      ),
                     ),
                   ),
                 ],
@@ -447,7 +446,11 @@ class _KategoriPicker extends StatelessWidget {
   final int active;
   final ValueChanged<int> onTap;
 
-  const _KategoriPicker({required this.bab, required this.active, required this.onTap});
+  const _KategoriPicker({
+    required this.bab,
+    required this.active,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -460,7 +463,11 @@ class _KategoriPicker extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 12),
             child: Text(
               'Pilih Topik',
-              style: TextStyle(color: AppColors.textSecondary, fontSize: 12, letterSpacing: 1.5),
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 12,
+                letterSpacing: 1.5,
+              ),
             ),
           ),
           SizedBox(
@@ -480,32 +487,48 @@ class _KategoriPicker extends StatelessWidget {
                     width: 110,
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: isActive ? k.accentColor.withOpacity(0.15) : AppColors.surface,
+                      color: isActive
+                          ? k.accentColor.withOpacity(0.15)
+                          : AppColors.surface,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
                         color: isActive ? k.accentColor : AppColors.divider,
                         width: isActive ? 1.5 : 1,
                       ),
                       boxShadow: isActive
-                          ? [BoxShadow(color: k.accentColor.withOpacity(0.2), blurRadius: 12, offset: const Offset(0, 4))]
+                          ? [
+                              BoxShadow(
+                                color: k.accentColor.withOpacity(0.2),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
+                              ),
+                            ]
                           : [],
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(k.iconLabel,
+                        Text(
+                          k.iconLabel,
                           style: TextStyle(
                             fontSize: 22,
-                            color: isActive ? k.accentColor : AppColors.textMuted,
+                            color: isActive
+                                ? k.accentColor
+                                : AppColors.textMuted,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         const Spacer(),
-                        Text(k.judulLatin.split(' ').first,
+                        Text(
+                          k.judulLatin.split(' ').first,
                           style: TextStyle(
                             fontSize: 11,
-                            color: isActive ? k.accentColor : AppColors.textSecondary,
-                            fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                            color: isActive
+                                ? k.accentColor
+                                : AppColors.textSecondary,
+                            fontWeight: isActive
+                                ? FontWeight.bold
+                                : FontWeight.normal,
                           ),
                         ),
                       ],
@@ -526,39 +549,56 @@ class _KategoriPicker extends StatelessWidget {
 // ─────────────────────────────────────────
 class _KategoriDetail extends StatelessWidget {
   final KategoriKata kategori;
-  const _KategoriDetail({required this.kategori});
+  final Map<String, int> slugToMateriId;
+
+  const _KategoriDetail({required this.kategori, required this.slugToMateriId});
 
   @override
   Widget build(BuildContext context) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 350),
-      transitionBuilder: (child, anim) =>
-          FadeTransition(opacity: anim, child: SlideTransition(
-            position: Tween<Offset>(begin: const Offset(0, 0.04), end: Offset.zero).animate(anim),
-            child: child,
-          )),
+      transitionBuilder: (child, anim) => FadeTransition(
+        opacity: anim,
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 0.04),
+            end: Offset.zero,
+          ).animate(anim),
+          child: child,
+        ),
+      ),
       child: Padding(
         key: ValueKey(kategori.id),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Judul & definisi
             _SectionHeader(kategori: kategori),
             const SizedBox(height: 16),
-            // Tanda umum (jika ada)
             if (kategori.tandaUmum.isNotEmpty) ...[
-              _SectionLabel(label: 'Tanda-tanda Umum', color: kategori.accentColor),
+              _SectionLabel(
+                label: 'Tanda-tanda Umum',
+                color: kategori.accentColor,
+              ),
               const SizedBox(height: 10),
-              ...kategori.tandaUmum.map((t) => _TandaUmumCard(tanda: t, color: kategori.accentColor)),
+              ...kategori.tandaUmum.map(
+                (t) => _TandaUmumCard(tanda: t, color: kategori.accentColor),
+              ),
               const SizedBox(height: 16),
             ],
-            // Sub-bab
             if (kategori.subBab.isNotEmpty) ...[
               _SectionLabel(label: 'Pembahasan', color: kategori.accentColor),
               const SizedBox(height: 10),
-              ...kategori.subBab.asMap().entries.map((e) =>
-                  _SubBabCard(sub: e.value, index: e.key, accent: kategori.accentColor)),
+              ...kategori.subBab.asMap().entries.map((e) {
+                final subId =
+                    (e.value as Map<String, dynamic>)['id'] as String? ?? '';
+                return _SubBabCard(
+                  sub: e.value,
+                  index: e.key,
+                  accent: kategori.accentColor,
+                  materiId: slugToMateriId[subId],
+                );
+              }),
             ],
           ],
         ),
@@ -583,63 +623,93 @@ class _SectionHeader extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: AppColors.divider),
       ),
-      child: Column(children: [
-        Row(
-          children: [
-            Container(
-              width: 44, height: 44,
-              decoration: BoxDecoration(
-                color: kategori.accentColor.withOpacity(0.15),
-                shape: BoxShape.circle,
-                border: Border.all(color: kategori.accentColor.withOpacity(0.5)),
-              ),
-              child: Center(
-                child: Text(
-                  kategori.iconLabel,
-                  style: TextStyle(fontSize: 20, color: kategori.accentColor, fontWeight: FontWeight.bold),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: kategori.accentColor.withOpacity(0.15),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: kategori.accentColor.withOpacity(0.5),
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    kategori.iconLabel,
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: kategori.accentColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    kategori.judulArab,
-                    style: TextStyle(color: kategori.accentColor, fontSize: 22, fontWeight: FontWeight.bold),
-                    textDirection: TextDirection.rtl,
-                  ),
-                  Text(kategori.judulLatin, style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
-                ],
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      kategori.judulArab,
+                      style: TextStyle(
+                        color: kategori.accentColor,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textDirection: TextDirection.rtl,
+                    ),
+                    Text(
+                      kategori.judulLatin,
+                      style: const TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: AppColors.bg.withOpacity(0.6),
-            borderRadius: BorderRadius.circular(12),
+            ],
           ),
-          child: Column(children: [
-            Text(
-              kategori.definisiArab,
-              style: const TextStyle(color: AppColors.textPrimary, fontSize: 15, height: 2.0),
-              textDirection: TextDirection.rtl,
-              textAlign: TextAlign.center,
+          const SizedBox(height: 16),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: AppColors.bg.withOpacity(0.6),
+              borderRadius: BorderRadius.circular(12),
             ),
-            const SizedBox(height: 8),
-            Text(
-              kategori.definisiLatin,
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: 12, fontStyle: FontStyle.italic, height: 1.6),
-              textAlign: TextAlign.center,
+            child: Column(
+              children: [
+                Text(
+                  kategori.definisiArab,
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 15,
+                    height: 2.0,
+                  ),
+                  textDirection: TextDirection.rtl,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  kategori.definisiLatin,
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 12,
+                    fontStyle: FontStyle.italic,
+                    height: 1.6,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
-          ]),
-        ),
-      ]),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -653,11 +723,28 @@ class _SectionLabel extends StatelessWidget {
   const _SectionLabel({required this.label, required this.color});
 
   @override
-  Widget build(BuildContext context) => Row(children: [
-        Container(width: 3, height: 14, decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(2))),
-        const SizedBox(width: 8),
-        Text(label.toUpperCase(), style: TextStyle(color: color, fontSize: 10, letterSpacing: 2, fontWeight: FontWeight.bold)),
-      ]);
+  Widget build(BuildContext context) => Row(
+    children: [
+      Container(
+        width: 3,
+        height: 14,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(2),
+        ),
+      ),
+      const SizedBox(width: 8),
+      Text(
+        label.toUpperCase(),
+        style: TextStyle(
+          color: color,
+          fontSize: 10,
+          letterSpacing: 2,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ],
+  );
 }
 
 // ─────────────────────────────────────────
@@ -684,17 +771,29 @@ class _TandaUmumCard extends StatelessWidget {
         child: ExpansionTile(
           tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
           leading: Container(
-            width: 38, height: 38,
+            width: 38,
+            height: 38,
             decoration: BoxDecoration(
               color: color.withOpacity(0.1),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: color.withOpacity(0.3)),
             ),
             child: Center(
-              child: Text(t['tanda'] ?? '', style: TextStyle(color: color, fontSize: 14, fontWeight: FontWeight.bold), textDirection: TextDirection.rtl),
+              child: Text(
+                t['tanda'] ?? '',
+                style: TextStyle(
+                  color: color,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+                textDirection: TextDirection.rtl,
+              ),
             ),
           ),
-          title: Text('Tanda: ${t['tanda'] ?? ''}', style: const TextStyle(color: AppColors.textPrimary, fontSize: 13)),
+          title: Text(
+            'Tanda: ${t['tanda'] ?? ''}',
+            style: const TextStyle(color: AppColors.textPrimary, fontSize: 13),
+          ),
           iconColor: color,
           collapsedIconColor: AppColors.textMuted,
           children: contohList.map<Widget>((c) {
@@ -702,11 +801,11 @@ class _TandaUmumCard extends StatelessWidget {
             return Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
               child: _AyatTile(
-                arab:    ce['arab']       ?? '',
-                sumber:  ce['sumber']     ?? '',
+                arab: ce['arab'] ?? '',
+                sumber: ce['sumber'] ?? '',
                 terjemah: '',
-                tag:     ce['jenis_fiil'] ?? ce['faedah'] ?? '',
-                accent:  color,
+                tag: ce['jenis_fiil'] ?? ce['faedah'] ?? '',
+                accent: color,
               ),
             );
           }).toList(),
@@ -717,57 +816,119 @@ class _TandaUmumCard extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────
-//  SUB BAB CARD
+//  SUB BAB CARD (updated)
 // ─────────────────────────────────────────
-class _SubBabCard extends StatelessWidget {
+class _SubBabCard extends StatefulWidget {
   final dynamic sub;
   final int index;
   final Color accent;
-  const _SubBabCard({required this.sub, required this.index, required this.accent});
+  final int? materiId;
+
+  const _SubBabCard({
+    required this.sub,
+    required this.index,
+    required this.accent,
+    this.materiId,
+  });
+
+  @override
+  State<_SubBabCard> createState() => _SubBabCardState();
+}
+
+class _SubBabCardState extends State<_SubBabCard> {
+  late final QuizController _quizCtrl;
+  bool _quizLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // pakai tag unik per materi supaya tidak bentrok
+    _quizCtrl = Get.put(
+      QuizController(),
+      tag: 'quiz_${widget.materiId ?? widget.index}',
+    );
+  }
+
+  void _loadQuiz() {
+    if (widget.materiId == null || _quizLoaded) return;
+    _quizCtrl.loadSoal(widget.materiId!);
+    _quizLoaded = true;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final s = sub as Map<String, dynamic>;
-    final judulArab  = s['judul_arab']   as String? ?? '';
-    final judulLatin = s['judul_latin']  as String? ?? s['judul'] as String? ?? '';
-    final defArab    = s['definisi_arab']  as String? ?? s['definisi'] as String? ?? '';
-    final defLatin   = s['definisi_latin'] as String? ?? '';
-    final stimulus   = s['contoh_stimulus'] as Map<String, dynamic>?;
-    final tandaList  = s['tanda'] as List<dynamic>?;
-    final jenisList  = s['jenis'] as List<dynamic>?;
-    final hurufList  = s['huruf'] as List<dynamic>?;
+    final s = widget.sub as Map<String, dynamic>;
+    final judulArab = s['judul_arab'] as String? ?? '';
+    final judulLatin =
+        s['judul_latin'] as String? ?? s['judul'] as String? ?? '';
+    final defArab =
+        s['definisi_arab'] as String? ?? s['definisi'] as String? ?? '';
+    final defLatin = s['definisi_latin'] as String? ?? '';
+    final stimulus = s['contoh_stimulus'] as Map<String, dynamic>?;
+    final tandaList = s['tanda'] as List<dynamic>?;
+    final jenisList = s['jenis'] as List<dynamic>?;
+    final hurufList = s['huruf'] as List<dynamic>?;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: accent.withOpacity(0.2)),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 12, offset: const Offset(0, 4))],
+        border: Border.all(color: widget.accent.withOpacity(0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
           tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          onExpansionChanged: (expanded) {
+            if (expanded) _loadQuiz();
+          },
           leading: Container(
-            width: 28, height: 28,
-            decoration: BoxDecoration(color: accent.withOpacity(0.15), shape: BoxShape.circle),
-            child: Center(child: Text('${index + 1}', style: TextStyle(color: accent, fontSize: 12, fontWeight: FontWeight.bold))),
+            width: 28,
+            height: 28,
+            decoration: BoxDecoration(
+              color: widget.accent.withOpacity(0.15),
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
+                '${widget.index + 1}',
+                style: TextStyle(
+                  color: widget.accent,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ),
           title: Text(
             judulArab.isNotEmpty ? judulArab : judulLatin,
             style: TextStyle(
-              color: judulArab.isNotEmpty ? accent : AppColors.textSecondary,
+              color: judulArab.isNotEmpty
+                  ? widget.accent
+                  : AppColors.textSecondary,
               fontSize: 17,
               fontWeight: FontWeight.bold,
             ),
-            textDirection: judulArab.isNotEmpty ? TextDirection.rtl : TextDirection.ltr,
+            textDirection: judulArab.isNotEmpty
+                ? TextDirection.rtl
+                : TextDirection.ltr,
           ),
           subtitle: Text(
             judulLatin,
-            style: const TextStyle(color: AppColors.textSecondary, fontSize: 11),
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 11,
+            ),
           ),
-          backgroundColor: accent.withOpacity(0.04),
+          backgroundColor: widget.accent.withOpacity(0.04),
           collapsedBackgroundColor: Colors.transparent,
           children: [
             Padding(
@@ -775,40 +936,62 @@ class _SubBabCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Definisi
                   if (defArab.isNotEmpty || defLatin.isNotEmpty)
-                    _DefinisiBox(arab: defArab, latin: defLatin, accent: accent),
-                  // Stimulus ayat
+                    _DefinisiBox(
+                      arab: defArab,
+                      latin: defLatin,
+                      accent: widget.accent,
+                    ),
                   if (stimulus != null) ...[
                     const SizedBox(height: 12),
                     _AyatTile(
-                      arab:    stimulus['arab']    ?? '',
-                      sumber:  stimulus['sumber']  ?? '',
+                      arab: stimulus['arab'] ?? '',
+                      sumber: stimulus['sumber'] ?? '',
                       terjemah: stimulus['terjemah'] ?? '',
-                      tag:     'Contoh',
-                      accent:  accent,
+                      tag: 'Contoh',
+                      accent: widget.accent,
                     ),
                   ],
-                  // Tanda-tanda
                   if (tandaList != null && tandaList.isNotEmpty) ...[
                     const SizedBox(height: 14),
-                    _SectionLabel(label: 'Tanda-tanda', color: accent),
+                    _SectionLabel(label: 'Tanda-tanda', color: widget.accent),
                     const SizedBox(height: 8),
-                    ...tandaList.map((t) => _TandaDetailTile(tanda: t as Map<String, dynamic>, accent: accent)),
+                    ...tandaList.map(
+                      (t) => _TandaDetailTile(
+                        tanda: t as Map<String, dynamic>,
+                        accent: widget.accent,
+                      ),
+                    ),
                   ],
-                  // Jenis (isim)
                   if (jenisList != null && jenisList.isNotEmpty) ...[
                     const SizedBox(height: 14),
-                    _SectionLabel(label: 'Jenis', color: accent),
+                    _SectionLabel(label: 'Jenis', color: widget.accent),
                     const SizedBox(height: 8),
-                    ...jenisList.map((j) => _JenisTile(jenis: j as Map<String, dynamic>, accent: accent)),
+                    ...jenisList.map(
+                      (j) => _JenisTile(
+                        jenis: j as Map<String, dynamic>,
+                        accent: widget.accent,
+                      ),
+                    ),
                   ],
-                  // Huruf (harf)
                   if (hurufList != null && hurufList.isNotEmpty) ...[
                     const SizedBox(height: 14),
-                    _SectionLabel(label: 'Daftar Huruf', color: accent),
+                    _SectionLabel(label: 'Daftar Huruf', color: widget.accent),
                     const SizedBox(height: 8),
-                    ...hurufList.map((h) => _HurufTile(huruf: h as Map<String, dynamic>, accent: accent)),
+                    ...hurufList.map(
+                      (h) => _HurufTile(
+                        huruf: h as Map<String, dynamic>,
+                        accent: widget.accent,
+                      ),
+                    ),
+                  ],
+
+                  // ── QUIZ SECTION ──
+                  if (widget.materiId != null) ...[
+                    const SizedBox(height: 20),
+                    _SectionLabel(label: 'Kuis', color: widget.accent),
+                    const SizedBox(height: 10),
+                    _InlineQuiz(controller: _quizCtrl, accent: widget.accent),
                   ],
                 ],
               ),
@@ -821,30 +1004,782 @@ class _SubBabCard extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────
+//  INLINE QUIZ
+// ─────────────────────────────────────────
+class _InlineQuiz extends StatelessWidget {
+  final QuizController controller;
+  final Color accent;
+
+  const _InlineQuiz({required this.controller, required this.accent});
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: CircularProgressIndicator(color: accent, strokeWidth: 2),
+          ),
+        );
+      }
+
+      if (controller.soalList.isEmpty) {
+        return Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: AppColors.bg.withOpacity(0.5),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: accent.withOpacity(0.2)),
+          ),
+          child: const Text(
+            'Belum ada soal untuk materi ini.',
+            style: TextStyle(color: AppColors.textMuted, fontSize: 12),
+            textAlign: TextAlign.center,
+          ),
+        );
+      }
+
+      final total = controller.soalList.length;
+
+      return Column(
+        children: [
+          // ── Progress dots (klik untuk navigasi) ──
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(total, (i) {
+              final answered = controller.hasilPerSoal.containsKey(i);
+              final isCorrect =
+                  answered && controller.hasilPerSoal[i]!.isCorrect;
+              final isCurrent = controller.currentIndex.value == i;
+
+              Color dotColor;
+              if (!answered) {
+                dotColor = isCurrent ? accent : accent.withOpacity(0.25);
+              } else {
+                dotColor = isCorrect ? Colors.green : Colors.red;
+              }
+
+              return GestureDetector(
+                onTap: () => controller.goToSoal(i),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  width: isCurrent ? 18 : 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: dotColor,
+                    borderRadius: BorderRadius.circular(4),
+                    border: isCurrent
+                        ? Border.all(color: accent, width: 1.5)
+                        : null,
+                  ),
+                ),
+              );
+            }),
+          ),
+          const SizedBox(height: 12),
+
+          // ── Kartu soal aktif ──
+          _SoalCard(
+            soal: controller.soalList[controller.currentIndex.value],
+            controller: controller,
+            accent: accent,
+          ),
+
+          // ── Panel hasil (muncul setelah semua selesai) ──
+          if (controller.quizSelesai.value) ...[
+            const SizedBox(height: 20),
+            _HasilPanel(controller: controller, accent: accent),
+          ],
+        ],
+      );
+    });
+  }
+}
+
+class _HasilPanel extends StatelessWidget {
+  final QuizController controller;
+  final Color accent;
+
+  const _HasilPanel({required this.controller, required this.accent});
+
+  @override
+  Widget build(BuildContext context) {
+    final total = controller.soalList.length;
+    final benar = controller.hasilPerSoal.values
+        .where((h) => h.isCorrect)
+        .length;
+    final salah = total - benar;
+    final xp = controller.totalXp.value;
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [accent.withOpacity(0.12), AppColors.surface],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: accent.withOpacity(0.35)),
+      ),
+      child: Column(
+        children: [
+          // Judul
+          Row(
+            children: [
+              Icon(Icons.emoji_events_rounded, color: accent, size: 20),
+              const SizedBox(width: 8),
+              Text(
+                'Hasil Kuis',
+                style: TextStyle(
+                  color: accent,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // XP badge
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: accent.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(40),
+                  border: Border.all(color: accent.withOpacity(0.4)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.bolt_rounded, color: accent, size: 18),
+                    const SizedBox(width: 6),
+                    Text(
+                      '+$xp XP',
+                      style: TextStyle(
+                        color: accent,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // _StatChip(
+              //   icon: Icons.bar_chart_rounded,
+              //   label: '${controller.nilaiAkhir.value.toStringAsFixed(0)}',
+              //   color: accent,
+              //   sublabel: 'Nilai',
+              // ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // Benar / Salah
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _StatChip(
+                icon: Icons.check_circle_outline,
+                label: '$benar Benar',
+                color: Colors.green,
+              ),
+              const SizedBox(width: 12),
+              _StatChip(
+                icon: Icons.cancel_outlined,
+                label: '$salah Salah',
+                color: Colors.red,
+              ),
+              const SizedBox(width: 12),
+            ],
+          ),
+
+          const SizedBox(height: 20),
+
+          // Tombol Review
+          Obx(
+            () => controller.showReview.value
+                ? const SizedBox.shrink()
+                : SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () => controller.showReview.value = true,
+                      icon: Icon(
+                        Icons.rate_review_outlined,
+                        color: accent,
+                        size: 16,
+                      ),
+                      label: Text(
+                        'Lihat Review Jawaban',
+                        style: TextStyle(color: accent, fontSize: 13),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: accent.withOpacity(0.6)),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+          ),
+
+          // Panel review
+          Obx(
+            () => controller.showReview.value
+                ? _ReviewPanel(controller: controller, accent: accent)
+                : const SizedBox.shrink(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Chip kecil statistik
+class _StatChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final String? sublabel;
+
+  const _StatChip({
+    required this.icon,
+    required this.label,
+    required this.color,
+    this.sublabel,
+  });
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+    decoration: BoxDecoration(
+      color: color.withOpacity(0.1),
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: color.withOpacity(0.3)),
+    ),
+    child: Column(
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: color, size: 14),
+            const SizedBox(width: 4),
+            Text(
+              label,
+              style: TextStyle(
+                color: color,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        if (sublabel != null)
+          Text(
+            sublabel!,
+            style: TextStyle(color: color.withOpacity(0.7), fontSize: 10),
+          ),
+      ],
+    ),
+  );
+}
+
+class _ReviewPanel extends StatelessWidget {
+  final QuizController controller;
+  final Color accent;
+
+  const _ReviewPanel({required this.controller, required this.accent});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 20),
+        Divider(color: accent.withOpacity(0.2)),
+        const SizedBox(height: 12),
+        Text(
+          'REVIEW JAWABAN',
+          style: TextStyle(
+            color: accent,
+            fontSize: 10,
+            letterSpacing: 2,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 12),
+        ...List.generate(controller.soalList.length, (i) {
+          final soal = controller.soalList[i];
+          final hasil = controller.hasilPerSoal[i];
+          if (hasil == null) return const SizedBox.shrink();
+
+          final isCorrect = hasil.isCorrect;
+          final color = isCorrect ? Colors.green : Colors.red;
+          final selectedLabel = controller.selectedPerSoal[i] ?? '';
+
+          // Cari teks opsi yang dipilih & jawaban benar
+          final opsi = controller.opsiPerSoal[i] ?? [];
+          String selectedTeks = '';
+          String benarTeks = '';
+          for (final o in opsi) {
+            if (o['dbLabel'] == selectedLabel) selectedTeks = o['text'] ?? '';
+            if (o['dbLabel'] == hasil.jawabanBenar) benarTeks = o['text'] ?? '';
+          }
+
+          return Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.06),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: color.withOpacity(0.3)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Nomor + status
+                Row(
+                  children: [
+                    Container(
+                      width: 24,
+                      height: 24,
+                      decoration: BoxDecoration(
+                        color: color.withOpacity(0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Text(
+                          '${i + 1}',
+                          style: TextStyle(
+                            color: color,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Icon(
+                      isCorrect ? Icons.check_circle : Icons.cancel_rounded,
+                      color: color,
+                      size: 16,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      isCorrect ? 'Benar' : 'Salah',
+                      style: TextStyle(
+                        color: color,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+
+                // Pertanyaan
+                Text(
+                  soal.pertanyaan,
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 13,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 10),
+
+                // Jawaban yang dipilih
+                _ReviewOpsiRow(
+                  label: 'Jawabanmu',
+                  teks: selectedTeks,
+                  color: color,
+                ),
+
+                // Jawaban benar (tambahkan ! jika ingin selalu tampil)
+                if (isCorrect) ...[
+                  const SizedBox(height: 6),
+                  _ReviewOpsiRow(
+                    label: 'Jawaban benar',
+                    teks: benarTeks,
+                    color: Colors.green,
+                  ),
+                ],
+
+                // Di _ReviewPanel, setelah blok "Jawaban benar", tambah:
+                if (isCorrect &&
+                    hasil.penjelasan != null &&
+                    hasil.penjelasan!.isNotEmpty) ...[
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withOpacity(0.07),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.green.withOpacity(0.25)),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(
+                          Icons.lightbulb_outline,
+                          color: Colors.green,
+                          size: 14,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            hasil.penjelasan!,
+                            style: const TextStyle(
+                              color: AppColors.textSecondary,
+                              fontSize: 12,
+                              height: 1.5,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+
+                // Penjelasan hanya untuk yang BENAR
+                // (yang salah tidak ada penjelasan sesuai permintaan)
+                // ← kosongkan saja, tidak ada blok penjelasan untuk yang salah
+              ],
+            ),
+          );
+        }),
+      ],
+    );
+  }
+}
+
+class _ReviewOpsiRow extends StatelessWidget {
+  final String label, teks;
+  final Color color;
+
+  const _ReviewOpsiRow({
+    required this.label,
+    required this.teks,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) => Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        '$label: ',
+        style: TextStyle(
+          color: color.withOpacity(0.8),
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      Expanded(
+        child: Text(
+          teks,
+          style: TextStyle(color: color, fontSize: 12, height: 1.4),
+        ),
+      ),
+    ],
+  );
+}
+
+// ─────────────────────────────────────────
+//  SOAL CARD
+// ─────────────────────────────────────────
+class _SoalCard extends StatelessWidget {
+  final SoalModel soal;
+  final QuizController controller;
+  final Color accent;
+
+  const _SoalCard({
+    required this.soal,
+    required this.controller,
+    required this.accent,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      final idx = controller.currentIndex.value;
+      final opsi = controller.opsiPerSoal[idx] ?? [];
+      final selected = controller.selectedLabel;
+      final status = controller.statusAktif;
+      final hasil = controller.hasilAktif;
+      final quizSelesai = controller.quizSelesai.value;
+
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.bg.withOpacity(0.6),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: accent.withOpacity(0.3)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Label soal ke-N
+            Text(
+              'Soal ${idx + 1} dari ${controller.soalList.length}',
+              style: TextStyle(
+                color: accent.withOpacity(0.7),
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1,
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            // Pertanyaan
+            Text(
+              soal.pertanyaan,
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 14,
+                height: 1.6,
+              ),
+            ),
+            const SizedBox(height: 14),
+
+            // Pilihan jawaban
+            ...opsi.map((e) {
+              final label = e['dbLabel']!;
+              final teks = e['text']!;
+              final isSelected = selected == label;
+
+              // Warna reveal HANYA setelah quiz selesai semua
+              Color borderColor = accent.withOpacity(0.2);
+              Color bgColor = AppColors.bg.withOpacity(0.3);
+              Color textColor = AppColors.textSecondary;
+
+              if (quizSelesai && hasil != null) {
+                if (hasil.isCorrect) {
+                  if (label == hasil.jawabanBenar) {
+                    borderColor = Colors.green;
+                    bgColor = Colors.green.withOpacity(0.1);
+                    textColor = Colors.green;
+                  }
+                } else {
+                  if (isSelected) {
+                    borderColor = Colors.red;
+                    bgColor = Colors.red.withOpacity(0.1);
+                    textColor = Colors.red;
+                  }
+                }
+              } else if (isSelected) {
+                borderColor = accent;
+                bgColor = accent.withOpacity(0.1);
+                textColor = accent;
+              }
+
+              return GestureDetector(
+                onTap: () => controller.pilihJawaban(label),
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: bgColor,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: borderColor),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 22,
+                        height: 22,
+                        decoration: BoxDecoration(
+                          color: borderColor.withOpacity(0.15),
+                          shape: BoxShape.circle,
+                          border: Border.all(color: borderColor),
+                        ),
+                        child: Center(
+                          child: Text(
+                            e['displayLabel']!,
+                            style: TextStyle(
+                              color: textColor,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          teks,
+                          style: TextStyle(color: textColor, fontSize: 13),
+                        ),
+                      ),
+                      // Ikon benar/salah setelah quiz selesai
+                      if (quizSelesai &&
+                          hasil != null &&
+                          hasil.isCorrect &&
+                          label == hasil.jawabanBenar)
+                        const Icon(
+                          Icons.check_circle,
+                          color: Colors.green,
+                          size: 16,
+                        )
+                      else if (isSelected)
+                        const Icon(Icons.cancel, color: Colors.red, size: 16),
+                    ],
+                  ),
+                ),
+              );
+            }),
+
+            const SizedBox(height: 8),
+
+            // Tombol navigasi + submit
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Tombol Kembali
+                if (!controller.isFirstSoal)
+                  OutlinedButton.icon(
+                    onPressed: controller.prevSoal,
+                    icon: const Icon(Icons.arrow_back_ios_new, size: 12),
+                    label: const Text('Kembali'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: accent,
+                      side: BorderSide(color: accent.withOpacity(0.5)),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 8,
+                      ),
+                      textStyle: const TextStyle(fontSize: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  )
+                else
+                  const SizedBox.shrink(),
+
+                // Tombol kanan: Konfirmasi / Lanjut / (kosong jika soal terakhir sudah dijawab)
+                if (status != 'answered') ...[
+                  ElevatedButton(
+                    onPressed: selected.isEmpty
+                        ? null
+                        : controller.submitJawaban,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: accent,
+                      foregroundColor: Colors.white,
+                      disabledBackgroundColor: accent.withOpacity(0.3),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: controller.isSubmitting.value
+                        ? const SizedBox(
+                            width: 14,
+                            height: 14,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Text(
+                            'Konfirmasi',
+                            style: TextStyle(fontSize: 13),
+                          ),
+                  ),
+                ] else if (!controller.isLastSoal) ...[
+                  ElevatedButton.icon(
+                    onPressed: controller.nextSoal,
+                    icon: const Icon(Icons.arrow_forward_ios, size: 12),
+                    label: const Text('Lanjut'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: accent,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                ],
+                // Soal terakhir & sudah dijawab → panel hasil akan muncul
+              ],
+            ),
+          ],
+        ),
+      );
+    });
+  }
+}
+
+// ─────────────────────────────────────────
 //  DEFINISI BOX
 // ─────────────────────────────────────────
 class _DefinisiBox extends StatelessWidget {
   final String arab, latin;
   final Color accent;
-  const _DefinisiBox({required this.arab, required this.latin, required this.accent});
+  const _DefinisiBox({
+    required this.arab,
+    required this.latin,
+    required this.accent,
+  });
 
   @override
   Widget build(BuildContext context) => Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: AppColors.bg.withOpacity(0.7),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: accent.withOpacity(0.15)),
-        ),
-        child: Column(children: [
-          if (arab.isNotEmpty)
-            Text(arab, style: const TextStyle(color: AppColors.textPrimary, fontSize: 15, height: 2.0), textDirection: TextDirection.rtl, textAlign: TextAlign.center),
-          if (arab.isNotEmpty && latin.isNotEmpty) const SizedBox(height: 6),
-          if (latin.isNotEmpty)
-            Text(latin, style: const TextStyle(color: AppColors.textSecondary, fontSize: 12, fontStyle: FontStyle.italic, height: 1.6), textAlign: TextAlign.center),
-        ]),
-      );
+    width: double.infinity,
+    padding: const EdgeInsets.all(14),
+    decoration: BoxDecoration(
+      color: AppColors.bg.withOpacity(0.7),
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: accent.withOpacity(0.15)),
+    ),
+    child: Column(
+      children: [
+        if (arab.isNotEmpty)
+          Text(
+            arab,
+            style: const TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: 15,
+              height: 2.0,
+            ),
+            textDirection: TextDirection.rtl,
+            textAlign: TextAlign.center,
+          ),
+        if (arab.isNotEmpty && latin.isNotEmpty) const SizedBox(height: 6),
+        if (latin.isNotEmpty)
+          Text(
+            latin,
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 12,
+              fontStyle: FontStyle.italic,
+              height: 1.6,
+            ),
+            textAlign: TextAlign.center,
+          ),
+      ],
+    ),
+  );
 }
 
 // ─────────────────────────────────────────
@@ -853,23 +1788,42 @@ class _DefinisiBox extends StatelessWidget {
 class _AyatTile extends StatelessWidget {
   final String arab, sumber, terjemah, tag;
   final Color accent;
-  const _AyatTile({required this.arab, required this.sumber, required this.terjemah, required this.tag, required this.accent});
+  const _AyatTile({
+    required this.arab,
+    required this.sumber,
+    required this.terjemah,
+    required this.tag,
+    required this.accent,
+  });
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [accent.withOpacity(0.06), AppColors.bg.withOpacity(0.4)],
-            begin: Alignment.topLeft, end: Alignment.bottomRight,
+    padding: const EdgeInsets.all(14),
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        colors: [accent.withOpacity(0.06), AppColors.bg.withOpacity(0.4)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: accent.withOpacity(0.2)),
+    ),
+    child: Column(
+      children: [
+        Text(
+          arab,
+          style: const TextStyle(
+            color: AppColors.textPrimary,
+            fontSize: 18,
+            height: 2.0,
           ),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: accent.withOpacity(0.2)),
+          textDirection: TextDirection.rtl,
+          textAlign: TextAlign.center,
         ),
-        child: Column(children: [
-          Text(arab, style: const TextStyle(color: AppColors.textPrimary, fontSize: 18, height: 2.0), textDirection: TextDirection.rtl, textAlign: TextAlign.center),
-          const SizedBox(height: 8),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        const SizedBox(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
             if (tag.isNotEmpty) ...[
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -883,14 +1837,32 @@ class _AyatTile extends StatelessWidget {
               const SizedBox(width: 8),
             ],
             if (sumber.isNotEmpty)
-              Text(sumber, style: const TextStyle(color: AppColors.textMuted, fontSize: 10)),
-          ]),
-          if (terjemah.isNotEmpty) ...[
-            const SizedBox(height: 6),
-            Text('"$terjemah"', style: const TextStyle(color: AppColors.textSecondary, fontSize: 11, fontStyle: FontStyle.italic, height: 1.6), textAlign: TextAlign.center),
+              Text(
+                sumber,
+                style: const TextStyle(
+                  color: AppColors.textMuted,
+                  fontSize: 10,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
           ],
-        ]),
-      );
+        ),
+        if (terjemah.isNotEmpty) ...[
+          const SizedBox(height: 6),
+          Text(
+            '"$terjemah"',
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 11,
+              fontStyle: FontStyle.italic,
+              height: 1.6,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ],
+    ),
+  );
 }
 
 // ─────────────────────────────────────────
@@ -903,11 +1875,15 @@ class _TandaDetailTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final nama      = tanda['nama']        as String? ?? tanda['huruf']  as String? ?? '';
-    final ket       = tanda['keterangan']  as String? ?? tanda['dalil']  as String? ?? tanda['faedah'] as String? ?? '';
-    final arab      = tanda['contoh_arab'] as String? ?? '';
-    final sumber    = tanda['sumber']      as String? ?? '';
-    final terjemah  = tanda['terjemah']    as String? ?? '';
+    final nama = tanda['nama'] as String? ?? tanda['huruf'] as String? ?? '';
+    final ket =
+        tanda['keterangan'] as String? ??
+        tanda['dalil'] as String? ??
+        tanda['faedah'] as String? ??
+        '';
+    final arab = tanda['contoh_arab'] as String? ?? '';
+    final sumber = tanda['sumber'] as String? ?? '';
+    final terjemah = tanda['terjemah'] as String? ?? '';
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -917,21 +1893,56 @@ class _TandaDetailTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.divider),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          Container(width: 6, height: 6, decoration: BoxDecoration(color: accent, shape: BoxShape.circle)),
-          const SizedBox(width: 8),
-          Expanded(child: Text(nama, style: TextStyle(color: accent, fontSize: 13, fontWeight: FontWeight.w600), textDirection: TextDirection.rtl)),
-        ]),
-        if (ket.isNotEmpty) ...[
-          const SizedBox(height: 6),
-          Text(ket, style: const TextStyle(color: AppColors.textSecondary, fontSize: 11, height: 1.5)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 6,
+                height: 6,
+                decoration: BoxDecoration(
+                  color: accent,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  nama,
+                  style: TextStyle(
+                    color: accent,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textDirection: TextDirection.rtl,
+                ),
+              ),
+            ],
+          ),
+          if (ket.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            Text(
+              ket,
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 11,
+                height: 1.5,
+              ),
+            ),
+          ],
+          if (arab.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            _AyatTile(
+              arab: arab,
+              sumber: sumber,
+              terjemah: terjemah,
+              tag: '',
+              accent: accent,
+            ),
+          ],
         ],
-        if (arab.isNotEmpty) ...[
-          const SizedBox(height: 8),
-          _AyatTile(arab: arab, sumber: sumber, terjemah: terjemah, tag: '', accent: accent),
-        ],
-      ]),
+      ),
     );
   }
 }
@@ -946,12 +1957,12 @@ class _JenisTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final namaArab  = jenis['nama_arab']  as String? ?? '';
+    final namaArab = jenis['nama_arab'] as String? ?? '';
     final namaLatin = jenis['nama_latin'] as String? ?? '';
-    final definisi  = jenis['definisi']   as String? ?? '';
-    final arab      = jenis['contoh_arab'] as String? ?? '';
-    final terjemah  = jenis['terjemah']   as String? ?? '';
-    final subJenis  = jenis['sub_jenis']  as List<dynamic>?;
+    final definisi = jenis['definisi'] as String? ?? '';
+    final arab = jenis['contoh_arab'] as String? ?? '';
+    final terjemah = jenis['terjemah'] as String? ?? '';
+    final subJenis = jenis['sub_jenis'] as List<dynamic>?;
     final tandaTanda = jenis['tanda_tanda'] as List<dynamic>?;
 
     return Container(
@@ -962,40 +1973,82 @@ class _JenisTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: accent.withOpacity(0.2)),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(namaArab, style: TextStyle(color: accent, fontSize: 18, fontWeight: FontWeight.bold), textDirection: TextDirection.rtl, textAlign: TextAlign.center),
-        Text(namaLatin, style: const TextStyle(color: AppColors.textSecondary, fontSize: 12), textAlign: TextAlign.center),
-        if (definisi.isNotEmpty) ...[
-          const SizedBox(height: 8),
-          Text(definisi, style: const TextStyle(color: AppColors.textMuted, fontSize: 11, fontStyle: FontStyle.italic, height: 1.5)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            namaArab,
+            style: TextStyle(
+              color: accent,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+            textDirection: TextDirection.rtl,
+            textAlign: TextAlign.center,
+          ),
+          Text(
+            namaLatin,
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 12,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          if (definisi.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              definisi,
+              style: const TextStyle(
+                color: AppColors.textMuted,
+                fontSize: 11,
+                fontStyle: FontStyle.italic,
+                height: 1.5,
+              ),
+            ),
+          ],
+          if (arab.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            _AyatTile(
+              arab: arab,
+              sumber: '',
+              terjemah: terjemah,
+              tag: '',
+              accent: accent,
+            ),
+          ],
+          if (subJenis != null && subJenis.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            ...subJenis.map((sj) {
+              final s = sj as Map<String, dynamic>;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: _TandaDetailTile(
+                  tanda: s,
+                  accent: accent.withOpacity(0.75),
+                ),
+              );
+            }),
+          ],
+          if (tandaTanda != null && tandaTanda.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            _SectionLabel(label: 'Tanda Mu\'annats', color: accent),
+            const SizedBox(height: 6),
+            ...tandaTanda.map((tt) {
+              final t = tt as Map<String, dynamic>;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: _AyatTile(
+                  arab: t['contoh_arab'] ?? '',
+                  sumber: t['sumber'] ?? '',
+                  terjemah: '',
+                  tag: t['nama'] ?? '',
+                  accent: accent,
+                ),
+              );
+            }),
+          ],
         ],
-        if (arab.isNotEmpty) ...[
-          const SizedBox(height: 10),
-          _AyatTile(arab: arab, sumber: '', terjemah: terjemah, tag: '', accent: accent),
-        ],
-        if (subJenis != null && subJenis.isNotEmpty) ...[
-          const SizedBox(height: 10),
-          ...subJenis.map((sj) {
-            final s = sj as Map<String, dynamic>;
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: _TandaDetailTile(tanda: s, accent: accent.withOpacity(0.75)),
-            );
-          }),
-        ],
-        if (tandaTanda != null && tandaTanda.isNotEmpty) ...[
-          const SizedBox(height: 10),
-          _SectionLabel(label: 'Tanda Mu\'annats', color: accent),
-          const SizedBox(height: 6),
-          ...tandaTanda.map((tt) {
-            final t = tt as Map<String, dynamic>;
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 6),
-              child: _AyatTile(arab: t['contoh_arab'] ?? '', sumber: t['sumber'] ?? '', terjemah: '', tag: t['nama'] ?? '', accent: accent),
-            );
-          }),
-        ],
-      ]),
+      ),
     );
   }
 }
@@ -1010,10 +2063,11 @@ class _HurufTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final h       = huruf['huruf']       as String? ?? '';
-    final faedah  = huruf['faedah']      as String? ?? huruf['faedah_arab']  as String? ?? '';
-    final fLatin  = huruf['faedah_latin'] as String? ?? '';
-    final contoh  = huruf['contoh_arab'] as String? ?? '';
+    final h = huruf['huruf'] as String? ?? '';
+    final faedah =
+        huruf['faedah'] as String? ?? huruf['faedah_arab'] as String? ?? '';
+    final fLatin = huruf['faedah_latin'] as String? ?? '';
+    final contoh = huruf['contoh_arab'] as String? ?? '';
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -1028,30 +2082,65 @@ class _HurufTile extends StatelessWidget {
         children: [
           // Huruf badge
           Container(
-            width: 48, height: 48,
+            width: 48,
+            height: 48,
             decoration: BoxDecoration(
               color: accent.withOpacity(0.12),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: accent.withOpacity(0.4)),
             ),
             child: Center(
-              child: Text(h, style: TextStyle(color: accent, fontSize: 18, fontWeight: FontWeight.bold), textDirection: TextDirection.rtl),
+              child: Text(
+                h,
+                style: TextStyle(
+                  color: accent,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                textDirection: TextDirection.rtl,
+              ),
             ),
           ),
           const SizedBox(width: 12),
-          Expanded(child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (faedah.isNotEmpty)
-                Text(faedah, style: const TextStyle(color: AppColors.textPrimary, fontSize: 12, height: 1.5), textDirection: TextDirection.rtl),
-              if (fLatin.isNotEmpty)
-                Text(fLatin, style: const TextStyle(color: AppColors.textSecondary, fontSize: 11, fontStyle: FontStyle.italic, height: 1.4)),
-              if (contoh.isNotEmpty) ...[
-                const SizedBox(height: 8),
-                Text(contoh, style: const TextStyle(color: AppColors.textPrimary, fontSize: 15, height: 2.0), textDirection: TextDirection.rtl),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (faedah.isNotEmpty)
+                  Text(
+                    faedah,
+                    style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: 12,
+                      height: 1.5,
+                    ),
+                    textDirection: TextDirection.rtl,
+                  ),
+                if (fLatin.isNotEmpty)
+                  Text(
+                    fLatin,
+                    style: const TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 11,
+                      fontStyle: FontStyle.italic,
+                      height: 1.4,
+                    ),
+                  ),
+                if (contoh.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    contoh,
+                    style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: 15,
+                      height: 2.0,
+                    ),
+                    textDirection: TextDirection.rtl,
+                  ),
+                ],
               ],
-            ],
-          )),
+            ),
+          ),
         ],
       ),
     );

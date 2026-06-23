@@ -1,41 +1,54 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from models.models import User, UserJawaban, Soal
+from extensions import db
+from models.models import User, UserJawaban, UserBab, Soal
 
 profile_bp = Blueprint("profile", __name__)
 
 
 # ──────────────────────────────────────────────
 # GET /api/profile
-# Statistik lengkap user yang sedang login
-# Header: Authorization: Bearer <token>
 # ──────────────────────────────────────────────
 @profile_bp.route("/", methods=["GET"])
 @jwt_required()
 def get_profile():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     user    = User.query.get_or_404(user_id)
 
-    # Hitung statistik jawaban
-    semua_jawaban  = UserJawaban.query.filter_by(userid=user_id).all()
-    total_dijawab  = len(semua_jawaban)
-    total_benar    = sum(1 for j in semua_jawaban if j.is_correct)
-    total_salah    = total_dijawab - total_benar
-    total_xp       = sum(j.xp_didapat for j in semua_jawaban)
+    # Bab selesai langsung dari UserBab
+    bab_selesai = UserBab.query.filter_by(
+        userid=user_id, is_completed=True
+    ).count()
 
-    akurasi = round((total_benar / total_dijawab * 100), 1) if total_dijawab > 0 else 0.0
+    # Nilai per bab
+    user_bab_list = UserBab.query.filter_by(userid=user_id).all()
+    nilai_per_bab = [
+        {"babid": ub.babid, "nilai": ub.nilai, "is_completed": ub.is_completed}
+        for ub in user_bab_list
+    ]
 
-    # Riwayat jawaban terbaru (10 terakhir)
+    # Statistik jawaban
+    semua_jawaban = UserJawaban.query.filter_by(userid=user_id).all()
+    total_dijawab = len(semua_jawaban)
+    total_benar   = sum(1 for j in semua_jawaban if j.is_correct)
+    total_salah   = total_dijawab - total_benar
+    total_xp      = sum(j.xp_didapat for j in semua_jawaban)
+    akurasi       = round((total_benar / total_dijawab * 100), 1) if total_dijawab > 0 else 0.0
+
+    # Riwayat 10 jawaban terakhir
     riwayat = (
         UserJawaban.query
         .filter_by(userid=user_id)
-        .order_by(UserJawaban.anwsered_at.desc())
+        .order_by(UserJawaban.created_at.desc())
         .limit(10)
         .all()
     )
 
+    user_data              = user.to_dict()
+    user_data["bab_selesai"] = bab_selesai
+
     return jsonify({
-        "user": user.to_dict(),
+        "user": user_data,
         "statistik": {
             "total_soal_dijawab": total_dijawab,
             "total_benar":        total_benar,
@@ -43,5 +56,6 @@ def get_profile():
             "total_xp":           total_xp,
             "akurasi_persen":     akurasi,
         },
-        "riwayat_jawaban": [j.to_dict() for j in riwayat]
+        "nilai_per_bab":    nilai_per_bab,
+        "riwayat_jawaban":  [j.to_dict() for j in riwayat]
     }), 200

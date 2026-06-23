@@ -4,6 +4,8 @@ import 'package:tanqiy/controllers/auth_controller.dart';
 import 'package:tanqiy/core/colors.dart';
 import 'package:tanqiy/data/auth_local.dart';
 import 'package:tanqiy/pages/auth.dart';
+import 'package:tanqiy/pages/kelas.dart';
+import 'package:tanqiy/widgets/rolechip.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -48,9 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
         if (user == null) {
           return const Center(
-            child: CircularProgressIndicator(
-              color: AppColors.appBarTitle,
-            ),
+            child: CircularProgressIndicator(color: AppColors.appBarTitle),
           );
         }
 
@@ -88,7 +88,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       shape: BoxShape.circle,
                       gradient: AppColors.appBarGradient,
                       border: Border.all(
-                          color: AppColors.appBarTitle, width: 3),
+                        color: AppColors.appBarTitle,
+                        width: 3,
+                      ),
                       boxShadow: [
                         BoxShadow(
                           color: AppColors.gradientTop.withOpacity(0.5),
@@ -110,7 +112,19 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
 
-                  const SizedBox(height: 32),
+                  SizedBox(height: 15),
+
+                  roleChip(
+                    ClassMember(
+                      username: user.username,
+                      level: user.level,
+                      currentXP: user.currentXP,
+                      maxXP: user.maxXP,
+                      babSelesai: user.babSelesai,
+                      role: MemberRole.murid,
+                    ),
+                  ),
+                  SizedBox(height: 15),
 
                   // ── Card Username ────────────────────────────
                   _buildCard(
@@ -151,26 +165,31 @@ class _ProfilePageState extends State<ProfilePage> {
                                           isDense: true,
                                           contentPadding:
                                               const EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                            vertical: 10,
-                                          ),
+                                                horizontal: 12,
+                                                vertical: 10,
+                                              ),
                                           filled: true,
                                           fillColor: AppColors.cardFillLight,
                                           border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
                                             borderSide: const BorderSide(
-                                                color: AppColors.cardBorder),
+                                              color: AppColors.cardBorder,
+                                            ),
                                           ),
                                           enabledBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
                                             borderSide: const BorderSide(
-                                                color: AppColors.cardBorder),
+                                              color: AppColors.cardBorder,
+                                            ),
                                           ),
                                           focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
                                             borderSide: const BorderSide(
                                               color: AppColors.appBarTitle,
                                               width: 1.5,
@@ -203,10 +222,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                 onTap: () async {
                                   if (_isEditing) {
                                     if (_formKey.currentState!.validate()) {
-                                      final success =
-                                          await auth_controller.updateUsername(
-                                        _usernameController.text,
-                                      );
+                                      final success = await auth_controller
+                                          .updateUsername(
+                                            _usernameController.text,
+                                          );
                                       if (success) {
                                         setState(() => _isEditing = false);
                                       }
@@ -337,8 +356,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               decoration: BoxDecoration(
                                 color: AppColors.cardFillLight,
                                 borderRadius: BorderRadius.circular(20),
-                                border:
-                                    Border.all(color: AppColors.cardBorder),
+                                border: Border.all(color: AppColors.cardBorder),
                               ),
                               child: Text(
                                 '${user.currentXP} / ${user.maxXP} XP',
@@ -406,6 +424,14 @@ class _ProfilePageState extends State<ProfilePage> {
                           value: '${user.babSelesai}',
                         ),
                       ),
+                      SizedBox(width: 15),
+                      Expanded(
+                        child: _buildStatCard(
+                          icon: Icons.military_tech_rounded,
+                          label: 'Badges',
+                          value: '${user.babSelesai}',
+                        ),
+                      ),
                     ],
                   ),
 
@@ -416,17 +442,14 @@ class _ProfilePageState extends State<ProfilePage> {
                     onTap: () {
                       Get.dialog(
                         AlertDialog(
-                          backgroundColor:
-                              const Color.fromARGB(255, 40, 20, 5),
+                          backgroundColor: const Color.fromARGB(255, 40, 20, 5),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
-                            side: const BorderSide(
-                                color: AppColors.cardBorder),
+                            side: const BorderSide(color: AppColors.cardBorder),
                           ),
                           title: const Text(
                             'Keluar?',
-                            style:
-                                TextStyle(color: AppColors.appBarTitle),
+                            style: TextStyle(color: AppColors.appBarTitle),
                           ),
                           content: const Text(
                             'Kamu yakin ingin logout dari akun ini?',
@@ -437,8 +460,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               onPressed: () => Get.back(),
                               child: const Text(
                                 'Batal',
-                                style:
-                                    TextStyle(color: AppColors.textS),
+                                style: TextStyle(color: AppColors.textS),
                               ),
                             ),
                             TextButton(
@@ -449,8 +471,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               },
                               child: const Text(
                                 'Logout',
-                                style: TextStyle(
-                                    color: Color(0xFFEF4444)),
+                                style: TextStyle(color: Color(0xFFEF4444)),
                               ),
                             ),
                           ],
@@ -464,8 +485,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         color: AppColors.cardFillLight,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color:
-                              const Color(0xFFEF4444).withOpacity(0.5),
+                          color: const Color(0xFFEF4444).withOpacity(0.5),
                         ),
                       ),
                       child: const Row(
@@ -540,8 +560,7 @@ class _ProfilePageState extends State<ProfilePage> {
           const SizedBox(height: 2),
           Text(
             label,
-            style:
-                const TextStyle(color: AppColors.textS, fontSize: 10),
+            style: const TextStyle(color: AppColors.textS, fontSize: 10),
             textAlign: TextAlign.center,
           ),
         ],
