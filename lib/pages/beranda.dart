@@ -43,6 +43,10 @@ class Beranda extends StatelessWidget {
 
               const SizedBox(height: 15),
 
+              _welcomeCard(context),
+
+              const SizedBox(height: 15),
+
               const Text(
                 'المحتويات',
                 style: TextStyle(
@@ -114,7 +118,10 @@ Widget _buildBabCard(BuildContext context, BabMerged bab) {
       decoration: bab.locked
           ? BoxDecoration(
               gradient: LinearGradient(
-                colors: [AppColors.cardFillLightLocked, AppColors.cardFillLightLocked],
+                colors: [
+                  AppColors.cardFillLightLocked,
+                  AppColors.cardFillLightLocked,
+                ],
               ),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: AppColors.cardBorderLocked),
@@ -195,6 +202,63 @@ Widget _buildStaticCard(
             ),
           ],
         ),
+      ),
+    ),
+  );
+}
+
+Widget _welcomeCard(BuildContext context) {
+  return Container(
+    decoration: BoxDecoration(
+      gradient: const LinearGradient(
+        colors: [AppColors.cardFill, AppColors.cardFillLight],
+      ),
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: AppColors.cardBorder),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'أهلاً بكم في تانكي، هيا نتعلم معاً بمتعة!',
+                  textAlign: TextAlign.end,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textP,
+                  ),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+
+                const SizedBox(height: 8),
+
+                Text(
+                  'Selamat datang di Tanqi, mari belajar bersama dengan menyenangkan!',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textS,
+                  ),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(width: 12),
+
+          Image.asset(
+            'lib/assets/cakra.png',
+            scale: 3,
+          ),
+        ],
       ),
     ),
   );

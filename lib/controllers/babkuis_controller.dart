@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:tanqiy/core/colors.dart';
 import 'package:tanqiy/core/const.dart';
 import 'package:tanqiy/data/auth_local.dart';
 import 'package:tanqiy/models/bab_merged_model.dart';
@@ -13,6 +14,7 @@ import 'package:tanqiy/models/soal_model.dart';
 import 'package:tanqiy/models/jawaban_model.dart';
 import 'package:tanqiy/models/review_soal_model.dart';
 import 'package:tanqiy/models/topik_model.dart';
+import 'package:tanqiy/widgets/snackbar.dart';
 
 final String _baseUrl = AppConst.baseUrl;
 
@@ -222,31 +224,33 @@ class MateriController extends GetxController {
   }
 }
 
-// ──────────────────────────────────────────────────────────────────────────────
-// QuizController — soal dalam satu materi
-// ──────────────────────────────────────────────────────────────────────────────
-// babkuis_controller.dart — ganti class QuizController
-
 class QuizController extends GetxController {
   final soalList = <SoalModel>[].obs;
+
   final isLoading = false.obs;
   final isSubmitting = false.obs;
   final errorMessage = ''.obs;
 
   final currentIndex = 0.obs;
-  final opsiPerSoal = <int, List<Map<String, String>>>{}.obs; // acak per soal
-  final selectedPerSoal = <int, String>{}.obs; // dbLabel yg dipilih per soal
-  final hasilPerSoal = <int, JawabanModel>{}.obs; // hasil submit per soal
 
-  // State global
-  final quizSelesai = false.obs; // semua soal sudah dijawab & di-submit
+  final opsiPerSoal = <int, List<Map<String, String>>>{}.obs;
+  final selectedPerSoal = <int, String>{}.obs;
+  final hasilPerSoal = <int, JawabanModel>{}.obs;
+
+  final quizSelesai = false.obs;
   final materiSelesai = false.obs;
   final babSelesai = false.obs;
+
   final nilaiAkhir = 0.0.obs;
   final totalXp = 0.obs;
+
   final showReview = false.obs;
 
+  // supaya dialog unlock tidak muncul terus
+  final unlockDialogShown = false.obs;
+
   bool get isLastSoal => currentIndex.value == soalList.length - 1;
+
   bool get isFirstSoal => currentIndex.value == 0;
 
   SoalModel? get soalAktif =>
@@ -256,69 +260,88 @@ class QuizController extends GetxController {
 
   JawabanModel? get hasilAktif => hasilPerSoal[currentIndex.value];
 
-  // Status soal aktif: 'idle' | 'selected' | 'answered'
   String get statusAktif {
-    if (hasilPerSoal.containsKey(currentIndex.value)) return 'answered';
-    if (selectedPerSoal.containsKey(currentIndex.value)) return 'selected';
+    if (hasilPerSoal.containsKey(currentIndex.value)) {
+      return 'answered';
+    }
+
+    if (selectedPerSoal.containsKey(currentIndex.value)) {
+      return 'selected';
+    }
+
     return 'idle';
   }
 
   Future<Map<String, String>> _headers() async {
     final token = await AuthStorage.getToken();
+
     return {
       'Content-Type': 'application/json',
+
       if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
     };
   }
 
-  // Di QuizController — ganti method loadSoal & tambah _restoreFromReview
-
   Future<void> loadSoal(int materiId) async {
     try {
       isLoading.value = true;
+
       errorMessage.value = '';
 
-      // Reset state
       currentIndex.value = 0;
+
       soalList.clear();
+
       opsiPerSoal.clear();
+
       selectedPerSoal.clear();
+
       hasilPerSoal.clear();
+
       quizSelesai.value = false;
+
       showReview.value = false;
+
       materiSelesai.value = false;
+
       babSelesai.value = false;
-      nilaiAkhir.value = 0.0;
+
+      nilaiAkhir.value = 0;
+
       totalXp.value = 0;
 
-      // 1️⃣ Coba review endpoint dulu
+      unlockDialogShown.value = false;
+
       final reviewRes = await http.get(
         Uri.parse('$_baseUrl/api/bab/materi/$materiId/review'),
         headers: await _headers(),
       );
 
       if (reviewRes.statusCode == 200) {
-        // Materi sudah selesai — restore dari review
-        await _restoreFromReview(materiId, reviewRes);
+        await _restoreFromReview(reviewRes);
+
         return;
       }
 
-      // 2️⃣ Belum selesai — load soal biasa
       final res = await http.get(
         Uri.parse('$_baseUrl/api/bab/materi/$materiId/soal'),
         headers: await _headers(),
       );
-      if (res.statusCode != 200) throw Exception('API error ${res.statusCode}');
+
+      if (res.statusCode != 200) {
+        throw Exception('API error ${res.statusCode}');
+      }
 
       final body = jsonDecode(res.body);
+
       final list = body['soal'] as List<dynamic>;
-      soalList.value = list
-          .map((e) => SoalModel.fromJson(e as Map<String, dynamic>))
-          .toList();
+
+      soalList.value = list.map((e) => SoalModel.fromJson(e)).toList();
 
       for (int i = 0; i < soalList.length; i++) {
         opsiPerSoal[i] = soalList[i].opsiAcak;
       }
+
       opsiPerSoal.refresh();
     } catch (e) {
       errorMessage.value = 'Gagal memuat soal: $e';
@@ -327,75 +350,81 @@ class QuizController extends GetxController {
     }
   }
 
-  Future<void> _restoreFromReview(int materiId, http.Response reviewRes) async {
+  Future<void> _restoreFromReview(http.Response reviewRes) async {
     final body = jsonDecode(reviewRes.body);
+
     final reviewList = body['soal'] as List<dynamic>;
 
-    // Rebuild soalList dari data review (field sama dengan SoalModel)
-    soalList.value = reviewList
-        .map((e) => SoalModel.fromJson(e as Map<String, dynamic>))
-        .toList();
+    final materi = body['materi'] as Map<String, dynamic>?;
 
-    // Rebuild opsi — karena sudah selesai, urutan tidak perlu diacak lagi
-    // Tampilkan opsi as-is dari soal
+    soalList.value = reviewList.map((e) => SoalModel.fromJson(e)).toList();
+
     for (int i = 0; i < soalList.length; i++) {
-      opsiPerSoal[i] = soalList[i].opsiAcak; // seed acak tetap dari model
+      opsiPerSoal[i] = soalList[i].opsiAcak;
     }
-    opsiPerSoal.refresh();
 
-    // Restore jawaban & hasil per soal
-    int xpTotal = 0;
+    int xp = 0;
+
     for (int i = 0; i < reviewList.length; i++) {
-      final r = reviewList[i] as Map<String, dynamic>;
-      final jawabanUser = r['jawaban_user'] as String?;
-      final jawabanBenar = r['jawaban_benar'] as String? ?? '';
-      final isCorrect = r['is_correct'] as bool? ?? false;
-      final penjelasan = r['penjelasan'] as String?; // null kalau salah
+      final r = reviewList[i];
 
-      if (jawabanUser != null) {
-        selectedPerSoal[i] = jawabanUser;
+      final user = r['jawaban_user'];
 
-        // Rekonstruksi JawabanModel dari data review
-        // XP tidak diketahui per-soal dari review, set 0 (sudah diterima sebelumnya)
-        hasilPerSoal[i] = JawabanModel(
-          message: '',
-          isCorrect: isCorrect,
-          jawabanBenar: jawabanBenar,
-          xpDidapat: 0,
-          materiSelesai: true,
-          babSelesai: false, // tidak diketahui dari review, aman di-false
-          nilai:
-              (body['materi'] as Map<String, dynamic>?)?['nilai']?.toDouble() ??
-              0.0,
-          penjelasan:
-              penjelasan, // ← tambah field ini ke JawabanModel (lihat bawah)
-        );
+      if (user == null) continue;
 
-        if (isCorrect)
-          xpTotal++; // placeholder, XP asli sudah dicatat di server
+      selectedPerSoal[i] = user;
+
+      hasilPerSoal[i] = JawabanModel(
+        message: '',
+        isCorrect: r['is_correct'],
+        jawabanBenar: r['jawaban_benar'] ?? '',
+        xpDidapat: 0,
+        materiSelesai: true,
+        babSelesai: materi?['bab_selesai'] ?? false,
+        nilai: (materi?['nilai'] ?? 0).toDouble(),
+        penjelasan: r['penjelasan'],
+      );
+
+      if (r['is_correct'] == true) {
+        xp++;
       }
     }
 
-    selectedPerSoal.refresh();
+    totalXp.value = xp;
+
+    quizSelesai.value = true;
+
+    materiSelesai.value = true;
+
+    babSelesai.value = materi?['bab_selesai'] ?? false;
+
+    nilaiAkhir.value = (materi?['nilai'] ?? 0).toDouble();
+
     hasilPerSoal.refresh();
 
-    totalXp.value = xpTotal;
-    quizSelesai.value = true;
-    materiSelesai.value = true;
-    showReview.value = false; // user tetap harus tekan tombol review
+    selectedPerSoal.refresh();
   }
 
   void pilihJawaban(String dbLabel) {
-    // Tidak bisa ubah jawaban yang sudah di-submit
-    if (hasilPerSoal.containsKey(currentIndex.value)) return;
+    if (hasilPerSoal.containsKey(currentIndex.value)) {
+      return;
+    }
+
     selectedPerSoal[currentIndex.value] = dbLabel;
+
     selectedPerSoal.refresh();
   }
 
   Future<void> submitJawaban() async {
     final idx = currentIndex.value;
-    if (selectedPerSoal[idx] == null || isSubmitting.value) return;
-    if (hasilPerSoal.containsKey(idx)) return; // sudah disubmit
+
+    if (selectedPerSoal[idx] == null || isSubmitting.value) {
+      return;
+    }
+
+    if (hasilPerSoal.containsKey(idx)) {
+      return;
+    }
 
     try {
       isSubmitting.value = true;
@@ -408,55 +437,169 @@ class QuizController extends GetxController {
           'jawaban': selectedPerSoal[idx],
         }),
       );
+
       final body = jsonDecode(res.body);
 
-      if (res.statusCode == 409) {
-        // Sudah pernah dijawab — anggap selesai tanpa data baru
-        hasilPerSoal[idx] = JawabanModel.fromJson({
-          ...body,
-          'materi_selesai': false,
-          'bab_selesai': false,
-          'nilai': 0.0,
-          'xp_didapat': 0,
-        });
-      } else {
-        hasilPerSoal[idx] = JawabanModel.fromJson(body);
-      }
+      hasilPerSoal[idx] = res.statusCode == 409
+          ? JawabanModel.fromJson({
+              ...body,
+              'materi_selesai': false,
+              'bab_selesai': false,
+              'nilai': 0,
+              'xp_didapat': 0,
+            })
+          : JawabanModel.fromJson(body);
+
       hasilPerSoal.refresh();
 
-      // Akumulasi XP
       totalXp.value += hasilPerSoal[idx]!.xpDidapat;
 
-      // Cek apakah semua soal sudah dijawab
       if (hasilPerSoal.length == soalList.length) {
         quizSelesai.value = true;
-        // Ambil flag dari soal terakhir yg punya materiSelesai = true
-        final lastHasil = hasilPerSoal.values.firstWhere(
+
+        final hasil = hasilPerSoal.values.firstWhere(
           (h) => h.materiSelesai,
           orElse: () => hasilPerSoal[idx]!,
         );
-        materiSelesai.value = lastHasil.materiSelesai;
-        babSelesai.value = lastHasil.babSelesai;
-        nilaiAkhir.value = lastHasil.nilai;
+
+        materiSelesai.value = hasil.materiSelesai;
+
+        babSelesai.value = hasil.babSelesai;
+
+        nilaiAkhir.value = hasil.nilai;
+
+        await Get.find<BabController>().fetchBab();
+
+        if (babSelesai.value &&
+            nilaiAkhir.value >= 70 &&
+            !unlockDialogShown.value) {
+          unlockDialogShown.value = true;
+
+          Future.delayed(const Duration(milliseconds: 400), () {
+            _showUnlockDialog();
+          });
+        }
       }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Gagal mengirim jawaban: $e',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      showSnackbar('Error', 'Gagal mengirim jawaban');
     } finally {
       isSubmitting.value = false;
     }
   }
 
   void goToSoal(int index) {
-    if (index < 0 || index >= soalList.length) return;
+    if (index < 0 || index >= soalList.length) {
+      return;
+    }
+
     currentIndex.value = index;
   }
 
   void nextSoal() => goToSoal(currentIndex.value + 1);
+
   void prevSoal() => goToSoal(currentIndex.value - 1);
+
+  void _showUnlockDialog() {
+    Get.dialog(
+      Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: AppColors.divider),
+          ),
+
+          child: Padding(
+            padding: const EdgeInsets.all(22),
+
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+
+              children: [
+                // ICON
+                Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    color: Colors.amber.withOpacity(0.12),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.amber.withOpacity(0.35)),
+                  ),
+
+                  child: const Icon(
+                    Icons.lock_open_rounded,
+                    color: Colors.amber,
+                    size: 34,
+                  ),
+                ),
+
+                const SizedBox(height: 18),
+
+                const Text(
+                  'Bab Baru Terbuka',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                Text(
+                  'Kamu telah menyelesaikan seluruh pembahasan.\n\n'
+                  'Nilai akhir: ${nilaiAkhir.value.toStringAsFixed(0)}',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: AppColors.textMuted,
+                    fontSize: 13,
+                    height: 1.6,
+                  ),
+                ),
+
+                const SizedBox(height: 22),
+
+                SizedBox(
+                  width: double.infinity,
+
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      backgroundColor: Colors.amber.withOpacity(0.12),
+
+                      foregroundColor: Colors.amber,
+
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+
+                        side: BorderSide(color: Colors.amber.withOpacity(0.3)),
+                      ),
+
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+
+                    child: const Text(
+                      'Lanjut',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+
+      barrierDismissible: false,
+    );
+  }
 }
 
 // ──────────────────────────────────────────────────────────────────────────────

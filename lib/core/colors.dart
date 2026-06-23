@@ -27,13 +27,13 @@ class AppColors {
   static const Color gradientBottom = Color.fromARGB(255, 0, 0, 0);
 
   // ── AppBar ─────────────────────────────────────────────
-  static const Color appBarStart = Color.fromARGB(255, 197, 112, 16);
-  static const Color appBarEnd = Color.fromARGB(255, 168, 106, 88);
+  static const Color appBarStart = Color(0xFFE2B454);
+  static const Color appBarEnd = Color(0XFF90561D);
   static const Color appBarBg = Color.fromARGB(255, 189, 108, 54);
   static const Color appBarTitle = Color.fromARGB(255, 255, 208, 169);
 
   // ── Bottom Navigation ──────────────────────────────────
-  static const Color bottomNavBg = Color.fromARGB(255, 163, 77, 26);
+  static const Color bottomNavBg = Color(0xFF613D18);
 
   // ── Teks ──────────────────────────────────────────────
   static const Color textP = Colors.white;
@@ -70,9 +70,9 @@ class AppColors {
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
     colors: [
-      gradientTop,
-      Color.fromARGB(255, 168, 116, 88),
-      Color.fromARGB(255, 40, 24, 24),
+      Color(0xFF91571F),
+      Color(0xFF482D11),
+      Color(0xFF261A0B),
     ],
     stops: [0.0, 0.5, 1.0],
   );

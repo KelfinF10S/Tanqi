@@ -250,15 +250,7 @@ class _KelasPageState extends State<KelasPage> {
                 child: Row(
                   children: [
                     const SizedBox(width: 16),
-                    GestureDetector(
-                      onTap: () => Get.back(),
-                      child: const Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        color: AppColors.appBarTitle,
-                        size: 20,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
+                   
                     const Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -267,7 +259,7 @@ class _KelasPageState extends State<KelasPage> {
                           Text(
                             'الفصل الدراسي',
                             style: TextStyle(
-                              color: AppColors.appBarTitle,
+                              color: AppColors.textPrimary,
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
                               letterSpacing: 1,
@@ -276,7 +268,7 @@ class _KelasPageState extends State<KelasPage> {
                           Text(
                             'Kelas Saya',
                             style: TextStyle(
-                              color: AppColors.appBarTitle,
+                              color: AppColors.textP,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),

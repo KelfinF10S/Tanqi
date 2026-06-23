@@ -196,21 +196,46 @@ def _cek_progress(user_id: int, materi_id: int, bab_id: int):
 
     nilai = round((total_benar / total_bab) * 100, 1) if total_bab > 0 else 0
 
-    user_bab = UserBab.query.filter_by(userid=user_id, babid=bab_id).first()
-    if user_bab and not user_bab.is_completed:
-        user_bab.nilai = nilai
+    user_bab = UserBab.query.filter_by(
+        userid=user_id,
+        babid=bab_id
+    ).first()
 
-        if nilai >= 70:
-            user_bab.is_completed = True
+    # kalau belum ada → buat
+    if not user_bab:
+        user_bab = UserBab(
+            userid=user_id,
+            babid=bab_id,
+            locked=False,
+            is_completed=False,
+            nilai=0
+        )
+        db.session.add(user_bab)
 
-            # Unlock bab berikutnya
-            bab_berikutnya = UserBab.query.filter_by(
-                userid=user_id,
-                babid=bab_id + 1
-            ).first()
-            if bab_berikutnya:
-                bab_berikutnya.locked = False
+    # selalu update nilai
+    user_bab.nilai = nilai
 
-        db.session.commit()
+    bab_selesai = nilai >= 70
 
-    return True, user_bab.is_completed, nilai
+    if bab_selesai:
+        user_bab.is_completed = True
+
+        # unlock bab berikutnya
+        bab_berikutnya = UserBab.query.filter_by(
+            userid=user_id,
+            babid=bab_id + 1
+        ).first()
+
+        if bab_berikutnya:
+            bab_berikutnya.locked = False
+
+    db.session.commit()
+
+    print("========== BAB CHECK ==========")
+    print("nilai =", nilai)
+    print("bab_selesai =", bab_selesai)
+    print("user_bab.nilai =", user_bab.nilai)
+    print("user_bab.is_completed =", user_bab.is_completed)
+    print("==============================")
+
+    return True, bab_selesai, nilai

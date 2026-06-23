@@ -9,6 +9,8 @@ import 'package:tanqiy/models/materibab_model.dart';
 import 'package:tanqiy/models/soal_model.dart';
 import 'package:tanqiy/models/stimulus_data_model.dart';
 import 'package:tanqiy/models/bab_merged_model.dart';
+import 'package:tanqiy/pages/loading.dart';
+import 'package:tanqiy/widgets/background_painter.dart';
 
 // ─────────────────────────────────────────
 //  PAGE 1  (entry point)
@@ -24,22 +26,41 @@ class Page1 extends StatefulWidget {
 
 class _Page1State extends State<Page1> with SingleTickerProviderStateMixin {
   Future<MateriBAB>? _future;
-  late AnimationController _controller;
-  late Animation<double> _fadeIn;
+
+  late final AnimationController _controller;
+
+  Animation<double>? _fadeIn;
+
   int _activeKategori = 0;
 
   @override
   void initState() {
     super.initState();
-    _future = Future.value(widget.bab.materi);
+
     final babId = int.tryParse(widget.bab.id) ?? 1;
-    Get.find<BabController>().loadSlugMap(babId);
+
+    // Animasi
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
     );
+
     _fadeIn = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
+
     _controller.forward();
+
+    // Load data
+    _future = _initPage(babId);
+  }
+
+  Future<MateriBAB> _initPage(int babId) async {
+    await Get.find<BabController>().loadSlugMap(babId);
+
+    if (!mounted) {
+      throw Exception('Widget sudah tidak aktif');
+    }
+
+    return widget.bab.materi;
   }
 
   @override
@@ -48,37 +69,46 @@ class _Page1State extends State<Page1> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  // Future<MateriBAB> _loadMateri() async {
-  //   String data = await rootBundle.loadString(
-  //     'lib/assets/bab1_anwaul_kalimah.json',
-  //   );
-  //   if (data.startsWith('\uFEFF')) data = data.substring(1);
-  //   return MateriBAB.fromJson(jsonDecode(data));
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.bg,
+
       body: FutureBuilder<MateriBAB>(
         future: _future,
+
         builder: (context, snap) {
           if (snap.connectionState == ConnectionState.waiting) {
-            return const _LoadingScreen();
+            return const LoadingScreen();
           }
+
           if (snap.hasError) {
-            return _ErrorScreen(error: snap.error.toString());
+            return ErrorScreen(error: snap.error.toString());
           }
+
           if (!snap.hasData) {
-            return const _ErrorScreen(error: 'Data tidak tersedia');
+            return const ErrorScreen(error: 'Data tidak tersedia');
           }
+
           return FadeTransition(
-            opacity: _fadeIn,
+            // fallback supaya tidak crash
+            opacity: _fadeIn ?? const AlwaysStoppedAnimation<double>(1),
+
             child: _MateriBody(
               materi: snap.data!,
+
               babMerged: widget.bab,
+
               activeKategori: _activeKategori,
-              onKategoriChange: (i) => setState(() => _activeKategori = i),
+
+              onKategoriChange: (i) {
+                if (!mounted) return;
+
+                setState(() {
+                  _activeKategori = i;
+                });
+              },
+
               slugToMateriId: Get.find<BabController>().slugToMateriId,
             ),
           );
@@ -86,119 +116,6 @@ class _Page1State extends State<Page1> with SingleTickerProviderStateMixin {
       ),
     );
   }
-}
-
-// ─────────────────────────────────────────
-//  LOADING SCREEN
-// ─────────────────────────────────────────
-class _LoadingScreen extends StatefulWidget {
-  const _LoadingScreen();
-  @override
-  State<_LoadingScreen> createState() => _LoadingScreenState();
-}
-
-class _LoadingScreenState extends State<_LoadingScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _c;
-  late Animation<double> _pulse;
-
-  @override
-  void initState() {
-    super.initState();
-    _c = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1200),
-    )..repeat(reverse: true);
-    _pulse = CurvedAnimation(parent: _c, curve: Curves.easeInOut);
-  }
-
-  @override
-  void dispose() {
-    _c.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.bg,
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ScaleTransition(
-              scale: Tween<double>(begin: 0.85, end: 1.0).animate(_pulse),
-              child: Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.surface,
-                  border: Border.all(color: AppColors.gold, width: 2),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.gold.withOpacity(0.3),
-                      blurRadius: 24,
-                      spreadRadius: 4,
-                    ),
-                  ],
-                ),
-                child: const Center(
-                  child: Text(
-                    'ن',
-                    style: TextStyle(
-                      fontSize: 36,
-                      color: AppColors.gold,
-                      fontFamily: 'serif',
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Memuat materi…',
-              style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────
-//  ERROR SCREEN
-// ─────────────────────────────────────────
-class _ErrorScreen extends StatelessWidget {
-  final String error;
-  const _ErrorScreen({required this.error});
-  @override
-  Widget build(BuildContext context) => Container(
-    color: AppColors.bg,
-    child: Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(
-            Icons.warning_amber_rounded,
-            color: AppColors.rose,
-            size: 48,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Gagal memuat data',
-            style: const TextStyle(color: AppColors.textPrimary, fontSize: 16),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            error,
-            style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
-          ),
-        ],
-      ),
-    ),
-  );
 }
 
 // ─────────────────────────────────────────
@@ -269,7 +186,7 @@ class _MateriBody extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             // Geometric pattern background
-            CustomPaint(painter: _GeomPainter()),
+            CustomPaint(painter: GeomPainter()),
             // Gradient overlay
             Container(
               decoration: const BoxDecoration(
@@ -333,97 +250,6 @@ class _MateriBody extends StatelessWidget {
       ),
     );
   }
-}
-
-// ─────────────────────────────────────────
-//  GEOMETRIC BACKGROUND PAINTER
-// ─────────────────────────────────────────
-class _GeomPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = AppColors.gold.withOpacity(0.06)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
-
-    // octagonal Islamic pattern
-    for (double x = -40; x < size.width + 40; x += 60) {
-      for (double y = -40; y < size.height + 40; y += 60) {
-        final r = 22.0;
-        final path = Path();
-        for (int i = 0; i < 8; i++) {
-          final angle = (i * 45 - 22.5) * 3.14159 / 180;
-          final px =
-              x +
-              r *
-                  1.3 *
-                  (i == 0
-                      ? 1
-                      : (i < 5
-                            ? (i % 2 == 0 ? 1 : -1)
-                            : (i % 2 == 0 ? 1 : -1)));
-          final py =
-              y +
-              r *
-                  (i == 0
-                      ? 1
-                      : (i < 5
-                            ? (i % 2 == 0 ? -1 : 1)
-                            : (i % 2 == 0 ? -1 : 1)));
-          if (i == 0) path.moveTo(x + r * 0.7, y - r);
-          path.lineTo(x + r * _cos(i * 45), y + r * _sin(i * 45));
-        }
-        path.close();
-        canvas.drawPath(path, paint);
-
-        // simple diamond
-        final d = Paint()
-          ..color = AppColors.gold.withOpacity(0.04)
-          ..style = PaintingStyle.fill;
-        final dp = Path()
-          ..moveTo(x, y - 16)
-          ..lineTo(x + 16, y)
-          ..lineTo(x, y + 16)
-          ..lineTo(x - 16, y)
-          ..close();
-        canvas.drawPath(dp, d);
-      }
-    }
-  }
-
-  double _cos(int deg) => (deg == 0)
-      ? 1
-      : (deg == 45)
-      ? 0.707
-      : (deg == 90)
-      ? 0
-      : (deg == 135)
-      ? -0.707
-      : (deg == 180)
-      ? -1
-      : (deg == 225)
-      ? -0.707
-      : (deg == 270)
-      ? 0
-      : 0.707;
-  double _sin(int deg) => (deg == 0)
-      ? 0
-      : (deg == 45)
-      ? 0.707
-      : (deg == 90)
-      ? 1
-      : (deg == 135)
-      ? 0.707
-      : (deg == 180)
-      ? 0
-      : (deg == 225)
-      ? -0.707
-      : (deg == 270)
-      ? -1
-      : -0.707;
-
-  @override
-  bool shouldRepaint(_) => false;
 }
 
 // ─────────────────────────────────────────
@@ -770,7 +596,7 @@ class _KategoriDetail extends StatelessWidget {
                   sub: e.value,
                   index: e.key,
                   accent: kategori.accentColor,
-                  materiId: slugToMateriId[subId], // ← lookup
+                  materiId: slugToMateriId[subId],
                 );
               }),
             ],
@@ -1348,12 +1174,12 @@ class _HasilPanel extends StatelessWidget {
                   ],
                 ),
               ),
-              _StatChip(
-                icon: Icons.bar_chart_rounded,
-                label: '${controller.nilaiAkhir.value.toStringAsFixed(0)}',
-                color: accent,
-                sublabel: 'Nilai',
-              ),
+              // _StatChip(
+              //   icon: Icons.bar_chart_rounded,
+              //   label: '${controller.nilaiAkhir.value.toStringAsFixed(0)}',
+              //   color: accent,
+              //   sublabel: 'Nilai',
+              // ),
             ],
           ),
           const SizedBox(height: 16),

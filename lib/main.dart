@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:tanqiy/controllers/auth_controller.dart';
@@ -9,11 +10,7 @@ import 'package:tanqiy/pages/jelajahi.dart';
 import 'package:tanqiy/pages/kelas.dart';
 import 'package:tanqiy/pages/profil.dart';
 import 'package:tanqiy/pages/splashscreen.dart';
-import 'pages/bab1.dart';
 import 'pages/page2.dart';
-import 'pages/page3.dart';
-import 'pages/page4.dart';
-import 'pages/page5.dart';
 
 void main() {
   runApp(const MyApp());
@@ -76,14 +73,7 @@ class _MenuPageState extends State<MenuPage> {
     return Scaffold(
       appBar: _showAppBar[_currentIndex]
           ? AppBar(
-              title: Text(
-                _titles[_currentIndex],
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30,
-                  color: AppColors.appBarTitle,
-                ),
-              ),
+              title: Image.asset('lib/assets/small_icon.png', scale: 16),
               backgroundColor: AppColors.appBarBg,
               elevation: 0,
               foregroundColor: AppColors.textP,
@@ -125,6 +115,7 @@ class _MenuPageState extends State<MenuPage> {
                       child: Padding(
                         padding: const EdgeInsets.only(
                           left: 16.0,
+                          right: 16,
                           bottom: 8.0,
                           top: 8,
                         ),
@@ -158,7 +149,7 @@ class _MenuPageState extends State<MenuPage> {
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: AppColors.bottomNavBg,
         selectedItemColor: AppColors.textP,
-        unselectedItemColor: AppColors.textS,
+        unselectedItemColor: const Color.fromARGB(131, 0, 0, 0),
         type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
         onTap: (index) {
@@ -180,129 +171,6 @@ class _MenuPageState extends State<MenuPage> {
           ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
         ],
-      ),
-    );
-  }
-}
-
-// ============================================================
-//  HOME BODY (isi tab Beranda)
-// ============================================================
-class _HomeBody extends StatelessWidget {
-  const _HomeBody();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(gradient: AppColors.bodyGradient),
-      child: ListView(
-        padding: const EdgeInsets.all(16.0),
-        children: [
-          const SizedBox(height: 24),
-          const Text(
-            'اهلا و سهلا',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textP,
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            '',
-            style: TextStyle(fontSize: 16, color: AppColors.textS),
-          ),
-          const SizedBox(height: 24),
-          const Text(
-            'المحتويات',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textP,
-            ),
-          ),
-          const SizedBox(height: 16),
-          GridView.count(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisCount: 2,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            children: [
-              _buildCourseCard(
-                context,
-                'أنواع الكلمات',
-                'الباب الأول',
-                '/page1',
-              ),
-              _buildCourseCard(context, 'دليل الاستخدام', '', '/page2'),
-              _buildCourseCard(
-                context,
-                'الباب الثاني',
-                'المعرب والمبني',
-                '/page3',
-              ),
-              _buildCourseCard(
-                context,
-                'الباب الثالث',
-                'انواع الجمل',
-                '/page4',
-              ),
-              _buildCourseCard(
-                context,
-                'الباب الرابع',
-                'انواع التراكيب والأساليب',
-                '/page5',
-              ),
-              _buildCourseCard(context, 'لعبة إلكترونية', '', '/page1'),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCourseCard(
-    BuildContext context,
-    String title,
-    String description,
-    String route,
-  ) {
-    return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, route),
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [AppColors.cardFill, AppColors.cardFillLight],
-          ),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.cardBorder),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textP,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                description,
-                style: const TextStyle(fontSize: 14, color: AppColors.textS),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
