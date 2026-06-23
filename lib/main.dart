@@ -60,7 +60,7 @@ class _MenuPageState extends State<MenuPage> {
   final List<Widget> _pages = [
     Beranda(),
     Jelajahi(),
-    KelasPage(),
+    kelas(),
     ProfilePage(),
   ];
 
