@@ -61,32 +61,38 @@ def get_profile():
     }), 200
 
 
-# # ──────────────────────────────────────────────
-# # GET /api/profile/users
-# # Ambil semua user
-# # ──────────────────────────────────────────────
-# @profile_bp.route("/users", methods=["GET"])
-# @jwt_required()
-# def get_users():
-#     users = User.query.order_by(User.level.desc(), User.xp.desc()).all()
+# ──────────────────────────────────────────────
+# GET /api/profile/users
+# Ambil semua user
+# ──────────────────────────────────────────────
+@profile_bp.route("/users", methods=["GET"])
+@jwt_required()
+def get_users():
 
-#     result = []
+    users = User.query.order_by(
+        User.level.desc(),
+        User.xp.desc()
+    ).all()
 
-#     for user in users:
-#         bab_selesai = UserBab.query.filter_by(
-#             userid=user.id,
-#             is_completed=True
-#         ).count()
+    result = []
 
-#         result.append({
-#             "id": user.id,
-#             "username": user.username,
-#             "level": user.level,
-#             "xp": user.xp,
-#             "bab_selesai": bab_selesai,
-#         })
+    for user in users:
 
-#     return jsonify({
-#         "total": len(result),
-#         "data": result
-#     }), 200
+        bab_selesai = UserBab.query.filter_by(
+            userid=user.id,
+            is_completed=True
+        ).count()
+
+        result.append({
+            "id": user.id,
+            "username": user.username,
+            "role": user.role,
+            "level": user.level,
+            "xp": user.xp,
+            "bab_selesai": bab_selesai,
+        })
+
+    return jsonify({
+        "total": len(result),
+        "data": result
+    }), 200

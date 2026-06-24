@@ -1,126 +1,127 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tanqiy/controllers/kelas_controller.dart';
 import 'package:tanqiy/core/colors.dart';
 import 'package:tanqiy/models/class_member_model.dart';
 
 // ── Model ────────────────────────────────────────────────────────────────────
 
-class ClassMember {
-  final String username;
-  final int level;
-  final int currentXP;
-  final int maxXP;
-  final int babSelesai;
-  final MemberRole role;
+// class ClassMember {
+//   final String username;
+//   final int level;
+//   final int currentXP;
+//   final int maxXP;
+//   final int babSelesai;
+//   final MemberRole role;
 
-  const ClassMember({
-    required this.username,
-    required this.level,
-    required this.currentXP,
-    required this.maxXP,
-    required this.babSelesai,
-    required this.role,
-  });
+//   const ClassMember({
+//     required this.username,
+//     required this.level,
+//     required this.currentXP,
+//     required this.maxXP,
+//     required this.babSelesai,
+//     required this.role,
+//   });
 
-  String get initials {
-    final parts = username.trim().split(' ');
-    if (parts.length >= 2) {
-      return (parts[0][0] + parts[1][0]).toUpperCase();
-    }
-    return username.substring(0, username.length >= 2 ? 2 : 1).toUpperCase();
-  }
+//   String get initials {
+//     final parts = username.trim().split(' ');
+//     if (parts.length >= 2) {
+//       return (parts[0][0] + parts[1][0]).toUpperCase();
+//     }
+//     return username.substring(0, username.length >= 2 ? 2 : 1).toUpperCase();
+//   }
 
-  double get xpProgress => maxXP == 0 ? 0 : (currentXP / maxXP).clamp(0.0, 1.0);
+//   double get xpProgress => maxXP == 0 ? 0 : (currentXP / maxXP).clamp(0.0, 1.0);
 
-  int get xpRemaining => maxXP - currentXP;
+//   int get xpRemaining => maxXP - currentXP;
 
-  bool get isMaxLevel => level >= 10;
-}
+//   bool get isMaxLevel => level >= 10;
+// }
 
 // ── Dummy Data ────────────────────────────────────────────────────────────────
 
-final List<ClassMember> _dummyMembers = [
-  ClassMember(
-    username: 'Ustadz Ahmad Fauzi',
-    level: 10,
-    currentXP: 5000,
-    maxXP: 5000,
-    babSelesai: 30,
-    role: MemberRole.guru,
-  ),
-  ClassMember(
-    username: 'Ustadzah Maryam',
-    level: 9,
-    currentXP: 4200,
-    maxXP: 5000,
-    babSelesai: 27,
-    role: MemberRole.guru,
-  ),
-  ClassMember(
-    username: 'Bilal Hakim',
-    level: 5,
-    currentXP: 1800,
-    maxXP: 2500,
-    babSelesai: 12,
-    role: MemberRole.murid,
-  ),
-  ClassMember(
-    username: 'Fatimah Zahra',
-    level: 7,
-    currentXP: 3100,
-    maxXP: 4000,
-    babSelesai: 19,
-    role: MemberRole.murid,
-  ),
-  ClassMember(
-    username: 'Yusuf Abdillah',
-    level: 3,
-    currentXP: 900,
-    maxXP: 1500,
-    babSelesai: 6,
-    role: MemberRole.murid,
-  ),
-  ClassMember(
-    username: 'Khansa Nabilah',
-    level: 6,
-    currentXP: 2400,
-    maxXP: 3000,
-    babSelesai: 15,
-    role: MemberRole.murid,
-  ),
-  ClassMember(
-    username: 'Ibrahim Malik',
-    level: 4,
-    currentXP: 1200,
-    maxXP: 2000,
-    babSelesai: 9,
-    role: MemberRole.murid,
-  ),
-  ClassMember(
-    username: 'Aisyah Putri',
-    level: 8,
-    currentXP: 3600,
-    maxXP: 4500,
-    babSelesai: 22,
-    role: MemberRole.murid,
-  ),
-  ClassMember(
-    username: 'Hasan Basri',
-    level: 2,
-    currentXP: 450,
-    maxXP: 1000,
-    babSelesai: 3,
-    role: MemberRole.murid,
-  ),
-  ClassMember(
-    username: 'Zainab Aulia',
-    level: 5,
-    currentXP: 2100,
-    maxXP: 2500,
-    babSelesai: 11,
-    role: MemberRole.murid,
-  ),
-];
+// final List<ClassMember> _dummyMembers = [
+//   ClassMember(
+//     username: 'Ustadz Ahmad Fauzi',
+//     level: 10,
+//     currentXP: 5000,
+//     maxXP: 5000,
+//     babSelesai: 30,
+//     role: MemberRole.guru,
+//   ),
+//   ClassMember(
+//     username: 'Ustadzah Maryam',
+//     level: 9,
+//     currentXP: 4200,
+//     maxXP: 5000,
+//     babSelesai: 27,
+//     role: MemberRole.guru,
+//   ),
+//   ClassMember(
+//     username: 'Bilal Hakim',
+//     level: 5,
+//     currentXP: 1800,
+//     maxXP: 2500,
+//     babSelesai: 12,
+//     role: MemberRole.murid,
+//   ),
+//   ClassMember(
+//     username: 'Fatimah Zahra',
+//     level: 7,
+//     currentXP: 3100,
+//     maxXP: 4000,
+//     babSelesai: 19,
+//     role: MemberRole.murid,
+//   ),
+//   ClassMember(
+//     username: 'Yusuf Abdillah',
+//     level: 3,
+//     currentXP: 900,
+//     maxXP: 1500,
+//     babSelesai: 6,
+//     role: MemberRole.murid,
+//   ),
+//   ClassMember(
+//     username: 'Khansa Nabilah',
+//     level: 6,
+//     currentXP: 2400,
+//     maxXP: 3000,
+//     babSelesai: 15,
+//     role: MemberRole.murid,
+//   ),
+//   ClassMember(
+//     username: 'Ibrahim Malik',
+//     level: 4,
+//     currentXP: 1200,
+//     maxXP: 2000,
+//     babSelesai: 9,
+//     role: MemberRole.murid,
+//   ),
+//   ClassMember(
+//     username: 'Aisyah Putri',
+//     level: 8,
+//     currentXP: 3600,
+//     maxXP: 4500,
+//     babSelesai: 22,
+//     role: MemberRole.murid,
+//   ),
+//   ClassMember(
+//     username: 'Hasan Basri',
+//     level: 2,
+//     currentXP: 450,
+//     maxXP: 1000,
+//     babSelesai: 3,
+//     role: MemberRole.murid,
+//   ),
+//   ClassMember(
+//     username: 'Zainab Aulia',
+//     level: 5,
+//     currentXP: 2100,
+//     maxXP: 2500,
+//     babSelesai: 11,
+//     role: MemberRole.murid,
+//   ),
+// ];
 
 // ── Page ─────────────────────────────────────────────────────────────────────
 
@@ -132,6 +133,7 @@ class KelasPage extends StatefulWidget {
 }
 
 class _KelasPageState extends State<KelasPage> {
+  final controller = Get.put(KelasController());
   final TextEditingController _searchController = TextEditingController();
   String _query = '';
   final Set<int> _expandedIndexes = {};
@@ -143,10 +145,15 @@ class _KelasPageState extends State<KelasPage> {
   }
 
   List<ClassMember> get _filtered {
-    if (_query.trim().isEmpty) return _dummyMembers;
-    return _dummyMembers
-        .where((m) => m.username.toLowerCase().contains(_query.toLowerCase()))
-        .toList();
+    final members = controller.anggota.toList();
+
+    if (_query.trim().isEmpty) {
+      return members;
+    }
+
+    return members.where((m) {
+      return m.username.toLowerCase().contains(_query.toLowerCase());
+    }).toList();
   }
 
   @override
@@ -160,76 +167,94 @@ class _KelasPageState extends State<KelasPage> {
     return Scaffold(
       backgroundColor: AppColors.gradientBottom,
       appBar: _buildAppBar(),
-      body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.splashGradient),
-        child: SafeArea(
-          child: filtered.isEmpty
-              ? _buildEmpty()
-              : ListView(
-                  physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 20,
-                  ),
-                  children: [
-                    // ── Header Info ──────────────────────────────
-                    _buildHeaderInfo(),
-                    const SizedBox(height: 24),
+      body: Obx(() {
+        final filtered = _filtered;
 
-                    // ── Guru ─────────────────────────────────────
-                    if (gurus.isNotEmpty) ...[
-                      _buildSectionLabel(
-                        icon: Icons.school_rounded,
-                        label: 'Pengajar',
-                        count: gurus.length,
-                      ),
-                      const SizedBox(height: 12),
-                      ...List.generate(gurus.length, (i) {
-                        final globalIndex = _dummyMembers.indexOf(gurus[i]);
-                        return _MemberCard(
-                          member: gurus[i],
-                          isExpanded: _expandedIndexes.contains(globalIndex),
-                          onToggle: () => setState(() {
-                            if (_expandedIndexes.contains(globalIndex)) {
-                              _expandedIndexes.remove(globalIndex);
-                            } else {
-                              _expandedIndexes.add(globalIndex);
-                            }
-                          }),
-                        );
-                      }),
+        final gurus = filtered.where((e) => e.role == MemberRole.guru).toList();
+
+        final murids = filtered
+            .where((e) => e.role == MemberRole.murid)
+            .toList();
+
+        if (controller.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        return Container(
+          decoration: const BoxDecoration(gradient: AppColors.splashGradient),
+          child: SafeArea(
+            child: filtered.isEmpty
+                ? _buildEmpty()
+                : ListView(
+                    physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 20,
+                    ),
+                    children: [
+                      // ── Header Info ──────────────────────────────
+                      _buildHeaderInfo(),
                       const SizedBox(height: 24),
-                    ],
 
-                    // ── Murid ────────────────────────────────────
-                    if (murids.isNotEmpty) ...[
-                      _buildSectionLabel(
-                        icon: Icons.people_alt_rounded,
-                        label: 'Anggota Kelas',
-                        count: murids.length,
-                      ),
-                      const SizedBox(height: 12),
-                      ...List.generate(murids.length, (i) {
-                        final globalIndex = _dummyMembers.indexOf(murids[i]);
-                        return _MemberCard(
-                          member: murids[i],
-                          isExpanded: _expandedIndexes.contains(globalIndex),
-                          onToggle: () => setState(() {
-                            if (_expandedIndexes.contains(globalIndex)) {
-                              _expandedIndexes.remove(globalIndex);
-                            } else {
-                              _expandedIndexes.add(globalIndex);
-                            }
-                          }),
-                        );
-                      }),
-                    ],
+                      // ── Guru ─────────────────────────────────────
+                      if (gurus.isNotEmpty) ...[
+                        _buildSectionLabel(
+                          icon: Icons.school_rounded,
+                          label: 'Pengajar',
+                          count: gurus.length,
+                        ),
+                        const SizedBox(height: 12),
+                        ...List.generate(gurus.length, (i) {
+                          final globalIndex = controller.anggota.indexOf(
+                            gurus[i],
+                          );
+                          return _MemberCard(
+                            member: gurus[i],
+                            isExpanded: _expandedIndexes.contains(globalIndex),
+                            onToggle: () => setState(() {
+                              if (_expandedIndexes.contains(globalIndex)) {
+                                _expandedIndexes.remove(globalIndex);
+                              } else {
+                                _expandedIndexes.add(globalIndex);
+                              }
+                            }),
+                          );
+                        }),
+                        const SizedBox(height: 24),
+                      ],
 
-                    const SizedBox(height: 16),
-                  ],
-                ),
-        ),
-      ),
+                      // ── Murid ────────────────────────────────────
+                      if (murids.isNotEmpty) ...[
+                        _buildSectionLabel(
+                          icon: Icons.people_alt_rounded,
+                          label: 'Anggota Kelas',
+                          count: murids.length,
+                        ),
+                        const SizedBox(height: 12),
+                        ...List.generate(murids.length, (i) {
+                          final globalIndex = controller.anggota.indexOf(
+                            murids[i],
+                          );
+                          return _MemberCard(
+                            member: murids[i],
+                            isExpanded: _expandedIndexes.contains(globalIndex),
+                            onToggle: () => setState(() {
+                              if (_expandedIndexes.contains(globalIndex)) {
+                                _expandedIndexes.remove(globalIndex);
+                              } else {
+                                _expandedIndexes.add(globalIndex);
+                              }
+                            }),
+                          );
+                        }),
+                      ],
+
+                      const SizedBox(height: 16),
+                    ],
+                  ),
+          ),
+        );
+      }),
     );
   }
 
@@ -295,7 +320,7 @@ class _KelasPageState extends State<KelasPage> {
                         border: Border.all(color: AppColors.cardBorder),
                       ),
                       child: Text(
-                        '${_dummyMembers.length} Anggota',
+                        '${controller.anggota.length} Anggota',
                         style: const TextStyle(
                           color: AppColors.appBarTitle,
                           fontSize: 11,
@@ -377,10 +402,10 @@ class _KelasPageState extends State<KelasPage> {
   // ── Header Info ─────────────────────────────────────────────────────────────
 
   Widget _buildHeaderInfo() {
-    final totalGuru = _dummyMembers
+    final totalGuru = controller.anggota
         .where((m) => m.role == MemberRole.guru)
         .length;
-    final totalMurid = _dummyMembers
+    final totalMurid = controller.anggota
         .where((m) => m.role == MemberRole.murid)
         .length;
 

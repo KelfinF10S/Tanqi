@@ -1,56 +1,65 @@
-// import 'dart:convert';
+import 'dart:convert';
 
-// import 'package:get/get.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:tanqiy/core/const.dart';
-// import 'package:tanqiy/data/auth_local.dart';
-// import 'package:tanqiy/models/class_member_model.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:tanqiy/core/const.dart';
+import 'package:tanqiy/data/auth_local.dart';
+import 'package:tanqiy/models/class_member_model.dart';
 
-// final String _baseUrl = AppConst.baseUrl;
+class KelasController extends GetxController {
+  final String _baseUrl = AppConst.baseUrl;
 
-// class KelasController extends GetxController {
-//   final anggota = <ClassMember>[].obs;
+  final anggota = <ClassMember>[].obs;
 
-//   final isLoading = false.obs;
+  final isLoading = false.obs;
 
-//   Future<Map<String, String>> _headers() async {
-//     final token = await AuthStorage.getToken();
+  Future<Map<String, String>> _headers() async {
+    final token = await AuthStorage.getToken();
 
-//     return {
-//       'Content-Type': 'application/json',
-//       'Authorization': 'Bearer $token',
-//     };
-//   }
+    return {
+      'Content-Type': 'application/json',
 
-//   @override
-//   void onInit() {
-//     super.onInit();
-//     fetchUsers();
-//   }
+      if (token != null) 'Authorization': 'Bearer $token',
+    };
+  }
 
-//   Future<void> fetchUsers() async {
-//     try {
-//       isLoading.value = true;
+  @override
+  void onInit() {
+    super.onInit();
+    fetchUsers();
+  }
 
-//       final res = await http.get(
-//         Uri.parse('$_baseUrl/api/profile/users'),
-//         headers: await _headers(),
-//       );
+  Future<void> fetchUsers() async {
+    try {
+      isLoading.value = true;
 
-//       if (res.statusCode != 200) {
-//         throw Exception('API Error');
-//       }
+      final response = await http.get(
+        Uri.parse('$_baseUrl/api/profile/users'),
+        headers: await _headers(),
+      );
 
-//       final body = jsonDecode(res.body);
+      if (response.statusCode != 200) {
+        throw Exception(
+          'Gagal mengambil data pengguna '
+          '(${response.statusCode})',
+        );
+      }
 
-//       anggota.value =
-//           (body['data'] as List)
-//               .map(
-//                 (e) => ClassMember.fromJson(e),
-//               )
-//               .toList();
-//     } finally {
-//       isLoading.value = false;
-//     }
-//   }
-// }
+      final body = jsonDecode(response.body);
+
+      final users = body['data'] as List? ?? [];
+
+      anggota.value = users.map((e) => ClassMember.fromJson(e)).toList();
+    } catch (e) {
+      anggota.clear();
+
+      Get.snackbar('Error', 'Gagal memuat daftar pengguna');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> refreshUsers() async {
+    await fetchUsers();
+  }
+}

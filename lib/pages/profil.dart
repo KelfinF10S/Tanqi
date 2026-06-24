@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:tanqiy/controllers/auth_controller.dart';
 import 'package:tanqiy/core/colors.dart';
 import 'package:tanqiy/data/auth_local.dart';
-import 'package:tanqiy/models/class_member_model.dart' hide ClassMember;
+import 'package:tanqiy/models/class_member_model.dart';
 import 'package:tanqiy/pages/auth.dart';
 import 'package:tanqiy/pages/kelas.dart';
 import 'package:tanqiy/widgets/rolechip.dart';
@@ -117,10 +117,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
                   roleChip(
                     ClassMember(
+                      id: user.id!,
                       username: user.username,
                       level: user.level,
                       currentXP: user.currentXP,
-                      maxXP: user.maxXP,
+                      // maxXP: user.maxXP,
                       babSelesai: user.babSelesai,
                       role: MemberRole.murid,
                     ),
