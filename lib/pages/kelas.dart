@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:tanqiy/core/colors.dart';
 
 // ── Model ────────────────────────────────────────────────────────────────────
@@ -31,8 +30,7 @@ class ClassMember {
     return username.substring(0, username.length >= 2 ? 2 : 1).toUpperCase();
   }
 
-  double get xpProgress =>
-      maxXP == 0 ? 0 : (currentXP / maxXP).clamp(0.0, 1.0);
+  double get xpProgress => maxXP == 0 ? 0 : (currentXP / maxXP).clamp(0.0, 1.0);
 
   int get xpRemaining => maxXP - currentXP;
 
@@ -147,8 +145,7 @@ class _KelasPageState extends State<KelasPage> {
   List<ClassMember> get _filtered {
     if (_query.trim().isEmpty) return _dummyMembers;
     return _dummyMembers
-        .where((m) =>
-            m.username.toLowerCase().contains(_query.toLowerCase()))
+        .where((m) => m.username.toLowerCase().contains(_query.toLowerCase()))
         .toList();
   }
 
@@ -170,8 +167,10 @@ class _KelasPageState extends State<KelasPage> {
               ? _buildEmpty()
               : ListView(
                   physics: const BouncingScrollPhysics(),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 20,
+                  ),
                   children: [
                     // ── Header Info ──────────────────────────────
                     _buildHeaderInfo(),
@@ -250,7 +249,7 @@ class _KelasPageState extends State<KelasPage> {
                 child: Row(
                   children: [
                     const SizedBox(width: 16),
-                   
+
                     const Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -279,7 +278,9 @@ class _KelasPageState extends State<KelasPage> {
                     Container(
                       margin: const EdgeInsets.only(right: 16),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.cardFillLight,
                         borderRadius: BorderRadius.circular(20),
@@ -299,8 +300,10 @@ class _KelasPageState extends State<KelasPage> {
               ),
               // Search bar
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 child: Container(
                   height: 40,
                   decoration: BoxDecoration(
@@ -366,10 +369,12 @@ class _KelasPageState extends State<KelasPage> {
   // ── Header Info ─────────────────────────────────────────────────────────────
 
   Widget _buildHeaderInfo() {
-    final totalGuru =
-        _dummyMembers.where((m) => m.role == MemberRole.guru).length;
-    final totalMurid =
-        _dummyMembers.where((m) => m.role == MemberRole.murid).length;
+    final totalGuru = _dummyMembers
+        .where((m) => m.role == MemberRole.guru)
+        .length;
+    final totalMurid = _dummyMembers
+        .where((m) => m.role == MemberRole.murid)
+        .length;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -424,11 +429,7 @@ class _KelasPageState extends State<KelasPage> {
   }
 
   Widget _buildDivider() {
-    return Container(
-      width: 1,
-      height: 40,
-      color: AppColors.cardBorder,
-    );
+    return Container(width: 1, height: 40, color: AppColors.cardBorder);
   }
 
   // ── Section Label ────────────────────────────────────────────────────────────
@@ -486,11 +487,7 @@ class _KelasPageState extends State<KelasPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.search_off_rounded,
-            color: AppColors.textS,
-            size: 48,
-          ),
+          Icon(Icons.search_off_rounded, color: AppColors.textS, size: 48),
           const SizedBox(height: 12),
           Text(
             'Tidak ditemukan',
@@ -547,8 +544,7 @@ class _MemberCard extends StatelessWidget {
           children: [
             // ── Collapsed Header ────────────────────────────
             Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 16, vertical: 14),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               child: Row(
                 children: [
                   // Avatar
@@ -725,10 +721,7 @@ class _MemberCard extends StatelessWidget {
             const SizedBox(height: 2),
             Text(
               label,
-              style: const TextStyle(
-                color: AppColors.textS,
-                fontSize: 9,
-              ),
+              style: const TextStyle(color: AppColors.textS, fontSize: 9),
               textAlign: TextAlign.center,
             ),
           ],

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tanqiy/models/materibab_model.dart';
 
 class Page2 extends StatelessWidget {
   const Page2({super.key});

@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       title: 'TANQI Learning App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.appBarEnd),
         useMaterial3: true,
       ),
       initialRoute: '/splash',
@@ -78,31 +78,36 @@ class _MenuPageState extends State<MenuPage> {
               elevation: 0,
               foregroundColor: AppColors.textP,
               actions: [
-                IconButton(
-                  icon: const Icon(Icons.search, color: AppColors.textP),
-                  onPressed: () =>
-                      setState(() => _isSearchVisible = !_isSearchVisible),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.settings, color: AppColors.textP),
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (context) {
-                        return DraggableScrollableSheet(
-                          expand: false,
-                          builder: (context, scrollController) {
-                            return ListView(
-                              controller: scrollController,
-                              children: [ListTile(title: Text("Pengaturan"))],
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
-                ),
+                // IconButton(
+                //   icon: const Icon(Icons.search, color: AppColors.textP),
+                //   onPressed: () =>
+                //       setState(() => _isSearchVisible = !_isSearchVisible),
+                // ),
+                // IconButton(
+                //   icon: const Icon(Icons.settings, color: AppColors.textP),
+                //   onPressed: () {
+                //     showModalBottomSheet(
+                //       context: context,
+                //       isScrollControlled: true,
+                //       builder: (context) {
+                //         return DraggableScrollableSheet(
+                //           expand: false,
+                //           builder: (context, scrollController) {
+                //             return ListView(
+                //               controller: scrollController,
+                //               children: [ListTile(title: Text("Pengaturan"))],
+                //             );
+                //           },
+                //         );
+                //       },
+                //     );
+                //   },
+                // ),
+                // IconButton(
+                //   icon: const Icon(Icons.question_mark_rounded, color: AppColors.textP),
+                //   onPressed: () =>
+                //       Get.toNamed('/panduan')
+                // ),
               ],
               flexibleSpace: Container(
                 decoration: const BoxDecoration(

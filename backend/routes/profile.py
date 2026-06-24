@@ -59,3 +59,34 @@ def get_profile():
         "nilai_per_bab":    nilai_per_bab,
         "riwayat_jawaban":  [j.to_dict() for j in riwayat]
     }), 200
+
+
+# # ──────────────────────────────────────────────
+# # GET /api/profile/users
+# # Ambil semua user
+# # ──────────────────────────────────────────────
+# @profile_bp.route("/users", methods=["GET"])
+# @jwt_required()
+# def get_users():
+#     users = User.query.order_by(User.level.desc(), User.xp.desc()).all()
+
+#     result = []
+
+#     for user in users:
+#         bab_selesai = UserBab.query.filter_by(
+#             userid=user.id,
+#             is_completed=True
+#         ).count()
+
+#         result.append({
+#             "id": user.id,
+#             "username": user.username,
+#             "level": user.level,
+#             "xp": user.xp,
+#             "bab_selesai": bab_selesai,
+#         })
+
+#     return jsonify({
+#         "total": len(result),
+#         "data": result
+#     }), 200

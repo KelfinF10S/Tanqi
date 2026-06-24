@@ -28,6 +28,8 @@ class AuthController extends GetxController {
   final confirmPasswordController = TextEditingController();
 
   final currentUser = Rxn<UserModel>();
+  
+  final isGuru = false.obs; // sementara untuk register
 
   @override
   void onClose() {

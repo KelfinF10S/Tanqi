@@ -4,7 +4,6 @@ import 'package:tanqiy/controllers/babkuis_controller.dart';
 import 'package:tanqiy/core/colors.dart';
 import 'package:tanqiy/models/bab_merged_model.dart';
 import 'package:tanqiy/pages/bab1.dart';
-import 'package:tanqiy/pages/page2.dart';
 import 'package:tanqiy/pages/page3.dart';
 import 'package:tanqiy/pages/page4.dart';
 import 'package:tanqiy/pages/page5.dart';
