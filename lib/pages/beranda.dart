@@ -69,16 +69,6 @@ class Beranda extends StatelessWidget {
                     (bab) => _buildBabCard(context, bab),
                   ),
 
-                  // CARD PANDUAN
-                  _buildStaticCard(
-                    context,
-                    'دليل الاستخدام',
-                    'Panduan Penggunaan',
-                    () {
-                      Get.toNamed('/panduan');
-                    },
-                  ),
-
                   // CARD GAME
                   _buildStaticCard(
                     context,
@@ -86,6 +76,16 @@ class Beranda extends StatelessWidget {
                     'Permainan Digital',
                     () {
                       Get.toNamed('/games');
+                    },
+                  ),
+
+                  // CARD PANDUAN
+                  _buildStaticCard(
+                    context,
+                    'دليل الاستخدام',
+                    'Panduan Penggunaan',
+                    () {
+                      Get.toNamed('/panduan');
                     },
                   ),
                 ],
@@ -240,10 +240,7 @@ Widget _welcomeCard(BuildContext context) {
 
                 Text(
                   'Selamat datang di Tanqi, mari belajar bersama dengan menyenangkan!',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textS,
-                  ),
+                  style: const TextStyle(fontSize: 12, color: AppColors.textS),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -253,10 +250,7 @@ Widget _welcomeCard(BuildContext context) {
 
           const SizedBox(width: 12),
 
-          Image.asset(
-            'lib/assets/cakra.png',
-            scale: 3,
-          ),
+          Image.asset('lib/assets/cakra.png', scale: 3),
         ],
       ),
     ),

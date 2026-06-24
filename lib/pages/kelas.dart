@@ -39,12 +39,6 @@ class _KelasPageState extends State<KelasPage> {
 
   @override
   Widget build(BuildContext context) {
-    final filtered = _filtered;
-
-    // Pisahkan guru & murid
-    final gurus = filtered.where((m) => m.role == MemberRole.guru).toList();
-    final murids = filtered.where((m) => m.role == MemberRole.murid).toList();
-
     return Scaffold(
       backgroundColor: AppColors.gradientBottom,
       appBar: _buildAppBar(),

@@ -5,7 +5,6 @@ import 'package:tanqiy/core/colors.dart';
 import 'package:tanqiy/data/auth_local.dart';
 import 'package:tanqiy/models/class_member_model.dart';
 import 'package:tanqiy/pages/auth.dart';
-import 'package:tanqiy/pages/kelas.dart';
 import 'package:tanqiy/widgets/rolechip.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -432,6 +431,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           icon: Icons.military_tech_rounded,
                           label: 'Badges',
                           value: '${user.babSelesai}',
+                          onTap: () => Get.toNamed('/badges')
                         ),
                       ),
                     ],
@@ -539,33 +539,41 @@ class _ProfilePageState extends State<ProfilePage> {
     required IconData icon,
     required String label,
     required String value,
+    VoidCallback? onTap, // <- nullable
   }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      decoration: BoxDecoration(
-        color: AppColors.cardFillLight,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.cardBorder),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: AppColors.appBarTitle, size: 22),
-          const SizedBox(height: 6),
-          Text(
-            value,
-            style: const TextStyle(
-              color: AppColors.textP,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+    return GestureDetector(
+      onTap: onTap, // kalau null otomatis tidak bisa ditekan
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: AppColors.cardFillLight,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.cardBorder),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: AppColors.appBarTitle, size: 22),
+
+            const SizedBox(height: 6),
+
+            Text(
+              value,
+              style: const TextStyle(
+                color: AppColors.textP,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: const TextStyle(color: AppColors.textS, fontSize: 10),
-            textAlign: TextAlign.center,
-          ),
-        ],
+
+            const SizedBox(height: 2),
+
+            Text(
+              label,
+              style: const TextStyle(color: AppColors.textS, fontSize: 10),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

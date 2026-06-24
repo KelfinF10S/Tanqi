@@ -4,13 +4,14 @@ import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:tanqiy/controllers/auth_controller.dart';
 import 'package:tanqiy/core/colors.dart';
+import 'package:tanqiy/pages/badges.dart';
 import 'package:tanqiy/pages/beranda.dart';
 import 'package:tanqiy/pages/games.dart';
 import 'package:tanqiy/pages/jelajahi.dart';
 import 'package:tanqiy/pages/kelas.dart';
 import 'package:tanqiy/pages/profil.dart';
 import 'package:tanqiy/pages/splashscreen.dart';
-import 'pages/page2.dart';
+import 'pages/panduan.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,12 +33,13 @@ class MyApp extends StatelessWidget {
       routes: {
         '/menu': (context) => const MenuPage(),
         // '/page1': (context) => Page1(),
-        '/panduan': (context) => Page2(),
+        '/panduan': (context) => PanduanPage(),
         // '/page3': (context) => Page3(),
         // '/page4': (context) => Page4(),
         // '/page5': (context) => Page5(),
         '/games': (context) => GamesPage(),
         '/splash': (context) => SplashScreen(),
+        '/badges' : (context) => BadgePage()
       },
     );
   }

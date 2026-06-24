@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tanqiy/core/colors.dart';
+import 'package:tanqiy/widgets/custom_appbar.dart';
 
 class GamesPage extends StatelessWidget {
   const GamesPage({super.key});
@@ -8,28 +9,13 @@ class GamesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.appBarEnd,
-      appBar: AppBar(
-        title: Column(
-          children: [
-            Text(
-              'لعبة إلكترونية',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-            ),
-            Text('Permainan Digital', style: TextStyle(fontSize: 12)),
-          ],
-        ),
-        centerTitle: true,
-        backgroundColor: AppColors.appBarBg,
-        elevation: 0,
-        foregroundColor: AppColors.textP,
-        actions: [],
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(gradient: AppColors.appBarGradient),
-        ),
+      appBar: CustomAppBar(
+        arabicTitle: 'لعبة إلكترونية',
+        title: 'Permainan Digital',
       ),
       body: Container(
-         decoration: const BoxDecoration(gradient: AppColors.splashGradient),
-      )
+        decoration: const BoxDecoration(gradient: AppColors.splashGradient),
+      ),
     );
   }
 }

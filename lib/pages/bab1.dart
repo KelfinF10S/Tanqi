@@ -1254,6 +1254,7 @@ class _StatChip extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.color,
+    // ignore: unused_element_parameter
     this.sublabel,
   });
 
