@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tanqiy/core/colors.dart';
+import 'package:tanqiy/models/class_member_model.dart';
 
 // ── Model ────────────────────────────────────────────────────────────────────
-
-enum MemberRole { murid, guru }
 
 class ClassMember {
   final String username;

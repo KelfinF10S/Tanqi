@@ -7,14 +7,17 @@ class UserModel {
   final int currentXP;
   final int maxXP;
   final int babSelesai;
+  final String role;
 
   const UserModel({
     this.id,
     required this.username,
+    required this.role,
     this.level = 1,
     this.currentXP = 0,
     this.maxXP = 100,
     this.babSelesai = 0,
+
   });
 
   // ── Dari JSON API ─────────────────────────────────────
@@ -26,6 +29,7 @@ class UserModel {
       currentXP:  json['xp'] as int? ?? 0, 
       maxXP:      json['max_xp'] as int? ?? 100, // TODO: Update real time max xp
       babSelesai: json['bab_selesai'] as int? ?? 0,
+      role: json['role'] as String? ?? 'murid',
     );
   }
 
@@ -38,6 +42,7 @@ class UserModel {
       'xp':  currentXP,
       'max_xp':      maxXP,
       'bab_selesai': babSelesai,
+      'role' : role
     };
   }
 
@@ -51,6 +56,7 @@ class UserModel {
     int? babSelesai,
     int? pencapaian,
     int? streak,
+    String? role,
   }) {
     return UserModel(
       id:         id ?? this.id,
@@ -59,7 +65,7 @@ class UserModel {
       currentXP:  currentXP ?? this.currentXP,
       maxXP:      maxXP ?? this.maxXP,
       babSelesai: babSelesai ?? this.babSelesai,
-
+      role : role ?? this.role
     );
   }
 
@@ -82,7 +88,7 @@ class UserModel {
 
   @override
   String toString() =>
-      'UserModel(id: $id, username: $username, level: $level, xp: $currentXP/$maxXP)';
+      'UserModel(id: $id, username: $username, level: $level, xp: $currentXP/$maxXP), role: $role';
 
   @override
   bool operator ==(Object other) =>

@@ -10,6 +10,7 @@ class User(db.Model):
     password = db.Column(db.String(200), nullable=False)
     xp       = db.Column(db.Integer, default=0)
     level    = db.Column(db.Integer, default=1)
+    role     = db.Column(db.String(20),nullable=False,default='murid')
 
     def to_dict(self):
         return {
@@ -17,6 +18,7 @@ class User(db.Model):
             "username": self.username,
             "xp":       self.xp,
             "level":    self.level,
+            "role": self.role,
         }
 
 

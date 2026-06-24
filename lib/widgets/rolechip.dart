@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tanqiy/core/colors.dart';
-import 'package:tanqiy/pages/kelas.dart';
+import 'package:tanqiy/models/class_member_model.dart';
 
 Widget roleChip(member) {
     final isGuru = member.role == MemberRole.guru;

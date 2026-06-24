@@ -26,16 +26,18 @@ class AuthController extends GetxController {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  final teacherTokenController = TextEditingController();
+  final isGuru = false.obs;
 
   final currentUser = Rxn<UserModel>();
-  
-  final isGuru = false.obs; // sementara untuk register
 
   @override
   void onClose() {
     usernameController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
+    teacherTokenController.dispose();
+
     super.onClose();
   }
 
@@ -48,6 +50,10 @@ class AuthController extends GetxController {
     usernameController.clear();
     passwordController.clear();
     confirmPasswordController.clear();
+    teacherTokenController.clear();
+
+    isGuru.value = false;
+
     isPasswordVisible.value = false;
     isConfirmPasswordVisible.value = false;
   }
@@ -180,6 +186,8 @@ class AuthController extends GetxController {
         body: jsonEncode({
           'username': usernameController.text.trim(),
           'password': passwordController.text,
+          'role': isGuru.value ? 'guru' : 'murid',
+          if (isGuru.value) 'teacher_token': teacherTokenController.text.trim(),
         }),
       );
 

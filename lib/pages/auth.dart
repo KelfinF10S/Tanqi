@@ -246,9 +246,6 @@ class _RegisterForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isGuru = RxnBool();
-    final keywordController = TextEditingController();
-
     return Form(
       key: controller.registerFormKey,
       child: Column(
@@ -333,6 +330,9 @@ class _RegisterForm extends StatelessWidget {
                   groupValue: controller.isGuru.value,
                   onChanged: (value) {
                     controller.isGuru.value = value!;
+                    if (!value) {
+                      controller.teacherTokenController.clear();
+                    }
                   },
                   child: const Text(
                     'Siswa',
@@ -346,7 +346,7 @@ class _RegisterForm extends StatelessWidget {
           Obx(() {
             if (controller.isGuru.value == true) {
               return _AuthField(
-                controller: keywordController,
+                controller: controller.teacherTokenController,
                 label: 'Validasi Guru',
                 hint: 'Masukan Token Guru',
                 icon: Icons.key,
@@ -357,7 +357,7 @@ class _RegisterForm extends StatelessWidget {
                 },
               );
             } else {
-              return Text('');
+              return const SizedBox.shrink();
             }
           }),
 
