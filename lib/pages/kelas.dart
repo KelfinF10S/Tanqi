@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tanqiy/core/colors.dart';
 
 // ── Model ────────────────────────────────────────────────────────────────────
@@ -249,7 +250,15 @@ class _KelasPageState extends State<KelasPage> {
                 child: Row(
                   children: [
                     const SizedBox(width: 16),
-
+                    GestureDetector(
+                      onTap: () => Get.back(),
+                      child: const Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        color: AppColors.appBarTitle,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
                     const Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -258,7 +267,7 @@ class _KelasPageState extends State<KelasPage> {
                           Text(
                             'الفصل الدراسي',
                             style: TextStyle(
-                              color: AppColors.textPrimary,
+                              color: AppColors.appBarTitle,
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
                               letterSpacing: 1,
@@ -267,7 +276,7 @@ class _KelasPageState extends State<KelasPage> {
                           Text(
                             'Kelas Saya',
                             style: TextStyle(
-                              color: AppColors.textP,
+                              color: AppColors.appBarTitle,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
@@ -591,7 +600,7 @@ class _MemberCard extends StatelessWidget {
                         const SizedBox(height: 3),
                         Row(
                           children: [
-                            roleChip(),
+                            _roleChip(),
                             const SizedBox(width: 8),
                             Text(
                               'Level ${member.level}',
@@ -635,7 +644,7 @@ class _MemberCard extends StatelessWidget {
     );
   }
 
-  Widget roleChip() {
+  Widget _roleChip() {
     final isGuru = member.role == MemberRole.guru;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
