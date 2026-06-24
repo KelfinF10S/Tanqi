@@ -4,7 +4,6 @@ import 'package:tanqiy/controllers/babkuis_controller.dart';
 import 'package:tanqiy/core/colors.dart';
 import 'package:tanqiy/models/bab_merged_model.dart';
 import 'package:tanqiy/pages/bab1.dart';
-import 'package:tanqiy/pages/page2.dart';
 import 'package:tanqiy/pages/page3.dart';
 import 'package:tanqiy/pages/page4.dart';
 import 'package:tanqiy/pages/page5.dart';
@@ -70,16 +69,6 @@ class Beranda extends StatelessWidget {
                     (bab) => _buildBabCard(context, bab),
                   ),
 
-                  // CARD PANDUAN
-                  _buildStaticCard(
-                    context,
-                    'دليل الاستخدام',
-                    'Panduan Penggunaan',
-                    () {
-                      Get.toNamed('/panduan');
-                    },
-                  ),
-
                   // CARD GAME
                   _buildStaticCard(
                     context,
@@ -87,6 +76,16 @@ class Beranda extends StatelessWidget {
                     'Permainan Digital',
                     () {
                       Get.toNamed('/games');
+                    },
+                  ),
+
+                  // CARD PANDUAN
+                  _buildStaticCard(
+                    context,
+                    'دليل الاستخدام',
+                    'Panduan Penggunaan',
+                    () {
+                      Get.toNamed('/panduan');
                     },
                   ),
                 ],
@@ -241,10 +240,7 @@ Widget _welcomeCard(BuildContext context) {
 
                 Text(
                   'Selamat datang di Tanqi, mari belajar bersama dengan menyenangkan!',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textS,
-                  ),
+                  style: const TextStyle(fontSize: 12, color: AppColors.textS),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -254,10 +250,7 @@ Widget _welcomeCard(BuildContext context) {
 
           const SizedBox(width: 12),
 
-          Image.asset(
-            'lib/assets/cakra.png',
-            scale: 3,
-          ),
+          Image.asset('lib/assets/cakra.png', scale: 3),
         ],
       ),
     ),

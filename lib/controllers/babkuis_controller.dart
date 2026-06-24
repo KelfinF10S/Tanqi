@@ -224,6 +224,9 @@ class MateriController extends GetxController {
   }
 }
 
+// ──────────────────────────────────────────────────────────────────────────────
+// QuizController — pengatur kuis 
+// ──────────────────────────────────────────────────────────────────────────────
 class QuizController extends GetxController {
   final soalList = <SoalModel>[].obs;
 

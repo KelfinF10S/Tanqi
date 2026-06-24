@@ -3,8 +3,6 @@ import 'package:get/get.dart';
 import 'package:tanqiy/controllers/auth_controller.dart';
 import 'package:tanqiy/core/colors.dart';
 
-
-
 // ============================================================
 //  AUTH PAGE
 // ============================================================
@@ -46,8 +44,14 @@ class AuthPage extends StatelessWidget {
                         ),
                       ),
                       child: controller.isLogin.value
-                          ? _LoginForm(key: const ValueKey('login'), controller: controller)
-                          : _RegisterForm(key: const ValueKey('register'), controller: controller),
+                          ? _LoginForm(
+                              key: const ValueKey('login'),
+                              controller: controller,
+                            )
+                          : _RegisterForm(
+                              key: const ValueKey('register'),
+                              controller: controller,
+                            ),
                     ),
                   ),
                 ],
@@ -79,7 +83,11 @@ class AuthPage extends StatelessWidget {
               ),
             ],
           ),
-          child: const Icon(Icons.lock_outline_rounded, color: Colors.white, size: 24),
+          child: const Icon(
+            Icons.lock_outline_rounded,
+            color: Colors.white,
+            size: 24,
+          ),
         ),
         const SizedBox(height: 20),
         const Text(
@@ -134,7 +142,11 @@ class _TabButton extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
 
-  const _TabButton({required this.label, required this.isSelected, required this.onTap});
+  const _TabButton({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -183,30 +195,35 @@ class _LoginForm extends StatelessWidget {
             hint: 'Masukkan username kamu',
             icon: Icons.person_outline_rounded,
             validator: (val) {
-              if (val == null || val.trim().isEmpty) return 'Username wajib diisi';
+              if (val == null || val.trim().isEmpty)
+                return 'Username wajib diisi';
               return null;
             },
           ),
           const SizedBox(height: 16),
-          Obx(() => _AuthField(
-            controller: controller.passwordController,
-            label: 'Password',
-            hint: 'Masukkan password kamu',
-            icon: Icons.lock_outline_rounded,
-            isPassword: true,
-            isPasswordVisible: controller.isPasswordVisible.value,
-            onTogglePassword: controller.togglePasswordVisibility,
-            validator: (val) {
-              if (val == null || val.isEmpty) return 'Password wajib diisi';
-              return null;
-            },
-          )),
+          Obx(
+            () => _AuthField(
+              controller: controller.passwordController,
+              label: 'Password',
+              hint: 'Masukkan password kamu',
+              icon: Icons.lock_outline_rounded,
+              isPassword: true,
+              isPasswordVisible: controller.isPasswordVisible.value,
+              onTogglePassword: controller.togglePasswordVisibility,
+              validator: (val) {
+                if (val == null || val.isEmpty) return 'Password wajib diisi';
+                return null;
+              },
+            ),
+          ),
           const SizedBox(height: 32),
-          Obx(() => _SubmitButton(
-            label: 'Masuk',
-            isLoading: controller.isLoading.value,
-            onTap: controller.login,
-          )),
+          Obx(
+            () => _SubmitButton(
+              label: 'Masuk',
+              isLoading: controller.isLoading.value,
+              onTap: controller.login,
+            ),
+          ),
           const SizedBox(height: 20),
           _SwitchModeText(
             text: 'Belum punya akun?',
@@ -239,47 +256,119 @@ class _RegisterForm extends StatelessWidget {
             hint: 'Buat username kamu',
             icon: Icons.person_outline_rounded,
             validator: (val) {
-              if (val == null || val.trim().isEmpty) return 'Username wajib diisi';
+              if (val == null || val.trim().isEmpty)
+                return 'Username wajib diisi';
               if (val.trim().length < 3) return 'Username minimal 3 karakter';
               return null;
             },
           ),
           const SizedBox(height: 16),
-          Obx(() => _AuthField(
-            controller: controller.passwordController,
-            label: 'Password',
-            hint: 'Buat password (min. 8 karakter)',
-            icon: Icons.lock_outline_rounded,
-            isPassword: true,
-            isPasswordVisible: controller.isPasswordVisible.value,
-            onTogglePassword: controller.togglePasswordVisibility,
-            validator: (val) {
-              if (val == null || val.isEmpty) return 'Password wajib diisi';
-              if (val.length < 8) return 'Password minimal 8 karakter';
-              return null;
-            },
-          )),
+          Obx(
+            () => _AuthField(
+              controller: controller.passwordController,
+              label: 'Password',
+              hint: 'Buat password (min. 8 karakter)',
+              icon: Icons.lock_outline_rounded,
+              isPassword: true,
+              isPasswordVisible: controller.isPasswordVisible.value,
+              onTogglePassword: controller.togglePasswordVisibility,
+              validator: (val) {
+                if (val == null || val.isEmpty) return 'Password wajib diisi';
+                if (val.length < 8) return 'Password minimal 8 karakter';
+                return null;
+              },
+            ),
+          ),
           const SizedBox(height: 16),
-          Obx(() => _AuthField(
-            controller: controller.confirmPasswordController,
-            label: 'Konfirmasi Password',
-            hint: 'Ulangi password kamu',
-            icon: Icons.lock_outline_rounded,
-            isPassword: true,
-            isPasswordVisible: controller.isConfirmPasswordVisible.value,
-            onTogglePassword: controller.toggleConfirmPasswordVisibility,
-            validator: (val) {
-              if (val == null || val.isEmpty) return 'Konfirmasi password wajib diisi';
-              if (val != controller.passwordController.text) return 'Password tidak cocok';
-              return null;
-            },
-          )),
+          Obx(
+            () => _AuthField(
+              controller: controller.confirmPasswordController,
+              label: 'Konfirmasi Password',
+              hint: 'Ulangi password kamu',
+              icon: Icons.lock_outline_rounded,
+              isPassword: true,
+              isPasswordVisible: controller.isConfirmPasswordVisible.value,
+              onTogglePassword: controller.toggleConfirmPasswordVisibility,
+              validator: (val) {
+                if (val == null || val.isEmpty)
+                  return 'Konfirmasi password wajib diisi';
+                if (val != controller.passwordController.text)
+                  return 'Password tidak cocok';
+                return null;
+              },
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Daftar Sebagai',
+            style: const TextStyle(
+              color: AppColors.appBarTitle,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.3,
+            ),
+          ),
+
+          Obx(
+            () => Row(
+              children: [
+                RadioMenuButton<bool>(
+                  value: true,
+                  groupValue: controller.isGuru.value,
+                  onChanged: (value) {
+                    controller.isGuru.value = value!;
+                  },
+                  child: const Text(
+                    'Guru',
+                    style: TextStyle(color: AppColors.textHint),
+                  ),
+                ),
+
+                RadioMenuButton<bool>(
+                  value: false,
+                  groupValue: controller.isGuru.value,
+                  onChanged: (value) {
+                    controller.isGuru.value = value!;
+                    if (!value) {
+                      controller.teacherTokenController.clear();
+                    }
+                  },
+                  child: const Text(
+                    'Siswa',
+                    style: TextStyle(color: AppColors.textHint),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          Obx(() {
+            if (controller.isGuru.value == true) {
+              return _AuthField(
+                controller: controller.teacherTokenController,
+                label: 'Validasi Guru',
+                hint: 'Masukan Token Guru',
+                icon: Icons.key,
+                validator: (val) {
+                  if (val == null || val.isEmpty)
+                    return 'Token guru wajib diisi. \nHubungi admin sekolah untuk memperoleh token akses.';
+                  return null;
+                },
+              );
+            } else {
+              return const SizedBox.shrink();
+            }
+          }),
+
           const SizedBox(height: 32),
-          Obx(() => _SubmitButton(
-            label: 'Daftar',
-            isLoading: controller.isLoading.value,
-            onTap: controller.register,
-          )),
+
+          Obx(
+            () => _SubmitButton(
+              label: 'Daftar',
+              isLoading: controller.isLoading.value,
+              onTap: controller.register,
+            ),
+          ),
           const SizedBox(height: 20),
           _SwitchModeText(
             text: 'Sudah punya akun?',
@@ -345,7 +434,9 @@ class _AuthField extends StatelessWidget {
                 ? GestureDetector(
                     onTap: onTogglePassword,
                     child: Icon(
-                      isPasswordVisible ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                      isPasswordVisible
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
                       color: AppColors.textS,
                       size: 20,
                     ),
@@ -353,18 +444,30 @@ class _AuthField extends StatelessWidget {
                 : null,
             filled: true,
             fillColor: AppColors.cardFillLight,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.cardBorder, width: 1),
+              borderSide: const BorderSide(
+                color: AppColors.cardBorder,
+                width: 1,
+              ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.cardBorder, width: 1),
+              borderSide: const BorderSide(
+                color: AppColors.cardBorder,
+                width: 1,
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.appBarTitle, width: 1.5),
+              borderSide: const BorderSide(
+                color: AppColors.appBarTitle,
+                width: 1.5,
+              ),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -372,7 +475,10 @@ class _AuthField extends StatelessWidget {
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.5),
+              borderSide: const BorderSide(
+                color: Color(0xFFEF4444),
+                width: 1.5,
+              ),
             ),
             errorStyle: const TextStyle(color: Color(0xFFEF4444), fontSize: 12),
           ),
@@ -387,7 +493,11 @@ class _SubmitButton extends StatelessWidget {
   final bool isLoading;
   final VoidCallback onTap;
 
-  const _SubmitButton({required this.label, required this.isLoading, required this.onTap});
+  const _SubmitButton({
+    required this.label,
+    required this.isLoading,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -398,7 +508,9 @@ class _SubmitButton extends StatelessWidget {
         height: 52,
         decoration: BoxDecoration(
           gradient: isLoading
-              ? const LinearGradient(colors: [AppColors.gradientMid, AppColors.gradientBottom])
+              ? const LinearGradient(
+                  colors: [AppColors.gradientMid, AppColors.gradientBottom],
+                )
               : AppColors.appBarGradient,
           borderRadius: BorderRadius.circular(12),
           boxShadow: isLoading
@@ -416,7 +528,10 @@ class _SubmitButton extends StatelessWidget {
               ? const SizedBox(
                   width: 22,
                   height: 22,
-                  child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.5,
+                    color: Colors.white,
+                  ),
                 )
               : Text(
                   label,
@@ -438,14 +553,21 @@ class _SwitchModeText extends StatelessWidget {
   final String actionText;
   final VoidCallback onTap;
 
-  const _SwitchModeText({required this.text, required this.actionText, required this.onTap});
+  const _SwitchModeText({
+    required this.text,
+    required this.actionText,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text('$text ', style: const TextStyle(color: AppColors.textS, fontSize: 13)),
+        Text(
+          '$text ',
+          style: const TextStyle(color: AppColors.textS, fontSize: 13),
+        ),
         GestureDetector(
           onTap: onTap,
           child: Text(

@@ -4,13 +4,14 @@ import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:tanqiy/controllers/auth_controller.dart';
 import 'package:tanqiy/core/colors.dart';
+import 'package:tanqiy/pages/badges.dart';
 import 'package:tanqiy/pages/beranda.dart';
 import 'package:tanqiy/pages/games.dart';
 import 'package:tanqiy/pages/jelajahi.dart';
 import 'package:tanqiy/pages/kelas.dart';
 import 'package:tanqiy/pages/profil.dart';
 import 'package:tanqiy/pages/splashscreen.dart';
-import 'pages/page2.dart';
+import 'pages/panduan.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,19 +26,20 @@ class MyApp extends StatelessWidget {
       title: 'TANQI Learning App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.appBarEnd),
         useMaterial3: true,
       ),
       initialRoute: '/splash',
       routes: {
         '/menu': (context) => const MenuPage(),
         // '/page1': (context) => Page1(),
-        '/panduan': (context) => Page2(),
+        '/panduan': (context) => PanduanPage(),
         // '/page3': (context) => Page3(),
         // '/page4': (context) => Page4(),
         // '/page5': (context) => Page5(),
         '/games': (context) => GamesPage(),
         '/splash': (context) => SplashScreen(),
+        '/badges' : (context) => BadgePage()
       },
     );
   }
@@ -60,7 +62,7 @@ class _MenuPageState extends State<MenuPage> {
   final List<Widget> _pages = [
     Beranda(),
     Jelajahi(),
-    kelas(),
+    KelasPage(),
     ProfilePage(),
   ];
 
@@ -78,31 +80,36 @@ class _MenuPageState extends State<MenuPage> {
               elevation: 0,
               foregroundColor: AppColors.textP,
               actions: [
-                IconButton(
-                  icon: const Icon(Icons.search, color: AppColors.textP),
-                  onPressed: () =>
-                      setState(() => _isSearchVisible = !_isSearchVisible),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.settings, color: AppColors.textP),
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (context) {
-                        return DraggableScrollableSheet(
-                          expand: false,
-                          builder: (context, scrollController) {
-                            return ListView(
-                              controller: scrollController,
-                              children: [ListTile(title: Text("Pengaturan"))],
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
-                ),
+                // IconButton(
+                //   icon: const Icon(Icons.search, color: AppColors.textP),
+                //   onPressed: () =>
+                //       setState(() => _isSearchVisible = !_isSearchVisible),
+                // ),
+                // IconButton(
+                //   icon: const Icon(Icons.settings, color: AppColors.textP),
+                //   onPressed: () {
+                //     showModalBottomSheet(
+                //       context: context,
+                //       isScrollControlled: true,
+                //       builder: (context) {
+                //         return DraggableScrollableSheet(
+                //           expand: false,
+                //           builder: (context, scrollController) {
+                //             return ListView(
+                //               controller: scrollController,
+                //               children: [ListTile(title: Text("Pengaturan"))],
+                //             );
+                //           },
+                //         );
+                //       },
+                //     );
+                //   },
+                // ),
+                // IconButton(
+                //   icon: const Icon(Icons.question_mark_rounded, color: AppColors.textP),
+                //   onPressed: () =>
+                //       Get.toNamed('/panduan')
+                // ),
               ],
               flexibleSpace: Container(
                 decoration: const BoxDecoration(

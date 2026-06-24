@@ -1,24 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:tanqiy/models/materibab_model.dart';
+import 'package:tanqiy/widgets/custom_appbar.dart';
 
-class Page2 extends StatelessWidget {
-  const Page2({super.key});
+class PanduanPage extends StatelessWidget {
+  const PanduanPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Halaman 2',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-          onPressed: () => Navigator.pop(context),
-        ),
-        backgroundColor: Colors.deepPurple,
-        elevation: 0,
-      ),
+      appBar: CustomAppBar(arabicTitle: 'دليل الاستخدام', title: 'Panduan Penggunaan'),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
