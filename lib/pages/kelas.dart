@@ -4,125 +4,6 @@ import 'package:tanqiy/controllers/kelas_controller.dart';
 import 'package:tanqiy/core/colors.dart';
 import 'package:tanqiy/models/class_member_model.dart';
 
-// ── Model ────────────────────────────────────────────────────────────────────
-
-// class ClassMember {
-//   final String username;
-//   final int level;
-//   final int currentXP;
-//   final int maxXP;
-//   final int babSelesai;
-//   final MemberRole role;
-
-//   const ClassMember({
-//     required this.username,
-//     required this.level,
-//     required this.currentXP,
-//     required this.maxXP,
-//     required this.babSelesai,
-//     required this.role,
-//   });
-
-//   String get initials {
-//     final parts = username.trim().split(' ');
-//     if (parts.length >= 2) {
-//       return (parts[0][0] + parts[1][0]).toUpperCase();
-//     }
-//     return username.substring(0, username.length >= 2 ? 2 : 1).toUpperCase();
-//   }
-
-//   double get xpProgress => maxXP == 0 ? 0 : (currentXP / maxXP).clamp(0.0, 1.0);
-
-//   int get xpRemaining => maxXP - currentXP;
-
-//   bool get isMaxLevel => level >= 10;
-// }
-
-// ── Dummy Data ────────────────────────────────────────────────────────────────
-
-// final List<ClassMember> _dummyMembers = [
-//   ClassMember(
-//     username: 'Ustadz Ahmad Fauzi',
-//     level: 10,
-//     currentXP: 5000,
-//     maxXP: 5000,
-//     babSelesai: 30,
-//     role: MemberRole.guru,
-//   ),
-//   ClassMember(
-//     username: 'Ustadzah Maryam',
-//     level: 9,
-//     currentXP: 4200,
-//     maxXP: 5000,
-//     babSelesai: 27,
-//     role: MemberRole.guru,
-//   ),
-//   ClassMember(
-//     username: 'Bilal Hakim',
-//     level: 5,
-//     currentXP: 1800,
-//     maxXP: 2500,
-//     babSelesai: 12,
-//     role: MemberRole.murid,
-//   ),
-//   ClassMember(
-//     username: 'Fatimah Zahra',
-//     level: 7,
-//     currentXP: 3100,
-//     maxXP: 4000,
-//     babSelesai: 19,
-//     role: MemberRole.murid,
-//   ),
-//   ClassMember(
-//     username: 'Yusuf Abdillah',
-//     level: 3,
-//     currentXP: 900,
-//     maxXP: 1500,
-//     babSelesai: 6,
-//     role: MemberRole.murid,
-//   ),
-//   ClassMember(
-//     username: 'Khansa Nabilah',
-//     level: 6,
-//     currentXP: 2400,
-//     maxXP: 3000,
-//     babSelesai: 15,
-//     role: MemberRole.murid,
-//   ),
-//   ClassMember(
-//     username: 'Ibrahim Malik',
-//     level: 4,
-//     currentXP: 1200,
-//     maxXP: 2000,
-//     babSelesai: 9,
-//     role: MemberRole.murid,
-//   ),
-//   ClassMember(
-//     username: 'Aisyah Putri',
-//     level: 8,
-//     currentXP: 3600,
-//     maxXP: 4500,
-//     babSelesai: 22,
-//     role: MemberRole.murid,
-//   ),
-//   ClassMember(
-//     username: 'Hasan Basri',
-//     level: 2,
-//     currentXP: 450,
-//     maxXP: 1000,
-//     babSelesai: 3,
-//     role: MemberRole.murid,
-//   ),
-//   ClassMember(
-//     username: 'Zainab Aulia',
-//     level: 5,
-//     currentXP: 2100,
-//     maxXP: 2500,
-//     babSelesai: 11,
-//     role: MemberRole.murid,
-//   ),
-// ];
-
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 class KelasPage extends StatefulWidget {
@@ -200,7 +81,7 @@ class _KelasPageState extends State<KelasPage> {
                       if (gurus.isNotEmpty) ...[
                         _buildSectionLabel(
                           icon: Icons.school_rounded,
-                          label: 'Pengajar',
+                          label: 'مدرس',
                           count: gurus.length,
                         ),
                         const SizedBox(height: 12),
@@ -227,7 +108,7 @@ class _KelasPageState extends State<KelasPage> {
                       if (murids.isNotEmpty) ...[
                         _buildSectionLabel(
                           icon: Icons.people_alt_rounded,
-                          label: 'Anggota Kelas',
+                          label: 'طلاب',
                           count: murids.length,
                         ),
                         const SizedBox(height: 12),
@@ -421,13 +302,13 @@ class _KelasPageState extends State<KelasPage> {
           _buildInfoStat(
             icon: Icons.school_rounded,
             value: '$totalGuru',
-            label: 'Guru',
+            label: 'مدرس',
           ),
           _buildDivider(),
           _buildInfoStat(
             icon: Icons.people_alt_rounded,
             value: '$totalMurid',
-            label: 'Murid',
+            label: 'طلاب',
           ),
         ],
       ),
@@ -683,7 +564,7 @@ class _MemberCard extends StatelessWidget {
         ),
       ),
       child: Text(
-        isGuru ? '👑 Guru' : '📖 Murid',
+        isGuru ? '👑 مدرس' : '📖 طلاب',
         style: TextStyle(
           color: isGuru ? AppColors.appBarTitle : AppColors.textS,
           fontSize: 10,
