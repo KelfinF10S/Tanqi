@@ -104,6 +104,7 @@ Widget _buildBabCard(BuildContext context, BabMerged bab) {
       debugPrint('🔍 RAW LOCKED : ${bab.quiz?.locked}');
       debugPrint('🔍 TYPE : ${bab.quiz?.locked.runtimeType}');
       debugPrint('🤔 KONDISI LOCKED : ${bab.locked}');
+
       if (bab.locked) {
         showSnackbar(
           'Peringatan : تحذير',
@@ -113,10 +114,11 @@ Widget _buildBabCard(BuildContext context, BabMerged bab) {
         Get.to(() => getBabPage(bab));
       }
     },
+
     child: Container(
       decoration: bab.locked
           ? BoxDecoration(
-              gradient: LinearGradient(
+              gradient: const LinearGradient(
                 colors: [
                   AppColors.cardFillLightLocked,
                   AppColors.cardFillLightLocked,
@@ -126,38 +128,78 @@ Widget _buildBabCard(BuildContext context, BabMerged bab) {
               border: Border.all(color: AppColors.cardBorderLocked),
             )
           : BoxDecoration(
-              gradient: LinearGradient(
+              gradient: const LinearGradient(
                 colors: [AppColors.cardFill, AppColors.cardFillLight],
               ),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: AppColors.cardBorder),
             ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              bab.materi.judulArab,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: bab.locked ? AppColors.textDisabled : AppColors.textP,
+
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+
+              children: [
+                Text(
+                  bab.materi.judulArab,
+                  textAlign: TextAlign.center,
+
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: bab.locked
+                        ? AppColors.textDisabled
+                        : AppColors.textP,
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                Text(
+                  bab.materi.judulLatin,
+                  textAlign: TextAlign.center,
+
+                  style: const TextStyle(fontSize: 12, color: AppColors.textS),
+
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 3,
+                ),
+              ],
+            ),
+          ),
+
+          // BADGE NILAI
+          if (bab.quiz?.nilai != 0.0)
+            Positioned(
+              right: 10,
+              bottom: 10,
+
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+
+                decoration: BoxDecoration(
+                  color: AppColors.cardBorder,
+                  borderRadius: BorderRadius.circular(999),
+                ),
+
+                child: Text(
+                  '${bab.quiz!.nilai.toInt()}',
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textP,
+                  ),
+                ),
               ),
             ),
-
-            const SizedBox(height: 8),
-
-            Text(
-              bab.materi.judulLatin,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 12, color: AppColors.textS),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 3,
-            ),
-          ],
-        ),
+        ],
       ),
     ),
   );
