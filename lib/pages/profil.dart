@@ -37,7 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _usernameController.clear();
     super.dispose();
   }
 

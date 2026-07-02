@@ -24,7 +24,7 @@ class BabMerged {
 
   bool   get locked        => quiz?.locked       ?? true;
   bool   get isCompleted   => quiz?.isCompleted  ?? false;
-  double get nilai         => quiz?.nilai         ?? 0.0;  // ← baru
+  double get nilai         => quiz?.nilai         ?? 0.0; 
   int    get totalSoal     => quiz?.totalSoal    ?? 0;
   int    get sudahDijawab  => quiz?.sudahDijawab ?? 0;
   int    get sisaSoal      => quiz?.sisaSoal     ?? 0;

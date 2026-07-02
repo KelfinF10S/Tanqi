@@ -1,9 +1,13 @@
+import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:tanqiy/core/colors.dart';
+import 'package:tanqiy/game/memory_match_game.dart';
+import 'package:tanqiy/game/overlays.dart';
 import 'package:tanqiy/widgets/custom_appbar.dart';
 
 class GamesPage extends StatelessWidget {
-  const GamesPage({super.key});
+  GamesPage({super.key});
+  final game = MemoryMatchGame();
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +18,18 @@ class GamesPage extends StatelessWidget {
         title: 'Permainan Digital',
       ),
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.splashGradient),
+        decoration: BoxDecoration(gradient: AppColors.splashGradient),
+        child: SafeArea(
+          child: GameWidget(
+            game: game,
+            overlayBuilderMap: {
+              'levelComplete': (context, MemoryMatchGame g) =>
+                  LevelCompleteOverlay(game: g),
+              'gameComplete': (context, MemoryMatchGame g) =>
+                  GameCompleteOverlay(game: g),
+            },
+          ),
+        ),
       ),
     );
   }
