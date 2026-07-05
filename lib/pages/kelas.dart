@@ -172,14 +172,6 @@ class _KelasPageState extends State<KelasPage> {
                               letterSpacing: 1,
                             ),
                           ),
-                          Text(
-                            'Kelas Saya',
-                            style: TextStyle(
-                              color: AppColors.appBarTitle,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
                         ],
                       ),
                     ),
@@ -195,7 +187,7 @@ class _KelasPageState extends State<KelasPage> {
                         border: Border.all(color: AppColors.cardBorder),
                       ),
                       child: Text(
-                        '${controller.anggota.length} Anggota',
+                        '${controller.anggota.length} عضو',
                         style: const TextStyle(
                           color: AppColors.appBarTitle,
                           fontSize: 11,
@@ -237,7 +229,7 @@ class _KelasPageState extends State<KelasPage> {
                             fontSize: 14,
                           ),
                           decoration: const InputDecoration(
-                            hintText: 'Cari anggota...',
+                            hintText: 'ابحث عن عضو...',
                             hintStyle: TextStyle(
                               color: AppColors.textS,
                               fontSize: 13,
@@ -398,7 +390,7 @@ class _KelasPageState extends State<KelasPage> {
           Icon(Icons.search_off_rounded, color: AppColors.textS, size: 48),
           const SizedBox(height: 12),
           Text(
-            'Tidak ditemukan',
+            'لم يتم العثور على نتائج', // tidak ditemukan
             style: const TextStyle(
               color: AppColors.textP,
               fontSize: 16,
@@ -407,7 +399,7 @@ class _KelasPageState extends State<KelasPage> {
           ),
           const SizedBox(height: 4),
           Text(
-            'Tidak ada anggota dengan nama "$_query"',
+            'لا يوجد عضو باسم "$_query"', // tidak ada anggota dengan nama
             style: const TextStyle(color: AppColors.textS, fontSize: 12),
             textAlign: TextAlign.center,
           ),
@@ -502,7 +494,7 @@ class _MemberCard extends StatelessWidget {
                             _roleChip(),
                             const SizedBox(width: 8),
                             Text(
-                              'Level ${member.level}',
+                              'المستوى ${member.level}',
                               style: const TextStyle(
                                 color: AppColors.textS,
                                 fontSize: 12,
@@ -581,19 +573,19 @@ class _MemberCard extends StatelessWidget {
         children: [
           _statItem(
             icon: Icons.star_rounded,
-            label: 'Level',
+            label: 'المستوى',
             value: '${member.level}',
           ),
           const SizedBox(width: 10),
           _statItem(
             icon: Icons.bolt_rounded,
-            label: 'Total XP',
+            label: 'إجمالي XP',
             value: '${member.currentXP}',
           ),
           const SizedBox(width: 10),
           _statItem(
             icon: Icons.menu_book_rounded,
-            label: 'Bab Selesai',
+            label: 'الفصول المكتملة',
             value: '${member.babSelesai}',
           ),
         ],

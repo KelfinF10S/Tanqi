@@ -225,7 +225,7 @@ class MateriController extends GetxController {
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
-// QuizController — pengatur kuis 
+// QuizController — pengatur kuis
 // ──────────────────────────────────────────────────────────────────────────────
 class QuizController extends GetxController {
   final soalList = <SoalModel>[].obs;
@@ -357,8 +357,8 @@ class QuizController extends GetxController {
     final body = jsonDecode(reviewRes.body);
 
     final reviewList = body['soal'] as List<dynamic>;
-
     final materi = body['materi'] as Map<String, dynamic>?;
+    final bab = body['bab'] as Map<String, dynamic>?;
 
     soalList.value = reviewList.map((e) => SoalModel.fromJson(e)).toList();
 
@@ -383,8 +383,8 @@ class QuizController extends GetxController {
         jawabanBenar: r['jawaban_benar'] ?? '',
         xpDidapat: 0,
         materiSelesai: true,
-        babSelesai: materi?['bab_selesai'] ?? false,
-        nilai: (materi?['nilai'] ?? 0).toDouble(),
+        babSelesai: bab?['is_completed'] ?? false,
+        nilai: (bab?['nilai'] ?? 0).toDouble(),
         penjelasan: r['penjelasan'],
       );
 
@@ -396,15 +396,11 @@ class QuizController extends GetxController {
     totalXp.value = xp;
 
     quizSelesai.value = true;
-
     materiSelesai.value = true;
-
-    babSelesai.value = materi?['bab_selesai'] ?? false;
-
-    nilaiAkhir.value = (materi?['nilai'] ?? 0).toDouble();
+    babSelesai.value = bab?['is_completed'] ?? false;
+    nilaiAkhir.value = (bab?['nilai'] ?? 0).toDouble();
 
     hasilPerSoal.refresh();
-
     selectedPerSoal.refresh();
   }
 
@@ -501,6 +497,28 @@ class QuizController extends GetxController {
   void nextSoal() => goToSoal(currentIndex.value + 1);
 
   void prevSoal() => goToSoal(currentIndex.value - 1);
+
+  Future<void> retryMateri(int materiId) async {
+    try {
+      isLoading.value = true;
+
+      final res = await http.delete(
+        Uri.parse('$_baseUrl/api/jawaban/reset/$materiId'),
+        headers: await _headers(),
+      );
+
+      if (res.statusCode != 200) {
+        throw Exception('Reset gagal');
+      }
+
+      // reload quiz attempt baru
+      await loadSoal(materiId);
+    } catch (e) {
+      showSnackbar('Error', 'Gagal mengulang materi');
+    } finally {
+      isLoading.value = false;
+    }
+  }
 
   void _showUnlockDialog() {
     Get.dialog(

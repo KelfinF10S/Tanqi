@@ -133,7 +133,7 @@ class UserMateri(db.Model):                      # ← BARU
     materiid     = db.Column(db.Integer, db.ForeignKey('materi.id'), nullable=False)
     is_completed = db.Column(db.Boolean, default=False)
     xp_didapat   = db.Column(db.Integer, default=0)
-    attempt      = db.Column(db.Integer, default=0)
+    attempt      = db.Column(db.Integer, default=1)
 
     def to_dict(self):
         return {

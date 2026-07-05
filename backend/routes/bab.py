@@ -30,10 +30,29 @@ def get_all_bab():
 
         soal_ids      = [s.id for s in Soal.query.filter_by(babid=b.id).all()]
         total_soal    = len(soal_ids)
-        sudah_dijawab = UserJawaban.query.filter(
-            UserJawaban.userid == user_id,
-            UserJawaban.soalid.in_(soal_ids)
-        ).count() if soal_ids else 0
+
+        materi_list = Materi.query.filter_by(babid=b.id).all()
+
+        sudah_dijawab = 0
+
+        for materi in materi_list:
+
+            user_materi = UserMateri.query.filter_by(
+                userid=user_id,
+                materiid=materi.id
+            ).first()
+
+            current_attempt = user_materi.attempt if user_materi else 1
+
+            soal_ids_materi = [
+                s.id for s in Soal.query.filter_by(materiid=materi.id).all()
+            ]
+
+            sudah_dijawab += UserJawaban.query.filter(
+                UserJawaban.userid == user_id,
+                UserJawaban.soalid.in_(soal_ids_materi),
+                UserJawaban.attempt == current_attempt
+            ).count()
 
         bab_data                  = b.to_dict()
         bab_data["locked"]        = user_bab.locked
@@ -69,26 +88,29 @@ def get_materi_by_bab(bab_id):
             userid=user_id, materiid=m.id
         ).first()
 
-        soal_ids      = [s.id for s in Soal.query.filter_by(materiid=m.id).all()]
-        total_soal    = len(soal_ids)
+        soal_ids        = [s.id for s in Soal.query.filter_by(materiid=m.id).all()]
+        total_soal      = len(soal_ids)
+        current_attempt = user_materi.attempt if user_materi else 1
+
         sudah_dijawab = UserJawaban.query.filter(
             UserJawaban.userid == user_id,
-            UserJawaban.soalid.in_(soal_ids)
-        ).count() if soal_ids else 0
+            UserJawaban.soalid.in_(soal_ids),
+            UserJawaban.attempt == current_attempt
+        ).count()
 
         materi_data                  = m.to_dict()
         materi_data["is_completed"]  = user_materi.is_completed if user_materi else False
         materi_data["xp_didapat"]    = user_materi.xp_didapat   if user_materi else 0
-        materi_data["attempt"]       = user_materi.attempt       if user_materi else 0
+        materi_data["attempt"]       = user_materi.attempt      if user_materi else 1
         materi_data["total_soal"]    = total_soal
         materi_data["sudah_dijawab"] = sudah_dijawab
         materi_data["sisa_soal"]     = total_soal - sudah_dijawab
         result.append(materi_data)
 
-    bab_data               = bab.to_dict()
-    bab_data["locked"]     = user_bab.locked
+    bab_data                 = bab.to_dict()
+    bab_data["locked"]       = user_bab.locked
     bab_data["is_completed"] = user_bab.is_completed
-    bab_data["nilai"]      = user_bab.nilai
+    bab_data["nilai"]        = user_bab.nilai
 
     return jsonify({
         "bab":    bab_data,
@@ -107,7 +129,6 @@ def get_soal_by_materi(materi_id):
 
     materi = Materi.query.get_or_404(materi_id)
 
-    # Cek bab tidak terkunci
     user_bab = UserBab.query.filter_by(
         userid=user_id,
         babid=materi.babid
@@ -130,7 +151,7 @@ def get_soal_by_materi(materi_id):
             materiid=materi_id,
             is_completed=False,
             xp_didapat=0,
-            attempt=0
+            attempt=1
         )
         db.session.add(user_materi)
         db.session.commit()
@@ -141,11 +162,14 @@ def get_soal_by_materi(materi_id):
 
     soal_ids = [s.id for s in soal_list]
 
+    current_attempt = user_materi.attempt
+
     answered_ids = {
         uj.soalid
         for uj in UserJawaban.query.filter(
             UserJawaban.userid == user_id,
-            UserJawaban.soalid.in_(soal_ids)
+            UserJawaban.soalid.in_(soal_ids),
+            UserJawaban.attempt == current_attempt
         ).all()
     }
 
@@ -158,7 +182,7 @@ def get_soal_by_materi(materi_id):
 
     materi_data = materi.to_dict()
     materi_data["is_completed"] = user_materi.is_completed
-    materi_data["xp_didapat"] = user_materi.xp_didapat 
+    materi_data["xp_didapat"] = user_materi.xp_didapat
     materi_data["attempt"] = user_materi.attempt
     materi_data["total_soal"] = len(soal_list)
     materi_data["sudah_dijawab"] = len(answered_ids)
@@ -180,39 +204,65 @@ def get_soal_by_materi(materi_id):
 def review_materi(materi_id):
     user_id = int(get_jwt_identity())
 
-    materi      = Materi.query.get_or_404(materi_id)
+    materi = Materi.query.get_or_404(materi_id)
+
     user_materi = UserMateri.query.filter_by(
-        userid=user_id, materiid=materi_id
+        userid=user_id,
+        materiid=materi_id
     ).first()
 
     if not user_materi or not user_materi.is_completed:
-        return jsonify({"message": "Selesaikan materi ini terlebih dahulu"}), 403
+        return jsonify({
+            "message": "Selesaikan materi ini terlebih dahulu"
+        }), 403
+
+    # ← BARU: ambil UserBab
+    user_bab = UserBab.query.filter_by(
+        userid=user_id,
+        babid=materi.babid
+    ).first()
 
     soal_list = Soal.query.filter_by(materiid=materi_id).all()
-    soal_ids  = [s.id for s in soal_list]
+    soal_ids = [s.id for s in soal_list]
+
+    latest_attempt = user_materi.attempt
 
     jawaban_map = {
-        uj.soalid: uj for uj in UserJawaban.query.filter(
+        uj.soalid: uj
+        for uj in UserJawaban.query.filter(
             UserJawaban.userid == user_id,
-            UserJawaban.soalid.in_(soal_ids)
+            UserJawaban.soalid.in_(soal_ids),
+            UserJawaban.attempt == latest_attempt
         ).all()
     }
 
     result = []
     for s in soal_list:
-        uj          = jawaban_map.get(s.id)
-        soal_data   = s.to_dict(hide_answer=False)  # tampilkan jawaban benar
+        uj = jawaban_map.get(s.id)
+        soal_data = s.to_dict(hide_answer=False)
         soal_data["jawaban_user"] = uj.jawaban_user if uj else None
-        soal_data["is_correct"]   = uj.is_correct   if uj else None
-        # Penjelasan hanya tampil kalau jawaban benar
-        soal_data["penjelasan"]   = s.penjelasan if (uj and uj.is_correct) else None
+        soal_data["is_correct"] = uj.is_correct if uj else None
+        soal_data["penjelasan"] = s.penjelasan if (uj and uj.is_correct) else None
         result.append(soal_data)
 
+    materi_data = materi.to_dict()
+    materi_data["is_completed"] = user_materi.is_completed
+    materi_data["xp_didapat"] = user_materi.xp_didapat
+    materi_data["attempt"] = latest_attempt
+
+    # ← BARU: sertakan bab_data
+    bab_data = {
+        "is_completed": user_bab.is_completed if user_bab else False,
+        "nilai": user_bab.nilai if user_bab else 0,
+    }
+
     return jsonify({
-        "materi": materi.to_dict(),
-        "total":  len(result),
-        "soal":   result
+        "materi": materi_data,
+        "bab": bab_data,      # ← ditambahkan
+        "total": len(result),
+        "soal": result
     }), 200
+
 
 @bab_bp.route("/<int:bab_id>/topik", methods=["GET"])
 @jwt_required()
@@ -237,17 +287,20 @@ def get_topik_by_bab(bab_id):
                 userid=user_id, materiid=m.id
             ).first()
 
-            soal_ids      = [s.id for s in Soal.query.filter_by(materiid=m.id).all()]
-            total_soal    = len(soal_ids)
+            soal_ids        = [s.id for s in Soal.query.filter_by(materiid=m.id).all()]
+            total_soal      = len(soal_ids)
+            current_attempt = user_materi.attempt if user_materi else 1
+
             sudah_dijawab = UserJawaban.query.filter(
                 UserJawaban.userid == user_id,
-                UserJawaban.soalid.in_(soal_ids)
-            ).count() if soal_ids else 0
+                UserJawaban.soalid.in_(soal_ids),
+                UserJawaban.attempt == current_attempt
+            ).count()
 
             materi_data                  = m.to_dict()
             materi_data["is_completed"]  = user_materi.is_completed if user_materi else False
             materi_data["xp_didapat"]    = user_materi.xp_didapat   if user_materi else 0
-            materi_data["attempt"]       = user_materi.attempt       if user_materi else 0
+            materi_data["attempt"]       = user_materi.attempt      if user_materi else 1
             materi_data["total_soal"]    = total_soal
             materi_data["sudah_dijawab"] = sudah_dijawab
             materi_data["sisa_soal"]     = total_soal - sudah_dijawab

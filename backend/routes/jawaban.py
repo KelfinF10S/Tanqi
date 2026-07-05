@@ -6,6 +6,52 @@ from models.models import User, Soal, Materi, UserJawaban, UserBab, UserMateri
 jawaban_bp = Blueprint("jawaban", __name__)
 
 
+def _hitung_nilai_bab(user_id: int, bab_id: int):
+    """
+    Menghitung nilai bab menggunakan attempt terbaru dari setiap materi.
+    Return:
+        (nilai, total_benar, total_soal)
+    """
+
+    semua_materi = Materi.query.filter_by(babid=bab_id).all()
+
+    total_soal = 0
+    total_benar = 0
+
+    for materi in semua_materi:
+
+        user_materi = UserMateri.query.filter_by(
+            userid=user_id,
+            materiid=materi.id
+        ).first()
+
+        if not user_materi:
+            continue
+
+        latest_attempt = user_materi.attempt
+
+        jawaban = UserJawaban.query.join(
+            Soal,
+            UserJawaban.soalid == Soal.id
+        ).filter(
+            UserJawaban.userid == user_id,
+            UserJawaban.attempt == latest_attempt,
+            Soal.materiid == materi.id
+        ).all()
+
+        total_soal += len(jawaban)
+
+        total_benar += sum(
+            1 for j in jawaban if j.is_correct
+        )
+
+    nilai = 0
+
+    if total_soal > 0:
+        nilai = round((total_benar / total_soal) * 100, 1)
+
+    return nilai, total_benar, total_soal
+
 # ──────────────────────────────────────────────
 # POST /api/jawaban
 # Body: { "soal_id": 1, "jawaban": "B" }
@@ -14,9 +60,9 @@ jawaban_bp = Blueprint("jawaban", __name__)
 @jwt_required()
 def submit_jawaban():
     user_id = int(get_jwt_identity())
-    data    = request.get_json()
+    data = request.get_json()
 
-    soal_id      = data.get("soal_id")
+    soal_id = data.get("soal_id")
     jawaban_user = str(data.get("jawaban", "")).upper().strip()
 
     if not soal_id or not jawaban_user:
@@ -29,52 +75,83 @@ def submit_jawaban():
     if not soal:
         return jsonify({"message": "Soal tidak ditemukan"}), 404
 
-    existing = UserJawaban.query.filter_by(userid=user_id, soalid=soal_id).first()
+    # Ambil progress materi user (buat baru kalau belum ada)
+    user_materi = UserMateri.query.filter_by(
+        userid=user_id,
+        materiid=soal.materiid
+    ).first()
+
+    if not user_materi:
+        user_materi = UserMateri(
+            userid=user_id,
+            materiid=soal.materiid,
+            is_completed=False,
+            xp_didapat=0,
+            attempt=1
+        )
+        db.session.add(user_materi)
+        db.session.commit()
+
+    # Attempt aktif = attempt milik user_materi, langsung dipakai
+    current_attempt = user_materi.attempt
+
+    # Cek apakah soal pada attempt ini sudah dijawab
+    existing = UserJawaban.query.filter_by(
+        userid=user_id,
+        soalid=soal_id,
+        attempt=current_attempt
+    ).first()
+
     if existing:
-        return jsonify({"message": "Soal ini sudah pernah dijawab"}), 409
+        return jsonify({
+            "message": "Soal ini sudah dijawab pada attempt ini"
+        }), 409
 
     is_correct = jawaban_user == soal.jawaban_benar.upper()
 
-    # XP hanya didapat di attempt pertama materi
-    user_materi = UserMateri.query.filter_by(
-        userid=user_id, materiid=soal.materiid
-    ).first()
-    is_attempt_pertama = (user_materi.attempt == 0) if user_materi else True
-    xp_didapat = soal.xp_reward if (is_correct and is_attempt_pertama) else 0
+    # XP hanya pada attempt pertama
+    is_attempt_pertama = current_attempt == 1
+
+    xp_didapat = (
+        soal.xp_reward
+        if is_correct and is_attempt_pertama
+        else 0
+    )
 
     new_jawaban = UserJawaban(
+        userid=user_id,
+        soalid=soal_id,
         jawaban_user=jawaban_user,
         is_correct=is_correct,
         xp_didapat=xp_didapat,
-        userid=user_id,
-        soalid=soal_id,
+        attempt=current_attempt
     )
+
     db.session.add(new_jawaban)
 
-    # Update XP & level user
+    # Tambahkan XP
     if xp_didapat > 0:
-        user       = User.query.get(user_id)
-        user.xp   += xp_didapat
+        user = User.query.get(user_id)
+        user.xp += xp_didapat
         user.level = _hitung_level(user.xp)
 
     db.session.commit()
 
-    # Cek apakah materi selesai → cek apakah bab selesai
-    materi_selesai, bab_selesai, nilai = _cek_progress(user_id, soal.materiid, soal.babid)
-
-    print("materi_selesai =", materi_selesai)
-    print("bab_selesai =", bab_selesai)
-    print("nilai =", nilai)
+    materi_selesai, bab_selesai, nilai = _cek_progress(
+        user_id=user_id,
+        materi_id=soal.materiid,
+        bab_id=soal.babid,
+    )
 
     return jsonify({
-        "message":        "Jawaban berhasil disimpan",
-        "is_correct":     is_correct,
-        "jawaban_benar":  soal.jawaban_benar.upper(),
-        "xp_didapat":     xp_didapat,
+        "message": "Jawaban berhasil disimpan",
+        "is_correct": is_correct,
+        "jawaban_benar": soal.jawaban_benar.upper(),
+        "xp_didapat": xp_didapat,
         "materi_selesai": materi_selesai,
-        "bab_selesai":    bab_selesai,
-        "nilai":          nilai,         # nilai bab (0 kalau belum selesai)
-        "data":           new_jawaban.to_dict()
+        "bab_selesai": bab_selesai,
+        "nilai": nilai,
+        "data": new_jawaban.to_dict()
     }), 201
 
 
@@ -88,39 +165,27 @@ def reset_jawaban_materi(materi_id):
     user_id = int(get_jwt_identity())
 
     user_materi = UserMateri.query.filter_by(
-        userid=user_id, materiid=materi_id
+        userid=user_id,
+        materiid=materi_id
     ).first_or_404()
 
+    # Tidak boleh retry kalau attempt sekarang belum selesai
     if not user_materi.is_completed:
-        return jsonify({"message": "Materi belum selesai dikerjakan"}), 400
+        return jsonify({
+            "message": "Materi belum selesai dikerjakan"
+        }), 400
 
-    soal_ids = [s.id for s in Soal.query.filter_by(materiid=materi_id).all()]
-
-    UserJawaban.query.filter(
-        UserJawaban.userid == user_id,
-        UserJawaban.soalid.in_(soal_ids)
-    ).delete(synchronize_session="fetch")
-
-    # Reset materi, naikkan attempt
+    # Mulai attempt baru
     user_materi.is_completed = False
-    user_materi.attempt     += 1
-
-    # Reset is_completed bab juga karena ada materi yang diulang
-    materi   = Materi.query.get(materi_id)
-    user_bab = UserBab.query.filter_by(
-        userid=user_id, babid=materi.babid
-    ).first()
-    if user_bab:
-        user_bab.is_completed = False
-        user_bab.nilai        = 0
+    user_materi.attempt += 1
 
     db.session.commit()
 
     return jsonify({
-        "message": f"Materi siap dikerjakan ulang",
+        "message": "Materi siap dikerjakan ulang",
         "materiid": materi_id,
-        "attempt":  user_materi.attempt,
-        "xp_note":  "XP tidak akan bertambah pada attempt berikutnya",
+        "attempt": user_materi.attempt,   # ← fix: dulu double +1
+        "xp_note": "XP hanya diberikan pada attempt pertama"
     }), 200
 
 
@@ -134,75 +199,108 @@ def _hitung_level(xp: int) -> int:
 
 def _cek_progress(user_id: int, materi_id: int, bab_id: int):
     """
-    Cek apakah materi selesai, lalu cek apakah seluruh bab selesai.
-    Return: (materi_selesai, bab_selesai, nilai)
-    """
-    # ── Cek materi selesai ──
-    soal_materi_ids = [s.id for s in Soal.query.filter_by(materiid=materi_id).all()]
-    total_materi    = len(soal_materi_ids)
+    Mengecek apakah materi selesai, kemudian menghitung progress bab.
 
-    if total_materi == 0:
+    Return:
+        (materi_selesai, bab_selesai, nilai)
+    """
+
+    user_materi = UserMateri.query.filter_by(
+        userid=user_id,
+        materiid=materi_id
+    ).first()
+
+    if not user_materi:
         return False, False, 0
 
-    dijawab_materi = UserJawaban.query.filter(
+    current_attempt = user_materi.attempt
+
+    soal_ids = [
+        s.id
+        for s in Soal.query.filter_by(
+            materiid=materi_id
+        ).all()
+    ]
+
+    total_soal = len(soal_ids)
+
+    if total_soal == 0:
+        return False, False, 0
+
+    total_dijawab = UserJawaban.query.filter(
         UserJawaban.userid == user_id,
-        UserJawaban.soalid.in_(soal_materi_ids)
+        UserJawaban.attempt == current_attempt,
+        UserJawaban.soalid.in_(soal_ids)
     ).count()
 
-    print("materi_id =", materi_id)
-    print("total_materi =", total_materi)
-    print("dijawab_materi =", dijawab_materi)
+    if total_dijawab < total_soal:
+        return False, False, 0
 
-    if dijawab_materi < total_materi:
-        return False, False, 0  # materi belum selesai
+    # ==========================================
+    # Materi selesai
+    # ==========================================
+    if not user_materi.is_completed:
 
-    # Tandai materi selesai
-    user_materi = UserMateri.query.filter_by(
-        userid=user_id, materiid=materi_id
-    ).first()
-    if user_materi and not user_materi.is_completed:
-        print("MENANDAI MATERI SELESAI")
         user_materi.is_completed = True
-        # Catat xp yang didapat di materi ini
-        user_materi.xp_didapat = UserJawaban.query.filter(
-            UserJawaban.userid == user_id,
-            UserJawaban.soalid.in_(soal_materi_ids)
-        ).with_entities(db.func.sum(UserJawaban.xp_didapat)).scalar() or 0
+
+        xp_attempt_ini = (
+            UserJawaban.query.filter(
+                UserJawaban.userid == user_id,
+                UserJawaban.attempt == current_attempt,
+                UserJawaban.soalid.in_(soal_ids)
+            )
+            .with_entities(db.func.sum(UserJawaban.xp_didapat))
+            .scalar()
+            or 0
+        )
+
+        # xp_didapat hanya diisi kalau ini attempt pertama,
+        # supaya histori XP asli tidak ketimpa 0 saat retry
+        if current_attempt == 1:
+            user_materi.xp_didapat = xp_attempt_ini
+
+    # ==========================================
+    # Cek seluruh materi dalam bab
+    # ==========================================
+    semua_materi = Materi.query.filter_by(
+        babid=bab_id
+    ).all()
+
+    semua_selesai = True
+
+    for materi in semua_materi:
+
+        um = UserMateri.query.filter_by(
+            userid=user_id,
+            materiid=materi.id
+        ).first()
+
+        if not um or not um.is_completed:
+            semua_selesai = False
+            break
+
+    if not semua_selesai:
         db.session.commit()
+        return True, False, 0
 
-    # ── Cek semua materi dalam bab selesai ──
-    semua_materi = Materi.query.filter_by(babid=bab_id).all()
-    semua_materi_ids = [m.id for m in semua_materi]
+    # ==========================================
+    # Hitung nilai bab
+    # ==========================================
+    nilai, total_benar, total_soal = _hitung_nilai_bab(
+        user_id=user_id,
+        bab_id=bab_id
+    )
 
-    materi_selesai_count = UserMateri.query.filter(
-        UserMateri.userid == user_id,
-        UserMateri.materiid.in_(semua_materi_ids),
-        UserMateri.is_completed == True
-    ).count()
-    
-
-    if materi_selesai_count < len(semua_materi_ids):
-        return True, False, 0  # materi selesai tapi bab belum
-
-    # ── Semua materi selesai → hitung nilai bab ──
-    soal_bab_ids = [s.id for s in Soal.query.filter_by(babid=bab_id).all()]
-    total_bab    = len(soal_bab_ids)
-
-    total_benar = UserJawaban.query.filter(
-        UserJawaban.userid == user_id,
-        UserJawaban.soalid.in_(soal_bab_ids),
-        UserJawaban.is_correct == True
-    ).count()
-
-    nilai = round((total_benar / total_bab) * 100, 1) if total_bab > 0 else 0
-
+    # ==========================================
+    # UserBab
+    # ==========================================
     user_bab = UserBab.query.filter_by(
         userid=user_id,
         babid=bab_id
     ).first()
 
-    # kalau belum ada → buat
     if not user_bab:
+
         user_bab = UserBab(
             userid=user_id,
             babid=bab_id,
@@ -210,17 +308,18 @@ def _cek_progress(user_id: int, materi_id: int, bab_id: int):
             is_completed=False,
             nilai=0
         )
+
         db.session.add(user_bab)
 
-    # selalu update nilai
-    user_bab.nilai = nilai
+    if nilai > user_bab.nilai:
+        user_bab.nilai = nilai
 
-    bab_selesai = nilai >= 70
+    bab_selesai = user_bab.nilai >= 70
 
-    if bab_selesai:
+    if bab_selesai and not user_bab.is_completed:
+
         user_bab.is_completed = True
 
-        # unlock bab berikutnya
         bab_berikutnya = UserBab.query.filter_by(
             userid=user_id,
             babid=bab_id + 1
@@ -231,11 +330,8 @@ def _cek_progress(user_id: int, materi_id: int, bab_id: int):
 
     db.session.commit()
 
-    print("========== BAB CHECK ==========")
-    print("nilai =", nilai)
-    print("bab_selesai =", bab_selesai)
-    print("user_bab.nilai =", user_bab.nilai)
-    print("user_bab.is_completed =", user_bab.is_completed)
-    print("==============================")
-
-    return True, bab_selesai, nilai
+    return (
+        True,
+        user_bab.is_completed,
+        user_bab.nilai
+    )

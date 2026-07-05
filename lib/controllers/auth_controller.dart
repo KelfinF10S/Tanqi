@@ -157,7 +157,7 @@ class AuthController extends GetxController {
 
         showSnackbar(
           'Berhasil',
-          'Selamat datang, ${user.username}! 👋',
+          'مرحبًا بك، ${user.username}! 👋',
           isError: false,
         );
         Get.offAllNamed('/menu');
@@ -221,7 +221,7 @@ class AuthController extends GetxController {
       final token = await AuthStorage.getToken();
 
       if (token == null || token.isEmpty) {
-        showSnackbar('Error', 'Token tidak ditemukan');
+        showSnackbar('خطأ', 'لم يتم العثور على رمز المصادقة');
         return false;
       }
 
@@ -247,18 +247,14 @@ class AuthController extends GetxController {
 
         await AuthStorage.saveToken(token, username: updatedUser.username);
 
-        showSnackbar(
-          'Berhasil',
-          'Username berhasil diperbarui',
-          isError: false,
-        );
+        showSnackbar('تم بنجاح', 'تم تحديث اسم المستخدم بنجاح', isError: false);
         return true;
       } else {
-        showSnackbar('Gagal', data['message'] ?? 'Gagal memperbarui username');
+        showSnackbar('فشل', data['message'] ?? 'فشل في تحديث اسم المستخدم');
         return false;
       }
     } catch (e) {
-      showSnackbar('Error', 'Tidak dapat terhubung ke server: $e');
+      showSnackbar('خطأ', 'تعذر الاتصال بالخادم: $e');
       return false;
     } finally {
       isLoading.value = false;

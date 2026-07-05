@@ -74,7 +74,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   const Text(
-                    'Profil Saya',
+                    'ملفي الشخصي',
                     style: TextStyle(color: AppColors.textS, fontSize: 13),
                   ),
 
@@ -135,7 +135,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            'Username',
+                            'اسم المستخدم',
                             style: TextStyle(
                               color: AppColors.appBarTitle,
                               fontSize: 12,
@@ -200,10 +200,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                         validator: (val) {
                                           if (val == null ||
                                               val.trim().isEmpty) {
-                                            return 'Username tidak boleh kosong';
+                                            return 'لا يمكن أن يكون اسم المستخدم فارغًا';
                                           }
                                           if (val.trim().length < 3) {
-                                            return 'Minimal 3 karakter';
+                                            return 'الحد الأدنى 3 أحرف';
                                           }
                                           return null;
                                         },
@@ -264,7 +264,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                       const SizedBox(width: 4),
                                       Text(
-                                        _isEditing ? 'Simpan' : 'Edit',
+                                        _isEditing ? 'حفظ' : 'تعديل',
                                         style: const TextStyle(
                                           color: AppColors.textP,
                                           fontSize: 12,
@@ -289,7 +289,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 });
                               },
                               child: const Text(
-                                'Batal',
+                                'إلغاء',
                                 style: TextStyle(
                                   color: AppColors.textS,
                                   fontSize: 12,
@@ -331,14 +331,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const Text(
-                                      'Level Saat Ini',
+                                      'المستوى الحالي',
                                       style: TextStyle(
                                         color: AppColors.textS,
                                         fontSize: 12,
                                       ),
                                     ),
                                     Text(
-                                      'Level ${user.level}',
+                                      'المستوى ${user.level}',
                                       style: const TextStyle(
                                         color: AppColors.appBarTitle,
                                         fontSize: 18,
@@ -392,7 +392,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Level ${user.level}',
+                              'المستوى ${user.level}',
                               style: const TextStyle(
                                 color: AppColors.textS,
                                 fontSize: 11,
@@ -400,8 +400,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                             Text(
                               user.isMaxLevel
-                                  ? 'Level Maksimal! 🎉'
-                                  : '${user.xpRemaining} XP lagi ke Level ${user.level + 1}',
+                                  ? 'لقد وصلت إلى أعلى مستوى! 🎉'
+                                  : '${user.xpRemaining} نقطة خبرة للوصول إلى المستوى ${user.level + 1}',
                               style: const TextStyle(
                                 color: AppColors.textS,
                                 fontSize: 11,
@@ -421,7 +421,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       Expanded(
                         child: _buildStatCard(
                           icon: Icons.menu_book_rounded,
-                          label: 'Bab Telah Diselesaikan',
+                          label: 'الفصول المكتملة',
                           value: '${user.babSelesai}',
                         ),
                       ),
@@ -429,9 +429,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       Expanded(
                         child: _buildStatCard(
                           icon: Icons.military_tech_rounded,
-                          label: 'Badges',
+                          label: 'الشارات',
                           value: '${user.babSelesai}',
-                          onTap: () => Get.toNamed('/badges')
+                          onTap: () => Get.toNamed('/badges'),
                         ),
                       ),
                     ],
@@ -450,18 +450,18 @@ class _ProfilePageState extends State<ProfilePage> {
                             side: const BorderSide(color: AppColors.cardBorder),
                           ),
                           title: const Text(
-                            'Keluar?',
+                            'تسجيل الخروج؟',
                             style: TextStyle(color: AppColors.appBarTitle),
                           ),
                           content: const Text(
-                            'Kamu yakin ingin logout dari akun ini?',
+                            'هل أنت متأكد أنك تريد تسجيل الخروج من هذا الحساب؟',
                             style: TextStyle(color: AppColors.textS),
                           ),
                           actions: [
                             TextButton(
                               onPressed: () => Get.back(),
                               child: const Text(
-                                'Batal',
+                                'إلغاء',
                                 style: TextStyle(color: AppColors.textS),
                               ),
                             ),
@@ -472,7 +472,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Get.offAll(() => const AuthPage());
                               },
                               child: const Text(
-                                'Logout',
+                                'تسجيل الخروج',
                                 style: TextStyle(color: Color(0xFFEF4444)),
                               ),
                             ),
@@ -500,7 +500,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           SizedBox(width: 8),
                           Text(
-                            'Logout',
+                            'تسجيل الخروج',
                             style: TextStyle(
                               color: Color(0xFFEF4444),
                               fontSize: 15,
