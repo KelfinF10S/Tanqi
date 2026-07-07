@@ -17,7 +17,7 @@ Widget roleChip(member) {
         ),
       ),
       child: Text(
-        isGuru ? '👑 Guru' : '📖 Murid',
+        isGuru ? '👑 معلم' : '📖 طالب',
         style: TextStyle(
           color: isGuru ? AppColors.appBarTitle : AppColors.textS,
           fontSize: 10,

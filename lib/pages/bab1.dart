@@ -9,6 +9,7 @@ import 'package:tanqiy/models/stimulus_data_model.dart';
 import 'package:tanqiy/models/bab_merged_model.dart';
 import 'package:tanqiy/pages/loading.dart';
 import 'package:tanqiy/widgets/background_painter.dart';
+import 'package:tanqiy/widgets/retry_dialog.dart';
 
 // ─────────────────────────────────────────
 //  PAGE 1  (entry point)
@@ -85,7 +86,7 @@ class _Page1State extends State<Page1> with SingleTickerProviderStateMixin {
           }
 
           if (!snap.hasData) {
-            return const ErrorScreen(error: 'Data tidak tersedia');
+            return const ErrorScreen(error: 'البيانات غير متوفرة');
           }
 
           return FadeTransition(
@@ -277,7 +278,7 @@ class _ProgressBanner extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Text(
-            '${(pct * 100).toInt()}% dijelajahi',
+            'تم استكشاف ${(pct * 100).toInt()}٪',
             style: const TextStyle(color: AppColors.textMuted, fontSize: 11),
           ),
         ],
@@ -337,7 +338,7 @@ class _StimulusSection extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   const Text(
-                    'Ayat Stimulus',
+                    'الآية المحفزة',
                     style: TextStyle(
                       color: AppColors.gold,
                       fontSize: 12,
@@ -460,7 +461,7 @@ class _KategoriPicker extends StatelessWidget {
           const Padding(
             padding: EdgeInsets.only(bottom: 12),
             child: Text(
-              'Pilih Topik',
+              'اختر موضوعًا',
               style: TextStyle(
                 color: AppColors.textSecondary,
                 fontSize: 12,
@@ -575,7 +576,7 @@ class _KategoriDetail extends StatelessWidget {
             const SizedBox(height: 16),
             if (kategori.tandaUmum.isNotEmpty) ...[
               _SectionLabel(
-                label: 'Tanda-tanda Umum',
+                label: 'العلامات العامة',
                 color: kategori.accentColor,
               ),
               const SizedBox(height: 10),
@@ -585,7 +586,7 @@ class _KategoriDetail extends StatelessWidget {
               const SizedBox(height: 16),
             ],
             if (kategori.subBab.isNotEmpty) ...[
-              _SectionLabel(label: 'Pembahasan', color: kategori.accentColor),
+              _SectionLabel(label: 'الشرح', color: kategori.accentColor),
               const SizedBox(height: 10),
               ...kategori.subBab.asMap().entries.map((e) {
                 final subId =
@@ -789,7 +790,7 @@ class _TandaUmumCard extends StatelessWidget {
             ),
           ),
           title: Text(
-            'Tanda: ${t['tanda'] ?? ''}',
+            'العلامة: ${t['tanda'] ?? ''}',
             style: const TextStyle(color: AppColors.textPrimary, fontSize: 13),
           ),
           iconColor: color,
@@ -952,7 +953,10 @@ class _SubBabCardState extends State<_SubBabCard> {
                   ],
                   if (tandaList != null && tandaList.isNotEmpty) ...[
                     const SizedBox(height: 14),
-                    _SectionLabel(label: 'Tanda-tanda', color: widget.accent),
+                    _SectionLabel(
+                      label: 'العلامات',
+                      color: widget.accent,
+                    ), // tanda-tanda
                     const SizedBox(height: 8),
                     ...tandaList.map(
                       (t) => _TandaDetailTile(
@@ -963,7 +967,10 @@ class _SubBabCardState extends State<_SubBabCard> {
                   ],
                   if (jenisList != null && jenisList.isNotEmpty) ...[
                     const SizedBox(height: 14),
-                    _SectionLabel(label: 'Jenis', color: widget.accent),
+                    _SectionLabel(
+                      label: 'النوع',
+                      color: widget.accent,
+                    ), // jenis
                     const SizedBox(height: 8),
                     ...jenisList.map(
                       (j) => _JenisTile(
@@ -974,7 +981,10 @@ class _SubBabCardState extends State<_SubBabCard> {
                   ],
                   if (hurufList != null && hurufList.isNotEmpty) ...[
                     const SizedBox(height: 14),
-                    _SectionLabel(label: 'Daftar Huruf', color: widget.accent),
+                    _SectionLabel(
+                      label: 'قائمة الحروف',
+                      color: widget.accent,
+                    ), // daftar huruf
                     const SizedBox(height: 8),
                     ...hurufList.map(
                       (h) => _HurufTile(
@@ -987,9 +997,16 @@ class _SubBabCardState extends State<_SubBabCard> {
                   // ── QUIZ SECTION ──
                   if (widget.materiId != null) ...[
                     const SizedBox(height: 20),
-                    _SectionLabel(label: 'Kuis', color: widget.accent),
+                    _SectionLabel(
+                      label: 'اختبار',
+                      color: widget.accent,
+                    ), // kuis
                     const SizedBox(height: 10),
-                    _InlineQuiz(controller: _quizCtrl, accent: widget.accent),
+                    _InlineQuiz(
+                      controller: _quizCtrl,
+                      accent: widget.accent,
+                      materiId: widget.materiId!,
+                    ),
                   ],
                 ],
               ),
@@ -1007,8 +1024,13 @@ class _SubBabCardState extends State<_SubBabCard> {
 class _InlineQuiz extends StatelessWidget {
   final QuizController controller;
   final Color accent;
+  final int materiId;
 
-  const _InlineQuiz({required this.controller, required this.accent});
+  const _InlineQuiz({
+    required this.controller,
+    required this.accent,
+    required this.materiId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1031,7 +1053,7 @@ class _InlineQuiz extends StatelessWidget {
             border: Border.all(color: accent.withOpacity(0.2)),
           ),
           child: const Text(
-            'Belum ada soal untuk materi ini.',
+            'لا توجد أسئلة لهذا الدرس حتى الآن.', // belum ada soal untuk materi ini
             style: TextStyle(color: AppColors.textMuted, fontSize: 12),
             textAlign: TextAlign.center,
           ),
@@ -1088,7 +1110,11 @@ class _InlineQuiz extends StatelessWidget {
           // ── Panel hasil (muncul setelah semua selesai) ──
           if (controller.quizSelesai.value) ...[
             const SizedBox(height: 20),
-            _HasilPanel(controller: controller, accent: accent),
+            _HasilPanel(
+              controller: controller,
+              accent: accent,
+              materiId: materiId,
+            ),
           ],
         ],
       );
@@ -1099,8 +1125,13 @@ class _InlineQuiz extends StatelessWidget {
 class _HasilPanel extends StatelessWidget {
   final QuizController controller;
   final Color accent;
+  final int materiId;
 
-  const _HasilPanel({required this.controller, required this.accent});
+  const _HasilPanel({
+    required this.controller,
+    required this.accent,
+    required this.materiId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1130,7 +1161,7 @@ class _HasilPanel extends StatelessWidget {
               Icon(Icons.emoji_events_rounded, color: accent, size: 20),
               const SizedBox(width: 8),
               Text(
-                'Hasil Kuis',
+                'نتيجة الاختبار', //hasil kuis
                 style: TextStyle(
                   color: accent,
                   fontSize: 14,
@@ -1188,13 +1219,13 @@ class _HasilPanel extends StatelessWidget {
             children: [
               _StatChip(
                 icon: Icons.check_circle_outline,
-                label: '$benar Benar',
+                label: '$benar صحيحة',
                 color: Colors.green,
               ),
               const SizedBox(width: 12),
               _StatChip(
                 icon: Icons.cancel_outlined,
-                label: '$salah Salah',
+                label: '$salah خاطئة',
                 color: Colors.red,
               ),
               const SizedBox(width: 12),
@@ -1217,7 +1248,7 @@ class _HasilPanel extends StatelessWidget {
                         size: 16,
                       ),
                       label: Text(
-                        'Lihat Review Jawaban',
+                        'عرض مراجعة الإجابات',
                         style: TextStyle(color: accent, fontSize: 13),
                       ),
                       style: OutlinedButton.styleFrom(
@@ -1234,7 +1265,30 @@ class _HasilPanel extends StatelessWidget {
           // Panel review
           Obx(
             () => controller.showReview.value
-                ? _ReviewPanel(controller: controller, accent: accent)
+                ? Column(
+                    children: [
+                      _ReviewPanel(controller: controller, accent: accent),
+
+                      const SizedBox(height: 20),
+
+                      SizedBox(
+                        width: double.infinity,
+                        child: FilledButton.tonalIcon(
+                          style: ButtonStyle(
+                            side: MaterialStatePropertyAll(BorderSide(color: accent)),
+                            backgroundColor: MaterialStatePropertyAll(
+                              accent
+                            ),
+                            foregroundColor: MaterialStatePropertyAll(AppColors.textP),
+                          ),
+                          onPressed: () =>
+                              showRetryDialog(controller, materiId, accent),
+                          icon: const Icon(Icons.refresh_rounded),
+                          label: const Text("إعادة المحاولة"),
+                        ),
+                      ),
+                    ],
+                  )
                 : const SizedBox.shrink(),
           ),
         ],
@@ -1308,7 +1362,7 @@ class _ReviewPanel extends StatelessWidget {
         Divider(color: accent.withOpacity(0.2)),
         const SizedBox(height: 12),
         Text(
-          'REVIEW JAWABAN',
+          'مراجعة الإجابات',
           style: TextStyle(
             color: accent,
             fontSize: 10,
@@ -1375,7 +1429,7 @@ class _ReviewPanel extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      isCorrect ? 'Benar' : 'Salah',
+                      isCorrect ? 'صحيح' : 'خطأ',
                       style: TextStyle(
                         color: color,
                         fontSize: 12,
@@ -1399,7 +1453,7 @@ class _ReviewPanel extends StatelessWidget {
 
                 // Jawaban yang dipilih
                 _ReviewOpsiRow(
-                  label: 'Jawabanmu',
+                  label: 'إجابتك',
                   teks: selectedTeks,
                   color: color,
                 ),
@@ -1408,7 +1462,7 @@ class _ReviewPanel extends StatelessWidget {
                 if (isCorrect) ...[
                   const SizedBox(height: 6),
                   _ReviewOpsiRow(
-                    label: 'Jawaban benar',
+                    label: 'الإجابة الصحيحة',
                     teks: benarTeks,
                     color: Colors.green,
                   ),
@@ -1531,7 +1585,7 @@ class _SoalCard extends StatelessWidget {
           children: [
             // Label soal ke-N
             Text(
-              'Soal ${idx + 1} dari ${controller.soalList.length}',
+              'السؤال ${idx + 1} من ${controller.soalList.length}',
               style: TextStyle(
                 color: accent.withOpacity(0.7),
                 fontSize: 11,
@@ -1653,7 +1707,7 @@ class _SoalCard extends StatelessWidget {
                   OutlinedButton.icon(
                     onPressed: controller.prevSoal,
                     icon: const Icon(Icons.arrow_back_ios_new, size: 12),
-                    label: const Text('Kembali'),
+                    label: const Text('العودة'),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: accent,
                       side: BorderSide(color: accent.withOpacity(0.5)),
@@ -1697,16 +1751,13 @@ class _SoalCard extends StatelessWidget {
                               strokeWidth: 2,
                             ),
                           )
-                        : const Text(
-                            'Konfirmasi',
-                            style: TextStyle(fontSize: 13),
-                          ),
+                        : const Text('تأكيد', style: TextStyle(fontSize: 13)),
                   ),
                 ] else if (!controller.isLastSoal) ...[
                   ElevatedButton.icon(
                     onPressed: controller.nextSoal,
                     icon: const Icon(Icons.arrow_forward_ios, size: 12),
-                    label: const Text('Lanjut'),
+                    label: const Text('متابعة'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: accent,
                       foregroundColor: Colors.white,
@@ -2030,7 +2081,7 @@ class _JenisTile extends StatelessWidget {
           ],
           if (tandaTanda != null && tandaTanda.isNotEmpty) ...[
             const SizedBox(height: 10),
-            _SectionLabel(label: 'Tanda Mu\'annats', color: accent),
+            _SectionLabel(label: 'علامات المؤنث', color: accent),
             const SizedBox(height: 6),
             ...tandaTanda.map((tt) {
               final t = tt as Map<String, dynamic>;

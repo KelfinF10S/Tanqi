@@ -107,8 +107,8 @@ Widget _buildBabCard(BuildContext context, BabMerged bab) {
 
       if (bab.locked) {
         showSnackbar(
-          'Peringatan : تحذير',
-          'لا تزال الفصول مغلقة، أكمل الفصل السابق أولاً\nBab masih terkunci, selesaikan bab sebelumnya terlebih dahulu',
+          'تحذير',
+          'لا يمكنك فتح هذا الفصل بعد. أكمل الفصل السابق أولاً',
         );
       } else {
         Get.to(() => getBabPage(bab));
@@ -157,17 +157,16 @@ Widget _buildBabCard(BuildContext context, BabMerged bab) {
                   ),
                 ),
 
-                const SizedBox(height: 8),
+              
+                // Text(
+                //   bab.materi.judulLatin,
+                //   textAlign: TextAlign.center,
 
-                Text(
-                  bab.materi.judulLatin,
-                  textAlign: TextAlign.center,
+                //   style: const TextStyle(fontSize: 12, color: AppColors.textS),
 
-                  style: const TextStyle(fontSize: 12, color: AppColors.textS),
-
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 3,
-                ),
+                //   overflow: TextOverflow.ellipsis,
+                //   maxLines: 3,
+                // ),
               ],
             ),
           ),
@@ -190,7 +189,7 @@ Widget _buildBabCard(BuildContext context, BabMerged bab) {
                 ),
 
                 child: Text(
-                  '${bab.quiz!.nilai.toInt()}',
+                  'الدرجة :  ${bab.quiz!.nilai.toInt()}',
                   style: const TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
@@ -235,12 +234,12 @@ Widget _buildStaticCard(
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
-            Text(
-              subtitle,
-              style: const TextStyle(fontSize: 12, color: AppColors.textS),
-              textAlign: TextAlign.center,
-            ),
+            // const SizedBox(height: 8),
+            // Text(
+            //   subtitle,
+            //   style: const TextStyle(fontSize: 12, color: AppColors.textS),
+            //   textAlign: TextAlign.center,
+            // ),
           ],
         ),
       ),
@@ -274,15 +273,6 @@ Widget _welcomeCard(BuildContext context) {
                     fontWeight: FontWeight.bold,
                     color: AppColors.textP,
                   ),
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                ),
-
-                const SizedBox(height: 8),
-
-                Text(
-                  'Selamat datang di Tanqi, mari belajar bersama dengan menyenangkan!',
-                  style: const TextStyle(fontSize: 12, color: AppColors.textS),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
