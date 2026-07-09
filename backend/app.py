@@ -17,7 +17,7 @@ def create_app():
 
     app.register_blueprint(auth_bp,     url_prefix="/api/auth")
     app.register_blueprint(bab_bp,      url_prefix="/api/bab")
-    app.register_blueprint(jawaban_bp,  url_prefix="/api/jawaban")
+    app.register_blueprint(jawaban_bp,  url_prefix="/api/kuis/jawaban")
     app.register_blueprint(profile_bp,  url_prefix="/api/profile")
 
     with app.app_context():

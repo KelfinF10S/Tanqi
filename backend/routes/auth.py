@@ -1,11 +1,14 @@
+# routes/auth.py
+
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 from extensions import db
-from models.models import User, UserBab, UserMateri, Bab, Materi
+from models.models import User, UserBab, UserMateri, Bab, Materi, Kuis, UserKuis
 from config import Config
 
 auth_bp = Blueprint("auth", __name__)
+
 
 # ──────────────────────────────────────────────
 # POST /api/auth/register
@@ -94,6 +97,16 @@ def register():
             )
         )
 
+    # Auto-create UserKuis
+    for kuis in Kuis.query.all():
+        db.session.add(
+            UserKuis(
+                userid=new_user.id,
+                kuisid=kuis.id,
+                attempt=1,
+            )
+        )
+
     db.session.commit()
 
     return jsonify({
@@ -137,13 +150,20 @@ def me():
     user_id = int(get_jwt_identity())
     user    = User.query.get_or_404(user_id)
 
-    # Hitung bab selesai langsung dari UserBab
-    bab_selesai = UserBab.query.filter_by(
-        userid=user_id,
-        is_completed=True
-    ).count()
+    # Hitung bab selesai dari UserKuis, join ke Kuis supaya passing_score
+    # per-kuis dipakai (dulu hardcode >= 70 di sini, sekarang >= Kuis.passing_score)
+    bab_selesai = (
+        db.session.query(UserKuis)
+        .join(Kuis, UserKuis.kuisid == Kuis.id)
+        .filter(
+            UserKuis.userid == user_id,
+            UserKuis.is_completed == True,
+            UserKuis.nilai >= Kuis.passing_score
+        )
+        .count()
+    )
 
-    user_data              = user.to_dict()
+    user_data                = user.to_dict()
     user_data["bab_selesai"] = bab_selesai
 
     return jsonify({"user": user_data}), 200

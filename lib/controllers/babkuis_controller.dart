@@ -8,11 +8,13 @@ import 'package:tanqiy/core/const.dart';
 import 'package:tanqiy/data/auth_local.dart';
 import 'package:tanqiy/models/bab_merged_model.dart';
 import 'package:tanqiy/models/bab_model.dart';
+import 'package:tanqiy/models/kuis_baru/jawaban_kuis_model.dart';
+import 'package:tanqiy/models/kuis_baru/kuis_meta_model.dart';
+import 'package:tanqiy/models/kuis_baru/review_soal_kuis_model.dart';
+import 'package:tanqiy/models/kuis_baru/soal_kuis_model.dart';
 import 'package:tanqiy/models/materibab_model.dart';
 import 'package:tanqiy/models/materi_model.dart';
-import 'package:tanqiy/models/soal_model.dart';
-import 'package:tanqiy/models/jawaban_model.dart';
-import 'package:tanqiy/models/review_soal_model.dart';
+import 'package:tanqiy/models/nahwu_node_model.dart';
 import 'package:tanqiy/models/topik_model.dart';
 import 'package:tanqiy/widgets/snackbar.dart';
 
@@ -87,38 +89,27 @@ class BabController extends GetxController {
         .toList();
   }
 
-  // Reset per materi (bukan per bab)
-  Future<void> resetMateri(int materiId) async {
-    try {
-      isLoading.value = true;
-      final res = await http.delete(
-        Uri.parse('$_baseUrl/api/jawaban/reset/$materiId'),
-        headers: await _headers(),
-      );
-      final body = jsonDecode(res.body);
-      if (res.statusCode == 200) {
-        await fetchBab();
-        Get.snackbar(
-          'Berhasil',
-          body['message'],
-          snackPosition: SnackPosition.BOTTOM,
-        );
-      } else {
-        Get.snackbar(
-          'Gagal',
-          body['message'] ?? 'Terjadi kesalahan',
-          snackPosition: SnackPosition.BOTTOM,
-        );
-      }
-    } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Gagal reset materi: $e',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    } finally {
-      isLoading.value = false;
+  // ── Pencarian node materi ──────────────────────────────────────────────
+
+  MateriBAB? findBabById(String babId) {
+    final merged = babList.firstWhereOrNull((b) => b.materi.id == babId);
+    return merged?.materi;
+  }
+
+  NahwuNode? findMateriNode(String babId, String nodeId) {
+    final bab = findBabById(babId);
+    if (bab == null) return null;
+    for (final node in bab.bab) {
+      final found = node.findById(nodeId);
+      if (found != null) return found;
     }
+    return null;
+  }
+
+  List<NahwuNode> flattenBab(String babId) {
+    final bab = findBabById(babId);
+    if (bab == null) return [];
+    return bab.bab.expand((node) => node.flatten()).toList();
   }
 
   Future<void> loadSlugMap(int babId) async {
@@ -222,112 +213,74 @@ class MateriController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  // Tandai materi sudah dibaca/dipelajari
+  Future<void> selesaikanMateri(int materiId) async {
+    try {
+      final res = await http.post(
+        Uri.parse('$_baseUrl/api/bab/materi/$materiId/selesai'),
+        headers: await _headers(),
+      );
+      if (res.statusCode == 200) {
+        final idx = materiList.indexWhere((m) => m.id == materiId);
+        if (idx != -1) {
+          materiList[idx] = materiList[idx].copyWith(isCompleted: true);
+          materiList.refresh();
+        }
+      }
+    } catch (e) {
+      debugPrint('[MateriController] selesaikanMateri gagal: $e');
+    }
+  }
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
-// QuizController — pengatur kuis
+// QuizController — pengatur kuis per-bab, berurutan, feedback per soal
 // ──────────────────────────────────────────────────────────────────────────────
 class QuizController extends GetxController {
-  final soalList = <SoalModel>[].obs;
+  final Rx<SoalKuisModel?> soalAktif = Rx<SoalKuisModel?>(null);
+  final Rx<KuisMetaModel?> kuisMeta = Rx<KuisMetaModel?>(null);
 
   final isLoading = false.obs;
   final isSubmitting = false.obs;
   final errorMessage = ''.obs;
 
-  final currentIndex = 0.obs;
-
-  final opsiPerSoal = <int, List<Map<String, String>>>{}.obs;
-  final selectedPerSoal = <int, String>{}.obs;
-  final hasilPerSoal = <int, JawabanModel>{}.obs;
+  final Rx<dynamic> jawabanDipilih = Rx<dynamic>(null);
+  final Rx<JawabanKuisModel?> hasilAktif = Rx<JawabanKuisModel?>(null);
 
   final quizSelesai = false.obs;
-  final materiSelesai = false.obs;
   final babSelesai = false.obs;
-
   final nilaiAkhir = 0.0.obs;
-  final totalXp = 0.obs;
 
   final showReview = false.obs;
-
-  // supaya dialog unlock tidak muncul terus
   final unlockDialogShown = false.obs;
 
-  bool get isLastSoal => currentIndex.value == soalList.length - 1;
-
-  bool get isFirstSoal => currentIndex.value == 0;
-
-  SoalModel? get soalAktif =>
-      soalList.isNotEmpty ? soalList[currentIndex.value] : null;
-
-  String get selectedLabel => selectedPerSoal[currentIndex.value] ?? '';
-
-  JawabanModel? get hasilAktif => hasilPerSoal[currentIndex.value];
-
-  String get statusAktif {
-    if (hasilPerSoal.containsKey(currentIndex.value)) {
-      return 'answered';
-    }
-
-    if (selectedPerSoal.containsKey(currentIndex.value)) {
-      return 'selected';
-    }
-
-    return 'idle';
-  }
+  int? _babId;
 
   Future<Map<String, String>> _headers() async {
     final token = await AuthStorage.getToken();
-
     return {
       'Content-Type': 'application/json',
-
       if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
     };
   }
 
-  Future<void> loadSoal(int materiId) async {
+  Future<void> loadKuis(int babId) async {
     try {
       isLoading.value = true;
-
       errorMessage.value = '';
+      _babId = babId;
 
-      currentIndex.value = 0;
-
-      soalList.clear();
-
-      opsiPerSoal.clear();
-
-      selectedPerSoal.clear();
-
-      hasilPerSoal.clear();
-
+      jawabanDipilih.value = null;
+      hasilAktif.value = null;
       quizSelesai.value = false;
-
       showReview.value = false;
-
-      materiSelesai.value = false;
-
       babSelesai.value = false;
-
       nilaiAkhir.value = 0;
-
-      totalXp.value = 0;
-
       unlockDialogShown.value = false;
 
-      final reviewRes = await http.get(
-        Uri.parse('$_baseUrl/api/bab/materi/$materiId/review'),
-        headers: await _headers(),
-      );
-
-      if (reviewRes.statusCode == 200) {
-        await _restoreFromReview(reviewRes);
-
-        return;
-      }
-
       final res = await http.get(
-        Uri.parse('$_baseUrl/api/bab/materi/$materiId/soal'),
+        Uri.parse('$_baseUrl/api/bab/$babId/kuis'),
         headers: await _headers(),
       );
 
@@ -336,92 +289,35 @@ class QuizController extends GetxController {
       }
 
       final body = jsonDecode(res.body);
+      kuisMeta.value = KuisMetaModel.fromJson(body['kuis']);
 
-      final list = body['soal'] as List<dynamic>;
-
-      soalList.value = list.map((e) => SoalModel.fromJson(e)).toList();
-
-      for (int i = 0; i < soalList.length; i++) {
-        opsiPerSoal[i] = soalList[i].opsiAcak;
+      if (body['soal_aktif'] == null) {
+        quizSelesai.value = true;
+        babSelesai.value =
+            kuisMeta.value!.nilai >= kuisMeta.value!.passingScore;
+        nilaiAkhir.value = kuisMeta.value!.nilai;
+        showReview.value = true;
+        return;
       }
 
-      opsiPerSoal.refresh();
+      soalAktif.value = SoalKuisModel.fromJson(body['soal_aktif']);
     } catch (e) {
-      errorMessage.value = 'Gagal memuat soal: $e';
+      errorMessage.value = 'Gagal memuat kuis: $e';
     } finally {
       isLoading.value = false;
     }
   }
 
-  Future<void> _restoreFromReview(http.Response reviewRes) async {
-    final body = jsonDecode(reviewRes.body);
-
-    final reviewList = body['soal'] as List<dynamic>;
-    final materi = body['materi'] as Map<String, dynamic>?;
-    final bab = body['bab'] as Map<String, dynamic>?;
-
-    soalList.value = reviewList.map((e) => SoalModel.fromJson(e)).toList();
-
-    for (int i = 0; i < soalList.length; i++) {
-      opsiPerSoal[i] = soalList[i].opsiAcak;
-    }
-
-    int xp = 0;
-
-    for (int i = 0; i < reviewList.length; i++) {
-      final r = reviewList[i];
-
-      final user = r['jawaban_user'];
-
-      if (user == null) continue;
-
-      selectedPerSoal[i] = user;
-
-      hasilPerSoal[i] = JawabanModel(
-        message: '',
-        isCorrect: r['is_correct'],
-        jawabanBenar: r['jawaban_benar'] ?? '',
-        xpDidapat: 0,
-        materiSelesai: true,
-        babSelesai: bab?['is_completed'] ?? false,
-        nilai: (bab?['nilai'] ?? 0).toDouble(),
-        penjelasan: r['penjelasan'],
-      );
-
-      if (r['is_correct'] == true) {
-        xp++;
-      }
-    }
-
-    totalXp.value = xp;
-
-    quizSelesai.value = true;
-    materiSelesai.value = true;
-    babSelesai.value = bab?['is_completed'] ?? false;
-    nilaiAkhir.value = (bab?['nilai'] ?? 0).toDouble();
-
-    hasilPerSoal.refresh();
-    selectedPerSoal.refresh();
-  }
-
-  void pilihJawaban(String dbLabel) {
-    if (hasilPerSoal.containsKey(currentIndex.value)) {
-      return;
-    }
-
-    selectedPerSoal[currentIndex.value] = dbLabel;
-
-    selectedPerSoal.refresh();
+  void pilihJawaban(dynamic jawaban) {
+    if (hasilAktif.value != null) return;
+    jawabanDipilih.value = jawaban;
   }
 
   Future<void> submitJawaban() async {
-    final idx = currentIndex.value;
-
-    if (selectedPerSoal[idx] == null || isSubmitting.value) {
-      return;
-    }
-
-    if (hasilPerSoal.containsKey(idx)) {
+    if (soalAktif.value == null ||
+        jawabanDipilih.value == null ||
+        isSubmitting.value ||
+        hasilAktif.value != null) {
       return;
     }
 
@@ -429,56 +325,26 @@ class QuizController extends GetxController {
       isSubmitting.value = true;
 
       final res = await http.post(
-        Uri.parse('$_baseUrl/api/jawaban/'),
+        Uri.parse('$_baseUrl/api/kuis/jawaban/'),
         headers: await _headers(),
         body: jsonEncode({
-          'soal_id': soalList[idx].id,
-          'jawaban': selectedPerSoal[idx],
+          'soal_kuis_id': soalAktif.value!.id,
+          'jawaban': jawabanDipilih.value,
         }),
       );
 
       final body = jsonDecode(res.body);
 
-      hasilPerSoal[idx] = res.statusCode == 409
-          ? JawabanModel.fromJson({
-              ...body,
-              'materi_selesai': false,
-              'bab_selesai': false,
-              'nilai': 0,
-              'xp_didapat': 0,
-            })
-          : JawabanModel.fromJson(body);
-
-      hasilPerSoal.refresh();
-
-      totalXp.value += hasilPerSoal[idx]!.xpDidapat;
-
-      if (hasilPerSoal.length == soalList.length) {
-        quizSelesai.value = true;
-
-        final hasil = hasilPerSoal.values.firstWhere(
-          (h) => h.materiSelesai,
-          orElse: () => hasilPerSoal[idx]!,
-        );
-
-        materiSelesai.value = hasil.materiSelesai;
-
-        babSelesai.value = hasil.babSelesai;
-
-        nilaiAkhir.value = hasil.nilai;
-
-        await Get.find<BabController>().fetchBab();
-
-        if (babSelesai.value &&
-            nilaiAkhir.value >= 70 &&
-            !unlockDialogShown.value) {
-          unlockDialogShown.value = true;
-
-          Future.delayed(const Duration(milliseconds: 400), () {
-            _showUnlockDialog();
-          });
-        }
+      if (res.statusCode == 409) {
+        await _lanjutSoalBerikutnya();
+        return;
       }
+
+      if (res.statusCode != 201) {
+        throw Exception(body['message'] ?? 'Gagal submit jawaban');
+      }
+
+      hasilAktif.value = JawabanKuisModel.fromJson(body);
     } catch (e) {
       showSnackbar('Error', 'Gagal mengirim jawaban');
     } finally {
@@ -486,24 +352,40 @@ class QuizController extends GetxController {
     }
   }
 
-  void goToSoal(int index) {
-    if (index < 0 || index >= soalList.length) {
+  Future<void> lanjutSoal() async {
+    final hasil = hasilAktif.value;
+    if (hasil == null || _babId == null) return;
+
+    if (hasil.kuisSelesai) {
+      quizSelesai.value = true;
+      babSelesai.value = hasil.babSelesai;
+      nilaiAkhir.value = hasil.nilai;
+      showReview.value = true;
+
+      await Get.find<BabController>().fetchBab();
+
+      if (babSelesai.value && !unlockDialogShown.value) {
+        unlockDialogShown.value = true;
+        Future.delayed(const Duration(milliseconds: 400), _showUnlockDialog);
+      }
       return;
     }
 
-    currentIndex.value = index;
+    await _lanjutSoalBerikutnya();
   }
 
-  void nextSoal() => goToSoal(currentIndex.value + 1);
+  Future<void> _lanjutSoalBerikutnya() async {
+    jawabanDipilih.value = null;
+    hasilAktif.value = null;
+    await loadKuis(_babId!);
+  }
 
-  void prevSoal() => goToSoal(currentIndex.value - 1);
-
-  Future<void> retryMateri(int materiId) async {
+  Future<void> retryKuis(int babId) async {
     try {
       isLoading.value = true;
 
       final res = await http.delete(
-        Uri.parse('$_baseUrl/api/jawaban/reset/$materiId'),
+        Uri.parse('$_baseUrl/api/kuis/reset/$babId'),
         headers: await _headers(),
       );
 
@@ -511,10 +393,9 @@ class QuizController extends GetxController {
         throw Exception('Reset gagal');
       }
 
-      // reload quiz attempt baru
-      await loadSoal(materiId);
+      await loadKuis(babId);
     } catch (e) {
-      showSnackbar('Error', 'Gagal mengulang materi');
+      showSnackbar('Error', 'Gagal mengulang kuis');
     } finally {
       isLoading.value = false;
     }
@@ -531,15 +412,11 @@ class QuizController extends GetxController {
             borderRadius: BorderRadius.circular(18),
             border: Border.all(color: AppColors.divider),
           ),
-
           child: Padding(
             padding: const EdgeInsets.all(22),
-
             child: Column(
               mainAxisSize: MainAxisSize.min,
-
               children: [
-                // ICON
                 Container(
                   width: 72,
                   height: 72,
@@ -548,16 +425,13 @@ class QuizController extends GetxController {
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.amber.withOpacity(0.35)),
                   ),
-
                   child: const Icon(
                     Icons.lock_open_rounded,
                     color: Colors.amber,
                     size: 34,
                   ),
                 ),
-
                 const SizedBox(height: 18),
-
                 const Text(
                   'Bab Baru Terbuka',
                   textAlign: TextAlign.center,
@@ -567,11 +441,9 @@ class QuizController extends GetxController {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-
                 const SizedBox(height: 10),
-
                 Text(
-                  'Kamu telah menyelesaikan seluruh pembahasan.\n\n'
+                  'Kamu telah menyelesaikan kuis bab ini.\n\n'
                   'Nilai akhir: ${nilaiAkhir.value.toStringAsFixed(0)}',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
@@ -580,32 +452,21 @@ class QuizController extends GetxController {
                     height: 1.6,
                   ),
                 ),
-
                 const SizedBox(height: 22),
-
                 SizedBox(
                   width: double.infinity,
-
                   child: ElevatedButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-
+                    onPressed: () => Get.back(),
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
                       backgroundColor: Colors.amber.withOpacity(0.12),
-
                       foregroundColor: Colors.amber,
-
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
-
                         side: BorderSide(color: Colors.amber.withOpacity(0.3)),
                       ),
-
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
-
                     child: const Text(
                       'Lanjut',
                       style: TextStyle(fontWeight: FontWeight.w600),
@@ -617,19 +478,21 @@ class QuizController extends GetxController {
           ),
         ),
       ),
-
       barrierDismissible: false,
     );
   }
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
-// ReviewController — review soal setelah materi selesai
+// ReviewController — review kuis setelah bab selesai
 // ──────────────────────────────────────────────────────────────────────────────
 class ReviewController extends GetxController {
-  final soalList = <ReviewSoalModel>[].obs;
+  final soalList = <ReviewSoalKuisModel>[].obs;
   final isLoading = false.obs;
   final errorMessage = ''.obs;
+
+  final nilai = 0.0.obs;
+  final attempt = 1.obs;
 
   Future<Map<String, String>> _headers() async {
     final token = await AuthStorage.getToken();
@@ -639,23 +502,27 @@ class ReviewController extends GetxController {
     };
   }
 
-  // GET /api/bab/materi/<id>/review
-  Future<void> loadReview(int materiId) async {
+  Future<void> loadReview(int babId) async {
     try {
       isLoading.value = true;
       errorMessage.value = '';
 
       final res = await http.get(
-        Uri.parse('$_baseUrl/api/bab/materi/$materiId/review'),
+        Uri.parse('$_baseUrl/api/bab/$babId/kuis/review'),
         headers: await _headers(),
       );
       if (res.statusCode != 200) throw Exception('API error ${res.statusCode}');
 
       final body = jsonDecode(res.body);
       final list = body['soal'] as List<dynamic>;
+      final kuis = body['kuis'] as Map<String, dynamic>?;
+
       soalList.value = list
-          .map((e) => ReviewSoalModel.fromJson(e as Map<String, dynamic>))
+          .map((e) => ReviewSoalKuisModel.fromJson(e as Map<String, dynamic>))
           .toList();
+
+      nilai.value = (kuis?['nilai'] ?? 0).toDouble();
+      attempt.value = kuis?['attempt'] ?? 1;
     } catch (e) {
       errorMessage.value = 'Gagal memuat review: $e';
     } finally {

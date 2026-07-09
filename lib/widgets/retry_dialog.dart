@@ -1,49 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tanqiy/controllers/babkuis_controller.dart';
-import 'package:tanqiy/core/colors.dart';
+import 'package:tanqiy/pages/kuis_page.dart';
 
-Future<void> showRetryDialog(
-  QuizController controller,
-  int materiId,
+void showRetryDialog(
+  BuildContext context,
+  int babId,
+  String babJudul,
   Color accent,
-) async {
+) {
   Get.dialog(
     AlertDialog(
-      title: const Text(
-        'إعادة الحل؟',
-        textAlign: TextAlign.right,
-        style: TextStyle(color: AppColors.textPrimary),
-      ),
+      backgroundColor: const Color(0xFF1A1A1A),
+      title: const Text('إعادة المحاولة', style: TextStyle(color: Colors.white)),
       content: const Text(
-        'سيتم اعتماد نتيجتك الجديدة بدلاً من النتيجة السابقة.\n'
-        'تُمنح نقاط الخبرة (XP) في المحاولة الأولى فقط.',
-        textAlign: TextAlign.right,
-        style: TextStyle(color: AppColors.textPrimary),
+        'سيتم إعادة تعيين الاختبار وبدء محاولة جديدة. هل تريد المتابعة؟',
+        style: TextStyle(color: Colors.white70),
       ),
-      backgroundColor: AppColors.bg,
-
       actions: [
-        FilledButton(
-          onPressed: () => Get.back(),
-          child: const Text('إلغاء'),
-          style: ButtonStyle(
-            side: MaterialStatePropertyAll(BorderSide(color: accent)),
-            foregroundColor: MaterialStatePropertyAll(accent),
-            backgroundColor: MaterialStatePropertyAll(AppColors.bg)
-          ),
-        ),
-        FilledButton(
-          style: ButtonStyle(
-            side: MaterialStatePropertyAll(BorderSide(color: accent)),
-            backgroundColor: MaterialStatePropertyAll(accent),
-            foregroundColor: MaterialStatePropertyAll(AppColors.textP),
-          ),
+        TextButton(onPressed: () => Get.back(), child: const Text('إلغاء')),
+        ElevatedButton(
           onPressed: () async {
             Get.back(); // tutup dialog
-            await controller.retryMateri(materiId);
+            Get.back(); // tutup halaman review
+
+            final controller = Get.put(QuizController(), tag: 'kuis_$babId');
+            await controller.retryKuis(babId);
+
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (_) => KuisPage(babId: babId, babJudul: babJudul),
+              ),
+            );
           },
-          child: const Text('إعادة الحل'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: accent,
+            foregroundColor: Colors.black,
+          ),
+          child: const Text('إعادة المحاولة'),
         ),
       ],
     ),

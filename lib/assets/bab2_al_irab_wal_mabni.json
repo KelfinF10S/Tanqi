@@ -1,0 +1,507 @@
+{
+  "id": "bab2",
+  "judul": "الباب الثاني : الإعراب والمبني",
+  "judul_latin": "BAB 2: Al-I'rāb wal Mabnī",
+  "definisi": {
+    "arab": "الإعراب هو تغيير أواخر الكلم لاختلاف العوامل الداخلة عليها لفظًا أو تقديرًا",
+    "latin": "I'rab adalah perubahan pada akhir kata karena perbedaan amil (faktor) yang masuk padanya, baik secara lafazh maupun secara takdir."
+  },
+  "bab": [
+    {
+      "id": "irab",
+      "judul_arab": "الإعراب",
+      "judul_latin": "Al-I'rāb (Kata yang Bisa Berubah)",
+      "judul_latin_sub": "I'rab memiliki 4 jenis",
+      "sub_bab": [
+        {
+          "id": "rafa",
+          "nomor": 1,
+          "judul_arab": "الرفع",
+          "judul_latin": "Rafa' (Tanda Harakat Dhammah/naik)",
+          "intro_arab": "للرفع أربع علامات : الضمة, والواو, والألف, والنون",
+          "intro_latin": "Rafa' memiliki 4 tanda: Dhammah, Wawu, Alif, dan Nun.",
+          "tanda": [
+            {
+              "tanda_arab": "الضمة",
+              "tanda_latin": "Dhammah (ـُ)",
+              "berlaku_pada": [
+                {
+                  "kategori_arab": "الاسم المفرد",
+                  "kategori_latin": "Isim Mufrad (Kata benda tunggal)",
+                  "contoh_arab": "اللَّهُ نُورُ السَّمَاوَاتِ وَالْأَرْضِ",
+                  "sumber": "QS. An-Nur: 35",
+                  "analisis": "اللهُ: اسم مفرد مرفوع، وعلامة رفعه الضمة",
+                  "analisis_latin": "اللهُ: isim mufrad marfu', tanda rafa'-nya adalah dhammah."
+                },
+                {
+                  "kategori_arab": "جمع التكسير",
+                  "kategori_latin": "Jama' Taksir (Plural tidak beraturan)",
+                  "contoh_arab": "قَالَتِ الْأَعْرَابُ آمَنَّا",
+                  "sumber": "QS. Al-Hujurat: 14",
+                  "analisis": "الأعرابُ: جمع تكسير مرفوع، وعلامة رفعه الضمة",
+                  "analisis_latin": "الأعرابُ: jama' taksir marfu', tanda rafa'-nya adalah dhammah."
+                },
+                {
+                  "kategori_arab": "جمع المؤنث السالم",
+                  "kategori_latin": "Jama' Muannats Salim (Plural feminin beraturan)",
+                  "contoh_arab": "وَالْمُؤْمِنَاتُ بَعْضُهُمْ أَوْلِيَاءُ بَعْضٍ",
+                  "sumber": "QS. At-Taubah: 71",
+                  "analisis": "المؤمناتُ: جمع مؤنث سالم مرفوع، وعلامة رفعه الضمة",
+                  "analisis_latin": "المؤمناتُ: jama' mu'annats salim marfu', tanda rafa'-nya adalah dhammah."
+                },
+                {
+                  "kategori_arab": "الفعل المضارع الذي لم يتصل بآخره شيء",
+                  "kategori_latin": "Fi'il Mudhari' yang tidak bersambung dengan apapun",
+                  "contoh_arab": "وَاللَّهُ يَعْلَمُ وَأَنْتُمْ لَا تَعْلَمُونَ",
+                  "sumber": "QS. Al-Baqarah: 216",
+                  "analisis": "يعلمُ: فعل مضارع مرفوع، وعلامة رفعه الضمة الظاهرة",
+                  "analisis_latin": "يعلمُ: fi'il mudhari' marfu', tanda rafa'-nya adalah dhammah zhahirah."
+                }
+              ]
+            },
+            {
+              "tanda_arab": "الواو",
+              "tanda_latin": "Wawu (و)",
+              "berlaku_pada": [
+                {
+                  "kategori_arab": "جمع المذكر السالم",
+                  "kategori_latin": "Jama' Mudzakkar Salim (Plural maskulin beraturan)",
+                  "contoh_arab": "وَالْمُؤْمِنُونَ وَالْمُؤْمِنَاتُ بَعْضُهُمْ أَوْلِيَاءُ بَعْضٍ",
+                  "sumber": "QS. At-Taubah: 71",
+                  "analisis": "المؤمنونَ: جمع مذكر سالم مرفوع، علامة رفعه الواو",
+                  "analisis_latin": "المؤمنونَ: jama' mudzakkar salim marfu', tanda rafa'-nya adalah wawu."
+                },
+                {
+                  "kategori_arab": "الأسماء الخمسة (أبوك، أخوك، حموك، فوك، ذو مال)",
+                  "kategori_latin": "Asma' Khamsah (5 isim khusus)",
+                  "contoh_arab": "وَأَبُوهُمَا صَالِحًا",
+                  "sumber": "QS. Al-Kahfi: 82",
+                  "analisis": "أبوهما: من الأسماء الخمسة مرفوع، وعلامة رفعه الواو لأنه من الأسماء الخمسة",
+                  "analisis_latin": "أبوهما: termasuk asma' khamsah, marfu', tanda rafa'-nya adalah wawu karena termasuk asma' khamsah."
+                }
+              ]
+            },
+            {
+              "tanda_arab": "الألف",
+              "tanda_latin": "Alif (ا)",
+              "berlaku_pada": [
+                {
+                  "kategori_arab": "الاسم المثنى",
+                  "kategori_latin": "Isim Mutsanna (Kata benda ganda/dual)",
+                  "contoh_arab": "هَذَانِ خَصْمَانِ اخْتَصَمُوا فِي رَبِّهِمْ",
+                  "sumber": "QS. Al-Hajj: 19",
+                  "analisis": "هذان: اسم مثنى مرفوع، علامة رفعه الألف",
+                  "analisis_latin": "هذان: isim mutsanna marfu', tanda rafa'-nya adalah alif."
+                }
+              ]
+            },
+            {
+              "tanda_arab": "النون",
+              "tanda_latin": "Nun (ن) — Tsubutun Nun",
+              "berlaku_pada": [
+                {
+                  "kategori_arab": "الأفعال الخمسة",
+                  "kategori_latin": "Al-Af'al Al-Khamsah (5 fi'il khusus: bersambung dengan dhamir tatsniyah, jama', atau mu'annats mukhatabah)",
+                  "contoh_arab": "وَالَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ",
+                  "sumber": "QS. Al-Baqarah: 3",
+                  "analisis": "يؤمنون: من الأفعال الخمسة، مرفوع، وعلامة رفعه ثبوت النون",
+                  "analisis_latin": "يؤمنون: termasuk af'al khamsah, marfu', tanda rafa'-nya adalah tsubutun nun (tetapnya nun)."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "nasab",
+          "nomor": 2,
+          "judul_arab": "النصب",
+          "judul_latin": "Nashab (Tanda Harakat Fathah/turun)",
+          "intro_arab": "للنصب خمس علامات: الفتحة, والألف, والكسرة, والياء, وحذف النون",
+          "intro_latin": "Nashab memiliki 5 tanda: Fathah, Alif, Kasrah, Ya', dan Hadzfun Nun.",
+          "tanda": [
+            {
+              "tanda_arab": "الفتحة",
+              "tanda_latin": "Fathah (ـَ)",
+              "berlaku_pada": [
+                {
+                  "kategori_arab": "الاسم المفرد",
+                  "kategori_latin": "Isim Mufrad",
+                  "contoh_arab": "إِنَّ اللَّهَ يَأْمُرُ بِالْعَدْلِ",
+                  "sumber": "QS. An-Nahl: 90",
+                  "analisis": "اللهَ: اسم إن منصوب، وعلامة نصبه الفتحة",
+                  "analisis_latin": "اللهَ: isim dari inna, manshub, tanda nashab-nya adalah fathah."
+                },
+                {
+                  "kategori_arab": "جمع التكسير",
+                  "kategori_latin": "Jama' Taksir",
+                  "contoh_arab": "وَعَلَّمَ آدَمَ الْأَسْمَاءَ كُلَّهَا",
+                  "sumber": "QS. Al-Baqarah: 31",
+                  "analisis": "الأسماءَ: جمع تكسير منصوب بالفتحة",
+                  "analisis_latin": "الأسماءَ: jama' taksir manshub dengan fathah."
+                },
+                {
+                  "kategori_arab": "الفعل المضارع إذا دخل عليه ناصب ولم يتصل بآخره شيء",
+                  "kategori_latin": "Fi'il Mudhari' yang dimasuki amil nashab dan tidak bersambung dengan apapun",
+                  "contoh_arab": "لَنْ نَبْرَحَ عَلَيْهِ عَاكِفِينَ",
+                  "sumber": "QS. Tha-Ha: 91",
+                  "analisis": "نبرحَ: فعل مضارع منصوب بـ لن، وعلامة نصبه الفتح",
+                  "analisis_latin": "نبرحَ: fi'il mudhari' manshub karena لن, tanda nashab-nya adalah fathah."
+                }
+              ]
+            },
+            {
+              "tanda_arab": "الألف",
+              "tanda_latin": "Alif (ا)",
+              "berlaku_pada": [
+                {
+                  "kategori_arab": "الأسماء الخمسة",
+                  "kategori_latin": "Asma' Khamsah",
+                  "contoh_arab": "فَآتِ ذَا الْقُرْبَى حَقَّهُ",
+                  "sumber": "QS. Al-Isra': 26",
+                  "analisis": "ذا: من الأسماء الخمسة، مفعول به منصوب، وعلامة نصبه الألف",
+                  "analisis_latin": "ذا: asma' khamsah, maf'ul bih manshub, tanda nashab-nya adalah alif."
+                }
+              ]
+            },
+            {
+              "tanda_arab": "الكسرة",
+              "tanda_latin": "Kasrah (ـِ) — menggantikan fathah",
+              "berlaku_pada": [
+                {
+                  "kategori_arab": "جمع المؤنث السالم",
+                  "kategori_latin": "Jama' Muannats Salim",
+                  "contoh_arab": "إِنَّ الْمُسْلِمِينَ وَالْمُسْلِمَاتِ",
+                  "sumber": "QS. Al-Ahzab: 35",
+                  "analisis": "المسلماتِ: جمع مؤنث سالم منصوب، وعلامة نصبه الكسرة نيابة عن الفتحة",
+                  "analisis_latin": "المسلماتِ: jama' mu'annats salim manshub, tanda nashab-nya adalah kasrah sebagai pengganti fathah."
+                }
+              ]
+            },
+            {
+              "tanda_arab": "الياء",
+              "tanda_latin": "Ya' (ي)",
+              "berlaku_pada": [
+                {
+                  "kategori_arab": "الاسم المثنى",
+                  "kategori_latin": "Isim Mutsanna",
+                  "contoh_arab": "رَبَّنَا أَرِنَا الَّذَيْنِ أَضَلَّانَا",
+                  "sumber": "QS. Fusshilat: 29",
+                  "analisis": "الَّذَيْنِ: اسم موصول للمثنى مفعول به ثانٍ منصوب، وعلامة نصبه الياء لأنه مثنى",
+                  "analisis_latin": "الَّذَيْنِ: isim mausul untuk mutsanna, maf'ul bih ke-2 manshub, tanda nashab-nya adalah ya' karena mutsanna."
+                },
+                {
+                  "kategori_arab": "جمع المذكر السالم",
+                  "kategori_latin": "Jama' Mudzakkar Salim",
+                  "contoh_arab": "إِنَّ اللَّهَ يُحِبُّ الْمُتَّقِينَ",
+                  "sumber": "QS. At-Taubah: 4",
+                  "analisis": "المتقين: مفعول به منصوب، وعلامة نصبه الياء لأنه جمع مذكر سالم",
+                  "analisis_latin": "المتقين: maf'ul bih manshub, tanda nashab-nya adalah ya' karena jama' mudzakkar salim."
+                }
+              ]
+            },
+            {
+              "tanda_arab": "حذف النون",
+              "tanda_latin": "Hadzfun Nun (Dihapusnya Nun)",
+              "berlaku_pada": [
+                {
+                  "kategori_arab": "الأفعال الخمسة",
+                  "kategori_latin": "Al-Af'al Al-Khamsah",
+                  "contoh_arab": "لَنْ تَنَالُوا الْبِرَّ",
+                  "sumber": "QS. Ali Imran: 92",
+                  "analisis": "تنالوا: فعل مضارع منصوب بـ لن، وعلامة نصبه حذف النون لأنه من الأفعال الخمسة",
+                  "analisis_latin": "تنالوا: fi'il mudhari' manshub karena لن, tanda nashab-nya adalah hadzfun nun karena termasuk af'al khamsah."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "jar",
+          "nomor": 3,
+          "judul_arab": "الجر",
+          "judul_latin": "Jar (Tanda Harakat Kasrah/bawah)",
+          "intro_arab": "للجر ثلاث علامات : الكسرة, والياء, والفتحة",
+          "intro_latin": "Jar memiliki 3 tanda: Kasrah, Ya', dan Fathah.",
+          "tanda": [
+            {
+              "tanda_arab": "الكسرة",
+              "tanda_latin": "Kasrah (ـِ)",
+              "berlaku_pada": [
+                {
+                  "kategori_arab": "الاسم المفرد المنصرف",
+                  "kategori_latin": "Isim Mufrad Munsharif (dapat menerima tanwin)",
+                  "contoh_arab": "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
+                  "sumber": "QS. Al-Fatihah: 2",
+                  "analisis": "اللهِ: اسم مفرد مجرور باللام، وعلامة جره الكسرة الظاهرة",
+                  "analisis_latin": "اللهِ: isim mufrad majrur oleh lam, tanda jar-nya adalah kasrah zhahirah."
+                },
+                {
+                  "kategori_arab": "جمع التكسير المنصرف",
+                  "kategori_latin": "Jama' Taksir Munsharif",
+                  "contoh_arab": "فِي بُيُوتٍ أَذِنَ اللَّهُ أَنْ تُرْفَعَ",
+                  "sumber": "QS. An-Nur: 36",
+                  "analisis": "بيوتٍ: جمع تكسير مجرور بـ في، وعلامة جره الكسرة الظاهرة",
+                  "analisis_latin": "بيوتٍ: jama' taksir majrur oleh في, tanda jar-nya adalah kasrah zhahirah."
+                },
+                {
+                  "kategori_arab": "جمع المؤنث السالم",
+                  "kategori_latin": "Jama' Muannats Salim",
+                  "contoh_arab": "وَكَانَتْ مِنَ الْقَانِتَاتِ",
+                  "sumber": "QS. At-Tahrim: 12",
+                  "analisis": "القانتاتِ: جمع مؤنث سالم مجرور بـ من، وعلامة جره الكسرة",
+                  "analisis_latin": "القانتاتِ: jama' mu'annats salim majrur oleh من, tanda jar-nya adalah kasrah."
+                }
+              ]
+            },
+            {
+              "tanda_arab": "الياء",
+              "tanda_latin": "Ya' (ي)",
+              "berlaku_pada": [
+                {
+                  "kategori_arab": "الأسماء الخمسة",
+                  "kategori_latin": "Asma' Khamsah",
+                  "contoh_arab": "فِي بَيْتِ أَبِيكُمْ",
+                  "sumber": "QS. An-Nur: 61",
+                  "analisis": "أبيكم: اسم من الأسماء الخمسة، مجرور بالإضافة، وعلامة جره الياء",
+                  "analisis_latin": "أبيكم: asma' khamsah, majrur secara idhafah, tanda jar-nya adalah ya'."
+                },
+                {
+                  "kategori_arab": "الاسم المثنى",
+                  "kategori_latin": "Isim Mutsanna",
+                  "contoh_arab": "لِكِلَا الْفَرِيقَيْنِ",
+                  "sumber": "QS. Hud: 24",
+                  "analisis": "الفريقينِ: اسم مثنى مجرور بالإضافة إلى كلا، وعلامة جره الياء لأنه مثنى",
+                  "analisis_latin": "الفريقينِ: isim mutsanna majrur secara idhafah, tanda jar-nya adalah ya' karena mutsanna."
+                },
+                {
+                  "kategori_arab": "جمع المذكر السالم",
+                  "kategori_latin": "Jama' Mudzakkar Salim",
+                  "contoh_arab": "عَلَى الْكَافِرِينَ",
+                  "sumber": "QS. Al-Baqarah: 6",
+                  "analisis": "الكافرينَ: جمع مذكر سالم مجرور بـ على، وعلامة جره الياء",
+                  "analisis_latin": "الكافرينَ: jama' mudzakkar salim majrur oleh على, tanda jar-nya adalah ya'."
+                }
+              ]
+            },
+            {
+              "tanda_arab": "الفتحة",
+              "tanda_latin": "Fathah (ـَ) — menggantikan kasrah",
+              "berlaku_pada": [
+                {
+                  "kategori_arab": "الاسم الذي لا ينصرف",
+                  "kategori_latin": "Isim Ghairu Munsharif (tidak menerima tanwin)",
+                  "contoh_arab": "فِي مَسَاجِدَ يُذْكَرُ فِيهَا اسْمُ اللَّهِ",
+                  "sumber": "QS. An-Nur: 36",
+                  "analisis": "مساجدَ: اسم مجرور بـ في، وعلامة جره الفتحة",
+                  "analisis_latin": "مساجدَ: isim majrur oleh في, tanda jar-nya adalah fathah (karena ghairu munsharif)."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "jazm",
+          "nomor": 4,
+          "judul_arab": "الجزم",
+          "judul_latin": "Jazm (Tanda Sukun/mati — khusus fi'il)",
+          "intro_arab": "الجزم خاص بالفعل المضارع ويكون بالسكون أو حذف حرف العلة أو حذف النون",
+          "intro_latin": "Jazm khusus untuk fi'il mudhari'. Tandanya adalah sukun, hadzf huruf illah, atau hadzfun nun.",
+          "tanda": [
+            {
+              "tanda_arab": "السكون",
+              "tanda_latin": "Sukun (ـْ)",
+              "berlaku_pada": [
+                {
+                  "kategori_arab": "الفعل المضارع الصحيح الآخر",
+                  "kategori_latin": "Fi'il Mudhari' yang huruf akhirnya shahih (bukan huruf illah)",
+                  "contoh_arab": "لَمْ يَلِدْ وَلَمْ يُولَدْ",
+                  "sumber": "QS. Al-Ikhlas: 3",
+                  "analisis": "يَلِدْ: فعل مضارع مجزوم بـ لم، وعلامة جزمه السكون",
+                  "analisis_latin": "يَلِدْ: fi'il mudhari' majzum karena لم, tanda jazm-nya adalah sukun."
+                }
+              ]
+            },
+            {
+              "tanda_arab": "حذف حرف العلة",
+              "tanda_latin": "Hadzf Huruf Illah (Dihapusnya huruf illah: و، ي، ا)",
+              "berlaku_pada": [
+                {
+                  "kategori_arab": "الفعل المضارع المعتل الآخر",
+                  "kategori_latin": "Fi'il Mudhari' yang huruf akhirnya mu'tal (huruf illah)",
+                  "contoh_arab": "وَلَا تَدْعُ مَعَ اللَّهِ إِلَهًا آخَرَ",
+                  "sumber": "QS. Al-Qashash: 88",
+                  "analisis": "تَدْعُ: فعل مضارع مجزوم بـ لا الناهية، وعلامة جزمه حذف حرف العلة (الواو)",
+                  "analisis_latin": "تَدْعُ: fi'il mudhari' majzum karena لا نهي, tanda jazm-nya adalah dihapusnya huruf illah (wawu)."
+                }
+              ]
+            },
+            {
+              "tanda_arab": "حذف النون",
+              "tanda_latin": "Hadzfun Nun (Dihapusnya Nun) — untuk Af'al Khamsah",
+              "berlaku_pada": [
+                {
+                  "kategori_arab": "الأفعال الخمسة",
+                  "kategori_latin": "Al-Af'al Al-Khamsah",
+                  "contoh_arab": "لَا تَكُونُوا كَالَّذِينَ نَسُوا اللَّهَ",
+                  "sumber": "QS. Al-Hashr: 19",
+                  "analisis": "تَكُونُوا: فعل مضارع مجزوم بـ لا الناهية، وعلامة جزمه حذف النون لأنه من الأفعال الخمسة",
+                  "analisis_latin": "تَكُونُوا: fi'il mudhari' majzum karena لا نهي, tanda jazm-nya adalah hadzfun nun karena af'al khamsah."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mabni",
+      "judul_arab": "المبني",
+      "judul_latin": "Al-Mabnī (Kata yang Tidak Berubah)",
+      "definisi_arab": "هو الذي لا يتغير شكل آخره بتغيير موقعه في الجملة",
+      "definisi_latin": "Al-Mabni adalah kata yang akhirnya tidak berubah meski posisinya dalam kalimat berubah.",
+      "sub_bab": [
+        {
+          "id": "asma_mabni",
+          "judul_arab": "الأسماء المبنية",
+          "judul_latin": "Isim-Isim yang Mabni",
+          "daftar": [
+            {
+              "kategori_arab": "الضمائر",
+              "kategori_latin": "Dhamir (Kata Ganti)",
+              "contoh_arab": "إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ",
+              "sumber": "QS. Al-Kautsar: 1",
+              "analisis": "إنا: ضمير مبني على السكون في محل نصب اسم إنَّ",
+              "analisis_latin": "إنا: dhamir mabni di atas sukun, berkedudukan nashab sebagai isim inna."
+            },
+            {
+              "kategori_arab": "أسماء الإشارة",
+              "kategori_latin": "Isim Isyarah (Kata Tunjuk)",
+              "contoh_arab": "هَذَا خَلْقُ اللَّهِ",
+              "sumber": "QS. Luqman: 11",
+              "analisis": "هذا: اسم إشارة مبني على السكون في محل رفع مبتدأ",
+              "analisis_latin": "هذا: isim isyarah mabni di atas sukun, berkedudukan rafa' sebagai mubtada'."
+            },
+            {
+              "kategori_arab": "الأسماء الموصولة",
+              "kategori_latin": "Isim Maushul (Kata Penghubung Relatif)",
+              "contoh_arab": "وَالَّذِي جَاءَ بِالصِّدْقِ",
+              "sumber": "QS. Az-Zumar: 33",
+              "analisis": "الذي: اسم موصول مبني على السكون في محل رفع مبتدأ",
+              "analisis_latin": "الذي: isim maushul mabni di atas sukun, berkedudukan rafa' sebagai mubtada'."
+            },
+            {
+              "kategori_arab": "أسماء الشرط",
+              "kategori_latin": "Isim Syarat (Kata Bersyarat)",
+              "contoh_arab": "وَمَنْ يَعْمَلْ مِنَ الصَّالِحَاتِ",
+              "sumber": "QS. Tha-Ha: 112",
+              "analisis": "من: اسم شرط جازم مبني على السكون في محل رفع مبتدأ",
+              "analisis_latin": "من: isim syarat yang menjazmkan, mabni di atas sukun, berkedudukan rafa' sebagai mubtada'."
+            },
+            {
+              "kategori_arab": "أسماء الاستفهام",
+              "kategori_latin": "Isim Istifham (Kata Tanya)",
+              "contoh_arab": "مَا الْقَارِعَةُ",
+              "sumber": "QS. Al-Qari'ah: 3",
+              "analisis": "ما: اسم استفهام مبني على السكون في محل رفع مبتدأ",
+              "analisis_latin": "ما: isim istifham mabni di atas sukun, berkedudukan rafa' sebagai mubtada'."
+            },
+            {
+              "kategori_arab": "بعض الظروف",
+              "kategori_latin": "Sebagian Zharaf (Keterangan Waktu/Tempat)",
+              "contoh_arab": "هُنَالِكَ دَعَا زَكَرِيَّا رَبَّهُ",
+              "sumber": "QS. Ali Imran: 38",
+              "analisis": "هنالك: ظرف مكان مبني على الفتح في محل نصب ظرف مكان متعلق بالفعل دعا",
+              "analisis_latin": "هنالك: zharaf makan mabni di atas fathah, berkedudukan nashab sebagai zharaf makan yang berhubungan dengan fi'il دعا."
+            }
+          ]
+        },
+        {
+          "id": "afal_mabni",
+          "judul_arab": "الأفعال المبنية",
+          "judul_latin": "Fi'il-Fi'il yang Mabni",
+          "daftar": [
+            {
+              "kategori_arab": "نون النسوة",
+              "kategori_latin": "Nun Niswah (bersambung dengan nun para wanita)",
+              "contoh_arab": "وَالْمُطَلَّقَاتُ يَتَرَبَّصْنَ بِأَنْفُسِهِنَّ",
+              "sumber": "QS. Al-Baqarah: 228",
+              "analisis": "يَتَرَبَّصْنَ: فعل مضارع مبني على السكون لاتصاله بنون النسوة",
+              "analisis_latin": "يَتَرَبَّصْنَ: fi'il mudhari' mabni di atas sukun karena bersambung dengan nun niswah."
+            },
+            {
+              "kategori_arab": "نون التوكيد",
+              "kategori_latin": "Nun Taukid (bersambung dengan nun penekanan)",
+              "contoh_arab": "لَيُسْجَنَنَّ وَلَيَكُونًا مِنَ الصَّاغِرِينَ",
+              "sumber": "QS. Yusuf: 32",
+              "analisis": "لَيُسْجَنَنَّ: فعل مضارع مبني على الفتح لاتصاله بنون التوكيد الثقيلة",
+              "analisis_latin": "لَيُسْجَنَنَّ: fi'il mudhari' mabni di atas fathah karena bersambung dengan nun taukid tsaqilah."
+            }
+          ]
+        },
+        {
+          "id": "huruf_mabni",
+          "judul_arab": "الحروف",
+          "judul_latin": "Huruf (semua huruf adalah mabni)",
+          "daftar": [
+            {
+              "kategori_arab": "حروف الجر",
+              "kategori_latin": "Huruf Jar",
+              "contoh_huruf": ["من", "إلى", "عن", "على", "في", "الباء", "اللام", "الكاف"],
+              "contoh_arab": "خَلَقَ الْإِنسَانَ مِنْ عَلَقٍ",
+              "sumber": "QS. Al-'Alaq: 2"
+            },
+            {
+              "kategori_arab": "حروف العطف",
+              "kategori_latin": "Huruf 'Athaf",
+              "contoh_huruf": ["الواو", "الفاء", "ثم", "أو", "أم", "بل", "لكن", "لا"],
+              "contoh_arab": "وَاللَّهُ غَفُورٌ رَحِيمٌ",
+              "sumber": "QS. Al-Baqarah: 173"
+            },
+            {
+              "kategori_arab": "حروف النصب",
+              "kategori_latin": "Huruf Nashab",
+              "contoh_huruf": ["أن", "لن", "كي", "إذن"],
+              "contoh_arab": "لَنْ تَنَالُوا الْبِرَّ",
+              "sumber": "QS. Ali Imran: 92"
+            },
+            {
+              "kategori_arab": "حروف الجزم",
+              "kategori_latin": "Huruf Jazm",
+              "contoh_huruf": ["لم", "لما", "لام الأمر", "لا الناهية"],
+              "contoh_arab": "لَمْ يَلِدْ وَلَمْ يُولَدْ",
+              "sumber": "QS. Al-Ikhlas: 3"
+            },
+            {
+              "kategori_arab": "حروف النداء",
+              "kategori_latin": "Huruf Nida' (Panggilan)",
+              "contoh_huruf": ["يا", "أيا", "هيا", "أي"],
+              "contoh_arab": "يَا أَيُّهَا الَّذِينَ آمَنُوا",
+              "sumber": "QS. Al-Baqarah: 104"
+            },
+            {
+              "kategori_arab": "حروف الاستفهام",
+              "kategori_latin": "Huruf Istifham (Tanya)",
+              "contoh_huruf": ["هل", "الهمزة"],
+              "contoh_arab": "هَلْ أَتَى عَلَى الْإِنسَانِ",
+              "sumber": "QS. Al-Insan: 1"
+            },
+            {
+              "kategori_arab": "حروف التوكيد",
+              "kategori_latin": "Huruf Taukid (Penegasan)",
+              "contoh_huruf": ["إنَّ", "أنَّ", "لام الابتداء"],
+              "contoh_arab": "إِنَّ اللَّهَ غَفُورٌ رَحِيمٌ",
+              "sumber": "QS. Al-Baqarah: 173"
+            },
+            {
+              "kategori_arab": "حروف النفي",
+              "kategori_latin": "Huruf Nafi (Peniadaan)",
+              "contoh_huruf": ["ما", "لا", "لم", "لن", "إنْ"],
+              "contoh_arab": "لَا رَيْبَ فِيهِ",
+              "sumber": "QS. Al-Baqarah: 2"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
