@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:tanqiy/models/materibab_model.dart';
 
 class Page3 extends StatelessWidget {
-  final MateriBAB materi;
   
-  const Page3({super.key, required this.materi});
+  const Page3({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Halaman 3',
+          'Halaman Leaderboard',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         leading: IconButton(
@@ -32,7 +31,7 @@ class Page3 extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             const Text(
-              'Ini adalah Halaman 3',
+              'Ini adalah Halaman Leaderboard',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w500,

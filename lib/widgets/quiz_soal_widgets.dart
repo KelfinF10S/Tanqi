@@ -47,18 +47,21 @@ class QuizSoalWidget extends StatelessWidget {
     switch (soal.tipe) {
       case 'multiple_choice':
         return _MultipleChoiceCard(
+          key: ValueKey('mc_${soal.id}'),
           soal: soal,
           controller: controller,
           accent: accent,
         );
       case 'drag_drop':
         return _DragDropCard(
+          key: ValueKey('dd_${soal.id}'),
           soal: soal,
           controller: controller,
           accent: accent,
         );
       case 'tap_object':
         return _TapObjectCard(
+          key: ValueKey('to_${soal.id}'),
           soal: soal,
           controller: controller,
           accent: accent,
@@ -81,6 +84,7 @@ class _MultipleChoiceCard extends StatelessWidget {
   final Color accent;
 
   const _MultipleChoiceCard({
+    super.key,
     required this.soal,
     required this.controller,
     required this.accent,
@@ -89,6 +93,7 @@ class _MultipleChoiceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pilihan = Map<String, String>.from(soal.konten['pilihan'] ?? {});
+    final urutanKey = controller.urutanPilihanMC(soal);
 
     return Obx(() {
       final selected = controller.jawabanDipilih.value as String?;
@@ -98,9 +103,8 @@ class _MultipleChoiceCard extends StatelessWidget {
           : null;
 
       return Column(
-        children: pilihan.entries.map((e) {
-          final key = e.key;
-          final teks = e.value;
+        children: urutanKey.map((key) {
+          final teks = pilihan[key]!;
           final isSelected = selected == key;
 
           Color borderColor = accent.withOpacity(0.25);
@@ -127,10 +131,7 @@ class _MultipleChoiceCard extends StatelessWidget {
             onTap: hasil == null ? () => controller.pilihJawaban(key) : null,
             child: Container(
               margin: const EdgeInsets.only(bottom: 8),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 12,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               decoration: BoxDecoration(
                 color: bgColor,
                 borderRadius: BorderRadius.circular(10),
@@ -183,6 +184,7 @@ class _DragDropCard extends StatefulWidget {
   final Color accent;
 
   const _DragDropCard({
+    super.key,
     required this.soal,
     required this.controller,
     required this.accent,
@@ -201,8 +203,8 @@ class _DragDropCardState extends State<_DragDropCard> {
 
   @override
   Widget build(BuildContext context) {
-    final items = List<String>.from(widget.soal.konten['items'] ?? []);
-    final targets = List<String>.from(widget.soal.konten['targets'] ?? []);
+    final items = widget.controller.urutanItemDD(widget.soal); // <-- ganti
+    final targets = widget.controller.urutanTargetDD(widget.soal);
     final hasil = widget.controller.hasilAktif.value;
     final locked = hasil != null;
 
@@ -349,6 +351,7 @@ class _TapObjectCard extends StatefulWidget {
   final Color accent;
 
   const _TapObjectCard({
+    super.key,
     required this.soal,
     required this.controller,
     required this.accent,
@@ -377,9 +380,7 @@ class _TapObjectCardState extends State<_TapObjectCard> {
 
   @override
   Widget build(BuildContext context) {
-    final objects = List<Map<String, dynamic>>.from(
-      widget.soal.konten['objects'] ?? [],
-    );
+    final objects = widget.controller.urutanObjekTO(widget.soal);
     final hasil = widget.controller.hasilAktif.value;
     final correctIds = hasil?.jawabanBenar is Map
         ? List<String>.from(hasil!.jawabanBenar['correct_ids'] ?? [])

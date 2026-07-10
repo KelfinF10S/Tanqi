@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -46,9 +47,22 @@ class BabController extends GetxController {
   Future<List<MateriBAB>> _loadMateriLokal() async {
     final raw = await rootBundle.loadString('lib/assets/materi_bab.json');
     final list = jsonDecode(raw) as List<dynamic>;
-    return list
-        .map((e) => MateriBAB.fromJson(e as Map<String, dynamic>))
-        .toList();
+
+    final result = <MateriBAB>[];
+
+    for (final item in list) {
+      try {
+        final materi = MateriBAB.fromJson(item);
+        print("Loaded id = ${materi.id}");
+        result.add(materi);
+      } catch (e, s) {
+        print("ERROR PARSE:");
+        print(e);
+        print(s);
+      }
+    }
+
+    return result;
   }
 
   Future<void> fetchBab() async {
@@ -69,6 +83,9 @@ class BabController extends GetxController {
       babList.value = materiList
           .map((m) => BabMerged(materi: m, quiz: quizMap[m.id]))
           .toList();
+      print("Materi lokal : ${materiList.length}");
+      print("API : ${quizList.length}");
+      print("Merged : ${babList.length}");
     } catch (e) {
       errorMessage.value = 'Gagal memuat bab: $e';
     } finally {
@@ -81,6 +98,9 @@ class BabController extends GetxController {
       Uri.parse('$_baseUrl/api/bab/'),
       headers: await _headers(),
     );
+
+    print(res.body);
+
     if (res.statusCode != 200) throw Exception('API error ${res.statusCode}');
     final body = jsonDecode(res.body);
     final list = body['data'] as List<dynamic>;
@@ -255,6 +275,48 @@ class QuizController extends GetxController {
   final showReview = false.obs;
   final unlockDialogShown = false.obs;
 
+  final Map<int, List<String>> _urutanPilihanMC = {};
+  final Map<int, List<String>> _urutanItemDD = {};
+  final Map<int, List<String>> _urutanTargetDD = {};
+  final Map<int, List<Map<String, dynamic>>> _urutanObjekTO = {};
+
+  List<String> urutanPilihanMC(SoalKuisModel soal) {
+    return _urutanPilihanMC.putIfAbsent(soal.id, () {
+      final pilihan = Map<String, String>.from(soal.konten['pilihan'] ?? {});
+      return pilihan.keys.toList()..shuffle(Random());
+    });
+  }
+
+  List<String> urutanItemDD(SoalKuisModel soal) {
+    return _urutanItemDD.putIfAbsent(soal.id, () {
+      final items = List<String>.from(soal.konten['items'] ?? []);
+      return items..shuffle(Random());
+    });
+  }
+
+  List<String> urutanTargetDD(SoalKuisModel soal) {
+    return _urutanTargetDD.putIfAbsent(soal.id, () {
+      final targets = List<String>.from(soal.konten['targets'] ?? []);
+      return targets..shuffle(Random());
+    });
+  }
+
+  List<Map<String, dynamic>> urutanObjekTO(SoalKuisModel soal) {
+    return _urutanObjekTO.putIfAbsent(soal.id, () {
+      final objects = List<Map<String, dynamic>>.from(
+        soal.konten['objects'] ?? [],
+      );
+      return objects..shuffle(Random());
+    });
+  }
+
+  void _resetUrutanTampilan() {
+    _urutanPilihanMC.clear();
+    _urutanItemDD.clear();
+    _urutanTargetDD.clear();
+    _urutanObjekTO.clear();
+  }
+
   int? _babId;
 
   Future<Map<String, String>> _headers() async {
@@ -325,7 +387,7 @@ class QuizController extends GetxController {
       isSubmitting.value = true;
 
       final res = await http.post(
-        Uri.parse('$_baseUrl/api/kuis/jawaban/'),
+        Uri.parse('$_baseUrl/api/kuis/jawaban'),
         headers: await _headers(),
         body: jsonEncode({
           'soal_kuis_id': soalAktif.value!.id,
@@ -383,6 +445,7 @@ class QuizController extends GetxController {
   Future<void> retryKuis(int babId) async {
     try {
       isLoading.value = true;
+      _resetUrutanTampilan();
 
       final res = await http.delete(
         Uri.parse('$_baseUrl/api/kuis/reset/$babId'),

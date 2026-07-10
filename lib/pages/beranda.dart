@@ -4,15 +4,27 @@ import 'package:tanqiy/controllers/babkuis_controller.dart';
 import 'package:tanqiy/core/colors.dart';
 import 'package:tanqiy/models/bab_merged_model.dart';
 import 'package:tanqiy/pages/bab1.dart';
-import 'package:tanqiy/pages/page3.dart';
-import 'package:tanqiy/pages/page4.dart';
-import 'package:tanqiy/pages/page5.dart';
 import 'package:tanqiy/widgets/snackbar.dart';
 
-class Beranda extends StatelessWidget {
+class Beranda extends StatefulWidget {
   Beranda({super.key});
 
+  @override
+  State<Beranda> createState() => _BerandaState();
+}
+
+class _BerandaState extends State<Beranda> {
   final BabController controller = Get.put(BabController());
+
+  @override
+  void initState() {
+    fetchBabData();
+    super.initState();
+  }
+
+  void fetchBabData() async {
+    await controller.fetchBab();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,10 +84,10 @@ class Beranda extends StatelessWidget {
                   // CARD GAME
                   _buildStaticCard(
                     context,
-                    'لعبة إلكترونية',
-                    'Permainan Digital',
+                    'لَوْحَةُ الصَّدَارَةِ',
+                    'Leaderboard',
                     () {
-                      Get.toNamed('/games');
+                      Get.toNamed('/page3');
                     },
                   ),
 
@@ -111,7 +123,7 @@ Widget _buildBabCard(BuildContext context, BabMerged bab) {
           'لا يمكنك فتح هذا الفصل بعد. أكمل الفصل السابق أولاً',
         );
       } else {
-        Get.to(() => getBabPage(bab));
+        Get.to(() => BabPage(bab: bab));
       }
     },
 
@@ -157,7 +169,6 @@ Widget _buildBabCard(BuildContext context, BabMerged bab) {
                   ),
                 ),
 
-              
                 // Text(
                 //   bab.materi.judulLatin,
                 //   textAlign: TextAlign.center,
@@ -287,23 +298,4 @@ Widget _welcomeCard(BuildContext context) {
       ),
     ),
   );
-}
-
-Widget getBabPage(BabMerged bab) {
-  switch (bab.id) {
-    case '1':
-      return Page1(bab: bab);
-
-    case '2':
-      return Page3(materi: bab.materi);
-
-    case '3':
-      return Page4(materi: bab.materi);
-
-    case '4':
-      return Page5(materi: bab.materi);
-
-    default:
-      return const Scaffold(body: Center(child: Text('Bab tidak ditemukan')));
-  }
 }

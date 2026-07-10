@@ -14,16 +14,16 @@ import 'package:tanqiy/widgets/background_painter.dart';
 // ─────────────────────────────────────────
 //  PAGE 1  (entry point)
 // ─────────────────────────────────────────
-class Page1 extends StatefulWidget {
+class BabPage extends StatefulWidget {
   final BabMerged bab;
 
-  const Page1({super.key, required this.bab});
+  const BabPage({super.key, required this.bab});
 
   @override
-  State<Page1> createState() => _Page1State();
+  State<BabPage> createState() => _BabPageState();
 }
 
-class _Page1State extends State<Page1> with SingleTickerProviderStateMixin {
+class _BabPageState extends State<BabPage> with SingleTickerProviderStateMixin {
   Future<MateriBAB>? _future;
   late final AnimationController _controller;
   Animation<double>? _fadeIn;
@@ -147,6 +147,7 @@ class _MateriBody extends StatelessWidget {
             babJudul: babMerged.materi.judulLatin,
           ),
         ),
+        // SliverToBoxAdapter(child: _GameEntryCard(babId: babId)),
         const SliverToBoxAdapter(child: SizedBox(height: 80)),
       ],
     );
@@ -241,7 +242,6 @@ class _MateriBody extends StatelessWidget {
 class _KuisEntryCard extends StatelessWidget {
   final int babId;
   final String babJudul;
-
   const _KuisEntryCard({required this.babId, required this.babJudul});
 
   @override
@@ -317,10 +317,88 @@ class _KuisEntryCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: const Text(
+              child: Text(
                 'ابدأ',
                 style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────
+// GAME ENTRY CARD — 1 per bab
+// ─────────────────────────────────────────
+class _GameEntryCard extends StatelessWidget {
+  final int babId;
+
+  const _GameEntryCard({required this.babId});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppColors.cardFillLightLocked,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.cardFillLocked),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 52,
+              height: 52,
+              decoration: BoxDecoration(
+                color: AppColors.cardFillLightLocked,
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.cardFillLight),
+              ),
+              child: const Icon(
+                Icons.gamepad,
+                color: AppColors.cardFillLight,
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'ألعاب هذا الباب',
+                    style: TextStyle(
+                      color: AppColors.textMuted,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'أكمل التدريبات أو الاختبار أولًا',
+                    style: TextStyle(color: AppColors.textMuted, fontSize: 11),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 10),
+            TextButton(
+              onPressed: () {},
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.cardFillLight,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Icon(Icons.lock, size: 30),
             ),
           ],
         ),
@@ -592,16 +670,28 @@ class _KategoriPicker extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          k.iconLabel,
-                          style: TextStyle(
-                            fontSize: 22,
-                            color: isActive
-                                ? k.accentColor
-                                : AppColors.textMuted,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        // Text(
+                        //   k.iconLabel,
+                        //   style: TextStyle(
+                        //     fontSize: 22,
+                        //     color: isActive
+                        //         ? k.accentColor
+                        //         : AppColors.textMuted,
+                        //     fontWeight: FontWeight.bold,
+                        //   ),
+                        // ),
+                        isActive
+                            ? Icon(
+                                Icons.menu_book_rounded,
+                                color: k.accentColor,
+                                size: 25,
+                              )
+                            : Icon(
+                                Icons.book,
+                                color: AppColors.divider,
+                                size: 20,
+                              ),
+
                         const Spacer(),
                         Text(
                           k.judulLatin.split(' ').first,
@@ -724,13 +814,17 @@ class _SectionHeader extends StatelessWidget {
                   ),
                 ),
                 child: Center(
-                  child: Text(
-                    kategori.iconLabel,
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: kategori.accentColor,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  // child: Text(
+                  //   kategori.iconLabel,
+                  //   style: TextStyle(
+                  //     fontSize: 20,
+                  //     color: kategori.accentColor,
+                  //     fontWeight: FontWeight.bold,
+                  //   ),
+                  // ),
+                  child: Icon(
+                    Icons.menu_book_rounded,
+                    color: kategori.accentColor,
                   ),
                 ),
               ),
@@ -1186,6 +1280,7 @@ class _AyatTile extends StatelessWidget {
 class _AturanTile extends StatelessWidget {
   final Aturan aturan;
   final Color accent;
+
   const _AturanTile({required this.aturan, required this.accent});
 
   @override
@@ -1204,39 +1299,52 @@ class _AturanTile extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 6,
-                height: 6,
-                decoration: BoxDecoration(
-                  color: accent,
-                  shape: BoxShape.circle,
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Container(
+                  width: 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: accent,
+                    shape: BoxShape.circle,
+                  ),
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   label,
+                  textDirection: TextDirection.rtl,
+                  textAlign: TextAlign.right,
+                  softWrap: true,
+                  maxLines: null,
+                  overflow: TextOverflow.visible,
                   style: TextStyle(
                     color: accent,
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                   ),
-                  textDirection: TextDirection.rtl,
                 ),
               ),
             ],
           ),
+
           if (labelLatin != null &&
               labelLatin.isNotEmpty &&
               labelLatin != label) ...[
-            const SizedBox(height: 2),
+            const SizedBox(height: 4),
             Padding(
               padding: const EdgeInsets.only(left: 14),
               child: Text(
                 labelLatin,
+                softWrap: true,
+                maxLines: null,
+                overflow: TextOverflow.visible,
                 style: const TextStyle(
                   color: AppColors.textMuted,
                   fontSize: 10,
@@ -1244,10 +1352,14 @@ class _AturanTile extends StatelessWidget {
               ),
             ),
           ],
+
           if (ket.isNotEmpty) ...[
-            const SizedBox(height: 6),
+            const SizedBox(height: 8),
             Text(
               ket,
+              softWrap: true,
+              maxLines: null,
+              overflow: TextOverflow.visible,
               style: const TextStyle(
                 color: AppColors.textSecondary,
                 fontSize: 11,
@@ -1255,19 +1367,21 @@ class _AturanTile extends StatelessWidget {
               ),
             ),
           ],
-          ...aturan.contoh.map(
-            (c) => Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: _AyatTile(
-                arab: c.arab,
-                sumber: c.sumber ?? '',
-                terjemah: c.terjemah ?? '',
-                tag: c.kategoriLatin ?? c.kategoriArab ?? '',
-                analisis: c.analisisLatin ?? c.analisisArab,
-                accent: accent,
+
+          if (aturan.contoh.isNotEmpty)
+            ...aturan.contoh.map(
+              (c) => Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: _AyatTile(
+                  arab: c.arab,
+                  sumber: c.sumber ?? '',
+                  terjemah: c.terjemah ?? '',
+                  tag: c.kategoriLatin ?? c.kategoriArab ?? '',
+                  analisis: c.analisisLatin ?? c.analisisArab,
+                  accent: accent,
+                ),
               ),
             ),
-          ),
         ],
       ),
     );

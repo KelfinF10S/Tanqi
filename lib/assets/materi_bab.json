@@ -1554,5 +1554,451 @@
       ]
     }
   ]
+},
+{
+  "id": "4",
+  "judul": "الباب الرابع : أنواع التراكيب والأساليب",
+  "judul_latin": "BAB 4: Jenis-Jenis Tarkib dan Uslub",
+  "aplikasi": "TANQĪ (تَنْقِي) — Tahlilun Nahwi Bil Ayaatil Quraniyyah",
+  "stimulus": {
+    "definisi_tarkib_arab": "التركيب: هو ارتباط كلمتين أو أكثر بعلاقة نحوية تؤدي معنى معينًا، وقد يكون المعنى تامًا كما في الجملة، أو غير تام كما في التراكيب الوصفية والإضافية والعطفية.",
+    "definisi_tarkib_latin": "Tarkib adalah hubungan dua kata atau lebih melalui kaidah nahwu yang menghasilkan makna tertentu, baik berupa makna yang sempurna seperti kalimat, maupun makna yang belum sempurna seperti tarkib washfi, idhafi, dan athfi.",
+    "definisi_uslub_arab": "الأسلوب: هو الطريقة التي يختارها المتكلم للتعبير عن المعنى بحسب المقام والغرض، مثل أسلوب الشرط، والقسم، والمدح والذم، والتعجب.",
+    "definisi_uslub_latin": "Uslub adalah cara yang dipilih oleh penutur untuk menyampaikan makna sesuai dengan situasi dan tujuan pembicaraan, seperti uslub syarat, qasam, pujian dan celaan, serta ta'ajjub.",
+    "narasi": "Setelah mengenal jenis-jenis kata (isim, fi'il, harf), sekarang kita akan belajar bagaimana kata-kata itu tersusun menjadi tarkib (susunan) dan bagaimana penutur memilih uslub (gaya bahasa) tertentu untuk menyampaikan maksudnya. Mari kita pelajari tarkib washfi, athfi, idhafi, serta uslub syarat, qasam, dan madh-dzamm melalui ayat-ayat Al-Qur'an bersama TANQĪ."
+  },
+  "bab": [
+    
+    {
+      "id": "washfi",
+      "nomor": 1,
+      "judul_arab": "التركيب الوصفي",
+      "judul_latin": "Tarkib Washfi (Susunan Sifat)",
+      "definisi_arab": "التركيبُ الوصفي هو ما تركّب من منعوتٍ ونعتٍ، يتبع فيه النعتُ المنعوتَ في الإعراب، والتعريف والتنكير، والتذكير والتأنيث، والإفراد والتثنية والجمع.",
+      "definisi_latin": "Tarkib washfi adalah susunan yang terdiri atas man'ut (yang disifati) dan na'at (kata sifat), di mana na'at mengikuti man'ut dalam i'rab (kedudukan), ta'rif-tankir (definit-indefinit), mudzakkar-muannats (maskulin-feminin), dan mufrad-mutsanna-jamak (tunggal-dual-jamak).",
+      "aturan": [
+        {
+          "label_arab": "الإعراب",
+          "label_latin": "Segi I'rab (Kedudukan)",
+          "contoh": [
+            {
+              "arab": "الصِّرَاطَ الْمُسْتَقِيمَ",
+              "sumber": "QS. Al-Fatihah: 6",
+              "analisis_arab": "الصراطَ: منعوت منصوب، المستقيمَ: نعت منصوب تابع له في الإعراب."
+            }
+          ]
+        },
+        {
+          "label_arab": "التعريف",
+          "label_latin": "Segi Ta'rif (Definit)",
+          "contoh": [
+            {
+              "arab": "الْبَلَدِ الْأَمِينِ",
+              "sumber": "QS. At-Tin: 3",
+              "analisis_arab": "البلدِ: معرفة بـ(أل)، الأمينِ: نعت معرفة تابع له في التعريف."
+            }
+          ]
+        },
+        {
+          "label_arab": "التنكير",
+          "label_latin": "Segi Tankir (Indefinit)",
+          "contoh": [
+            {
+              "arab": "عَذَابٌ أَلِيمٌ",
+              "sumber": "QS. Al-Baqarah: 10",
+              "analisis_arab": "عذابٌ: نكرة، أليمٌ: نعت نكرة تابع له في التنكير."
+            }
+          ]
+        },
+        {
+          "label_arab": "التذكير",
+          "label_latin": "Segi Tadzkir (Maskulin)",
+          "contoh": [
+            {
+              "arab": "الْفَوْزُ الْعَظِيمُ",
+              "sumber": "QS. At-Taubah: 72",
+              "analisis_arab": "الفوزُ: اسم مذكر، العظيمُ: نعت مذكر تابع له."
+            }
+          ]
+        },
+        {
+          "label_arab": "التأنيث",
+          "label_latin": "Segi Ta'nits (Feminin)",
+          "contoh": [
+            {
+              "arab": "الْحَيَاةُ الدُّنْيَا",
+              "sumber": "QS. Al-Baqarah: 85",
+              "analisis_arab": "الحياةُ: اسم مؤنث، الدنيا: نعت مؤنث تابع له."
+            }
+          ]
+        },
+        {
+          "label_arab": "الإفراد",
+          "label_latin": "Segi Ifrad (Tunggal)",
+          "contoh": [
+            {
+              "arab": "صِرَاطًا مُسْتَقِيمًا",
+              "sumber": "QS. Al-An'am: 153",
+              "analisis_arab": "صراطًا: اسم مفرد، مستقيمًا: نعت مفرد تابع له."
+            }
+          ]
+        },
+        {
+          "label_arab": "التثنية",
+          "label_latin": "Segi Tatsniyah (Dual)",
+          "contoh": [
+            {
+              "arab": "فِيهِمَا عَيْنَانِ نَضَّاخَتَانِ",
+              "sumber": "QS. Ar-Rahman: 66",
+              "analisis_arab": "عينانِ: منعوت مرفوع، وعلامة رفعه الألف لأنه مثنى. نضاختانِ: نعت مرفوع، وعلامة رفعه الألف لأنه مثنى، وهو تابع لمنعوته في الإعراب والتثنية."
+            }
+          ]
+        },
+        {
+          "label_arab": "جمع المذكر السالم",
+          "label_latin": "Jamak Mudzakkar Salim",
+          "contoh": [
+            {
+              "arab": "إِنَّ الْمُسْلِمِينَ وَالْمُسْلِمَاتِ وَالْمُؤْمِنِينَ وَالْمُؤْمِنَاتِ",
+              "sumber": "QS. Al-Ahzab: 35",
+              "analisis_arab": "المسلمين: منعوت منصوب بالياء لأنه جمع مذكر سالم. المؤمنين: نعت منصوب بالياء، تابع لمنعوته في الإعراب، والتعريف، والتذكير، والجمع."
+            }
+          ]
+        },
+        {
+          "label_arab": "جمع المؤنث السالم",
+          "label_latin": "Jamak Muannats Salim",
+          "contoh": [
+            {
+              "arab": "إِنَّ الْمُسْلِمَاتِ الْمُؤْمِنَاتِ",
+              "sumber": "QS. Al-Ahzab: 35",
+              "analisis_arab": "المسلمات: منعوت منصوب بالكسرة نيابةً عن الفتحة لأنه جمع مؤنث سالم. المؤمنات: نعت منصوب بالكسرة، تابع لمنعوته في الإعراب، والتعريف، والتأنيث، والجمع."
+            }
+          ]
+        },
+        {
+          "label_arab": "جمع التكسير",
+          "label_latin": "Jamak Taksir",
+          "contoh": [
+            {
+              "arab": "فِيهَا سُرُرٌ مَرْفُوعَةٌ",
+              "sumber": "QS. Al-Ghasyiyah: 13",
+              "analisis_arab": "سررٌ: منعوت مرفوع بالضمة، وهو جمع تكسير. مرفوعةٌ: نعت مرفوع بالضمة، تابع لمنعوته في الإعراب، والتنكير، والتأنيث اللفظي، والجمع."
+            }
+          ]
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "athfi",
+      "nomor": 2,
+      "judul_arab": "التركيب العطفي",
+      "judul_latin": "Tarkib 'Athfi (Susunan Sambung)",
+      "definisi_arab": "التركيب العطفي هو تركيب يتكون من معطوفٍ ومعطوفٍ عليه، ويربط بينهما أحدُ حروف العطف، ويتبع المعطوفُ المعطوفَ عليه في الإعراب.",
+      "definisi_latin": "Tarkib 'athfi adalah susunan yang terdiri atas ma'thuf dan ma'thuf 'alaih, yang dihubungkan oleh salah satu huruf 'athaf. Ma'thuf mengikuti ma'thuf 'alaih dalam i'rab.",
+      "aturan": [
+        {
+          "label_arab": "الواو",
+          "label_latin": "Al-Waw",
+          "makna_arab": "مطلق الجمع",
+          "makna_latin": "Menggabungkan tanpa menunjukkan urutan",
+          "contoh": [
+            {
+              "arab": "إِنَّ اللَّهَ وَمَلَائِكَتَهُ يُصَلُّونَ عَلَى النَّبِيِّ",
+              "sumber": "QS. Al-Ahzab: 56",
+              "analisis_arab": "الله: معطوف عليه مرفوع، الواو: حرف عطف، ملائكته: معطوف مرفوع تابع للمعطوف عليه. ولا تدل الواو على الترتيب."
+            }
+          ]
+        },
+        {
+          "label_arab": "الفاء",
+          "label_latin": "Al-Fa'",
+          "makna_arab": "الترتيب مع التعقيب",
+          "makna_latin": "Urutan yang langsung berurutan (tanpa jeda)",
+          "contoh": [
+            {
+              "arab": "ثُمَّ أَمَاتَهُ فَأَقْبَرَهُ",
+              "sumber": "QS. 'Abasa: 21",
+              "analisis_arab": "أماته: معطوف عليه (فعل)، الفاء: حرف عطف يفيد الترتيب مع التعقيب، أقبره: فعل معطوف على أماته."
+            }
+          ]
+        },
+        {
+          "label_arab": "ثم",
+          "label_latin": "Tsumma",
+          "makna_arab": "الترتيب مع التراخي",
+          "makna_latin": "Urutan dengan jeda waktu",
+          "contoh": [
+            {
+              "arab": "ثُمَّ أَنْشَأْنَاهُ خَلْقًا آخَرَ",
+              "sumber": "QS. Al-Mu'minun: 14",
+              "analisis_arab": "أنشأناه: فعل معطوف، ثم: حرف عطف يفيد الترتيب مع التراخي، والمعطوف عليه هو الفعل السابق في السياق (خلقنا)."
+            }
+          ]
+        },
+        {
+          "label_arab": "أو",
+          "label_latin": "Aw",
+          "makna_arab": "التخيير",
+          "makna_latin": "Memberi pilihan",
+          "contoh": [
+            {
+              "arab": "فَكَفَّارَتُهُ إِطْعَامُ عَشَرَةِ مَسَاكِينَ أَوْ كِسْوَتُهُمْ",
+              "sumber": "QS. Al-Ma'idah: 89",
+              "analisis_arab": "إطعامُ: معطوف عليه، أو: حرف عطف يفيد التخيير، كسوتهم: معطوف مرفوع تابع للمعطوف عليه."
+            }
+          ]
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "idhafi",
+      "nomor": 3,
+      "judul_arab": "التركيب الإضافي",
+      "judul_latin": "Tarkib Idhafi (Susunan Sandaran)",
+      "definisi_arab": "التركيب الإضافي هو تركيب يتكون من مضاف ومضاف إليه، ويستعمل للدلالة على الملكية أو الاختصاص أو التعريف، ويكون المضاف إليه مجرورًا دائمًا.",
+      "definisi_latin": "Tarkib idhafi adalah susunan yang terdiri atas mudhaf dan mudhaf ilaih, yang bertujuan menyandarkan suatu isim kepada isim lainnya untuk memberikan makna kepemilikan, pengkhususan, atau pendefinisian.",
+      "aturan": [
+        {
+          "label_arab": "الملكية",
+          "label_latin": "Kepemilikan",
+          "contoh": [
+            {
+              "arab": "نَاقَةَ اللَّهِ وَسُقْيَاهَا",
+              "sumber": "QS. Asy-Syams: 13",
+              "tashnif_arab": "المضاف: ناقة، المضاف إليه: الله",
+              "analisis_arab": "ناقةَ: مضاف منصوب، واللهِ: مضاف إليه مجرور بالكسرة."
+            }
+          ]
+        },
+        {
+          "label_arab": "الاختصاص",
+          "label_latin": "Pengkhususan",
+          "contoh": [
+            {
+              "arab": "مُحَمَّدٌ رَسُولُ اللَّهِ",
+              "sumber": "QS. Al-Fath: 29",
+              "tashnif_arab": "المضاف: رسول، المضاف إليه: الله",
+              "analisis_arab": "رسولُ: مضاف مرفوع، واللهِ: مضاف إليه مجرور بالكسرة."
+            }
+          ]
+        },
+        {
+          "label_arab": "التعريف",
+          "label_latin": "Pendefinisian",
+          "contoh": [
+            {
+              "arab": "هُدَى اللَّهِ هُوَ الْهُدَى",
+              "sumber": "QS. Al-Baqarah: 120",
+              "tashnif_arab": "المضاف: هدى، المضاف إليه: الله",
+              "analisis_arab": "هدى: مضاف مرفوع، واللهِ: مضاف إليه مجرور بالكسرة، فاكتسب المضاف التعريف بالإضافة."
+            }
+          ]
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "uslub_syarat",
+      "nomor": 4,
+      "judul_arab": "أسلوب الشرط",
+      "judul_latin": "Uslub Syarat (Gaya Bahasa Bersyarat)",
+      "definisi_arab": "هو أسلوب يتكون من أداة الشرط، وفعل الشرط، وجواب الشرط، ويتوقف فيه حصول الجواب على حصول الشرط.",
+      "definisi_latin": "Uslub syarat adalah gaya bahasa yang terdiri atas adat syarat, fi'il syarat, dan jawab syarat, di mana terjadinya jawab bergantung pada terjadinya syarat.",
+      "aturan": [],
+      "children": [
+        {
+          "id": "syarat_jazimah",
+          "judul_arab": "أدوات الشرط الجازمة",
+          "judul_latin": "Adat Syarat Jazimah",
+          "catatan_arab": "سميت جازمة لأنها تؤثر في إعراب الفعل المضارع، فتجعله مجزومًا بالسكون أو بحذف.",
+          "catatan_latin": "Disebut jazimah karena mempengaruhi i'rab fi'il mudhari' sehingga menjadi majzum, baik dengan sukun maupun dengan membuang huruf.",
+          "aturan": [
+            {
+              "label_arab": "إِنْ",
+              "label_latin": "In",
+              "contoh": [
+                {
+                  "arab": "وَإِنْ تَصْبِرُوا وَتَتَّقُوا لَا يَضُرُّكُمْ كَيْدُهُمْ شَيْئًا",
+                  "sumber": "QS. Ali 'Imran: 120",
+                  "analisis_arab": "إنْ: أداة شرط جازمة. تصبروا: فعل الشرط مجزوم بحذف النون. وتتقوا: فعل مضارع معطوف على فعل الشرط، مجزوم بحذف النون. لا يضركم: جواب الشرط، ويضرْ فعل مضارع مجزوم بالسكون."
+                }
+              ]
+            },
+            {
+              "label_arab": "مَنْ",
+              "label_latin": "Man",
+              "contoh": [
+                {
+                  "arab": "مَنْ يَعْمَلْ سُوءًا يُجْزَ بِهِ",
+                  "sumber": "QS. An-Nisa': 123",
+                  "analisis_arab": "من: اسم شرط جازم مبني على السكون في محل رفع مبتدأ. يعملْ: فعل الشرط مجزوم بالسكون. يجزَ: جواب الشرط مجزوم بحذف حرف العلة."
+                }
+              ]
+            },
+            {
+              "label_arab": "مَهْمَا",
+              "label_latin": "Mahma",
+              "contoh": [
+                {
+                  "arab": "مَهْمَا تَأْتِنَا بِهِ مِنْ آيَةٍ لِتَسْحَرَنَا بِهَا",
+                  "sumber": "QS. Al-A'raf: 132",
+                  "analisis_arab": "مهما: اسم شرط جازم مبني على السكون. تأتنا: فعل الشرط مجزوم بحذف حرف العلة. جواب الشرط محذوف، والتقدير: فلن نؤمن لك."
+                }
+              ]
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "syarat_ghairu_jazimah",
+          "judul_arab": "أدوات الشرط غير الجازمة",
+          "judul_latin": "Adat Syarat Ghairu Jazimah",
+          "catatan_arab": "سميت غير جازمة لأنها لا تُحدث الجزم في الفعل، وإنما تفيد معاني خاصةً، مثل امتناع الشرط أو امتناع الجواب.",
+          "catatan_latin": "Disebut ghairu jazimah karena tidak menyebabkan jazm pada fi'il, tetapi memberikan makna khusus, seperti tidak terjadinya syarat atau tidak terjadinya jawab.",
+          "aturan": [
+            {
+              "label_arab": "لَوْ",
+              "label_latin": "Lau",
+              "contoh": [
+                {
+                  "arab": "وَلَوْ شَاءَ اللَّهُ لَجَمَعَهُمْ عَلَى الْهُدَى",
+                  "sumber": "QS. Al-An'am: 35",
+                  "analisis_arab": "لو: حرف شرط غير جازم يفيد امتناع الجواب لامتناع الشرط. شاء: فعل الشرط ماضٍ مبني على الفتح. لجمعهم: جواب الشرط، واللام واقعة في جواب لو."
+                }
+              ]
+            },
+            {
+              "label_arab": "لَوْلَا",
+              "label_latin": "Laula",
+              "contoh": [
+                {
+                  "arab": "وَلَوْلَا فَضْلُ اللَّهِ عَلَيْكُمْ وَرَحْمَتُهُ لَاتَّبَعْتُمُ الشَّيْطَانَ إِلَّا قَلِيلًا",
+                  "sumber": "QS. An-Nisa': 83",
+                  "analisis_arab": "لولا: حرف شرط غير جازم يفيد امتناع الجواب لوجود الشرط. فضلُ: مبتدأ مرفوع بعد لولا. لاتبعتم: جواب الشرط، واللام واقعة في جواب لولا."
+                }
+              ]
+            }
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "uslub_qasam",
+      "nomor": 5,
+      "judul_arab": "أسلوب القسم",
+      "judul_latin": "Uslub Qasam (Gaya Bahasa Sumpah)",
+      "definisi_arab": "أسلوب القسم هو أسلوب يُؤكَّد به الخبر باستعمال أحد حروف القسم أو ألفاظه، ويتكون من أداة القسم، والمقسم به، وجواب القسم.",
+      "definisi_latin": "Uslub qasam adalah gaya bahasa yang digunakan untuk menguatkan suatu berita dengan memakai salah satu huruf atau lafaz sumpah. Uslub ini terdiri atas adat al-qasam, muqsam bih, dan jawab al-qasam.",
+      "aturan": [
+        {
+          "label_arab": "الباء (بِ)",
+          "label_latin": "Al-Ba'",
+          "contoh": [
+            {
+              "arab": "قَالُوا بَلَىٰ وَرَبِّنَا",
+              "sumber": "QS. Al-An'am: 30",
+              "analisis_arab": "الباء: حرف قسم وجر. ربِّ: اسم مجرور بالباء، وهو المقسم به، ونا ضمير متصل في محل جر مضاف إليه. وجواب القسم محذوف، والتقدير: بلى وربنا لنبعثن."
+            }
+          ]
+        },
+        {
+          "label_arab": "الواو (وَ)",
+          "label_latin": "Al-Waw",
+          "contoh": [
+            {
+              "arab": "وَالْعَصْرِ ۝ إِنَّ الْإِنسَانَ لَفِي خُسْرٍ",
+              "sumber": "QS. Al-'Ashr: 1-2",
+              "analisis_arab": "الواو: حرف قسم وجر. العصرِ: اسم مجرور بالواو، وهو المقسم به. إنَّ الإنسان لفي خسر: جواب القسم."
+            }
+          ]
+        },
+        {
+          "label_arab": "التاء (تَ)",
+          "label_latin": "At-Ta'",
+          "contoh": [
+            {
+              "arab": "تَاللَّهِ لَقَدْ آثَرَكَ اللَّهُ عَلَيْنَا",
+              "sumber": "QS. Yusuf: 91",
+              "analisis_arab": "التاء: حرف قسم وجر. اللهِ: اسم مجرور بالتاء، وهو المقسم به. لقد آثرك الله علينا: جواب القسم."
+            }
+          ]
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "uslub_madh_dzam",
+      "nomor": 6,
+      "judul_arab": "أسلوب المدح والذم",
+      "judul_latin": "Uslub Madh dan Dzamm (Pujian dan Celaan)",
+      "definisi_arab": "هو أسلوب يُستعمل لمدح أو ذم شخصٍ أو شيءٍ بأفعال مخصوصة، مثل: نِعْمَ وبِئْسَ.",
+      "definisi_latin": "Uslub madh dan dzamm adalah gaya bahasa yang digunakan untuk memuji atau mencela seseorang atau sesuatu dengan menggunakan fi'il-fi'il tertentu, seperti نِعْمَ dan بِئْسَ.",
+      "aturan": [],
+      "children": [
+        {
+          "id": "uslub_madh",
+          "judul_arab": "أسلوب المدح",
+          "judul_latin": "Uslub Madh (Pujian)",
+          "aturan": [
+            {
+              "label_arab": "نِعْمَ",
+              "label_latin": "Ni'ma",
+              "contoh": [
+                {
+                  "arab": "وَلَنِعْمَ دَارُ الْمُتَّقِينَ",
+                  "sumber": "QS. An-Nahl: 30",
+                  "analisis_arab": "نِعْمَ: فعل ماضٍ جامد لإنشاء المدح. دارُ: فاعل مرفوع. المتقين: مضاف إليه مجرور. المخصوص بالمدح: دارُ المتقين."
+                },
+                {
+                  "arab": "وَلَنِعْمَ أَجْرُ الْعَامِلِينَ",
+                  "sumber": "QS. Ali 'Imran: 136",
+                  "analisis_arab": "نِعْمَ: فعل ماضٍ جامد للمدح. أجرُ: فاعل مرفوع. العاملين: مضاف إليه مجرور. المخصوص بالمدح: أجرُ العاملين."
+                },
+                {
+                  "arab": "نِعْمَ الْعَبْدُ إِنَّهُ أَوَّابٌ",
+                  "sumber": "QS. Sad: 30",
+                  "analisis_arab": "نِعْمَ: فعل ماضٍ جامد للمدح. العبدُ: فاعل مرفوع. المخصوص بالمدح: سليمان عليه السلام، وهو مفهوم من السياق."
+                }
+              ]
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "uslub_dzam",
+          "judul_arab": "أسلوب الذم",
+          "judul_latin": "Uslub Dzamm (Celaan)",
+          "aturan": [
+            {
+              "label_arab": "بِئْسَ",
+              "label_latin": "Bi'sa",
+              "contoh": [
+                {
+                  "arab": "بِئْسَ لِلظَّالِمِينَ بَدَلًا",
+                  "sumber": "QS. Al-Kahfi: 50",
+                  "analisis_arab": "بِئْسَ: فعل ماضٍ جامد لإنشاء الذم. بدلًا: تمييز منصوب. المخصوص بالذم: محذوف، يدل عليه السياق."
+                },
+                {
+                  "arab": "بِئْسَ الِاسْمُ الْفُسُوقُ بَعْدَ الْإِيمَانِ",
+                  "sumber": "QS. Al-Hujurat: 11",
+                  "analisis_arab": "بِئْسَ: فعل ماضٍ جامد للذم. الاسمُ: فاعل مرفوع. الفسوقُ: المخصوص بالذم، مرفوع."
+                },
+                {
+                  "arab": "فَبِئْسَ مَثْوَى الْمُتَكَبِّرِينَ",
+                  "sumber": "QS. An-Nahl: 29",
+                  "analisis_arab": "بِئْسَ: فعل ماضٍ جامد للذم. مثوى: فاعل مرفوع وهو مضاف. المتكبرين: مضاف إليه مجرور. المخصوص بالذم: مثوى المتكبرين."
+                }
+              ]
+            }
+          ],
+          "children": []
+        }
+      ]
+    }
+  ]
 }
 ]

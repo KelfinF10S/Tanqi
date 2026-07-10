@@ -3,9 +3,11 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from extensions import db
+import random
 from models.models import (
     Kuis, SoalKuis, UserKuis, UserJawabanKuis, UserBab
 )
+
 
 jawaban_bp = Blueprint("jawaban", __name__)
 
@@ -134,7 +136,7 @@ def _cek_progress_kuis(user_id: int, kuis_id: int, bab_id: int):
 #   - drag_drop        -> dict {"item": "target", ...}
 #   - tap_object        -> list ["id1", "id2", ...]
 # ──────────────────────────────────────────────
-@jawaban_bp.route("/", methods=["POST"])
+@jawaban_bp.route("/jawaban", methods=["POST"])
 @jwt_required()
 def submit_jawaban_kuis():
     user_id = int(get_jwt_identity())
@@ -261,3 +263,4 @@ def reset_kuis(bab_id):
         "babid": bab_id,
         "attempt": user_kuis.attempt
     }), 200
+

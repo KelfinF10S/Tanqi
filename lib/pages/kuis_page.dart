@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:tanqiy/controllers/babkuis_controller.dart';
 import 'package:tanqiy/core/colors.dart';
 import 'package:tanqiy/pages/kuis_review_page.dart';
+import 'package:tanqiy/pages/loading.dart';
 import 'package:tanqiy/widgets/quiz_soal_widgets.dart';
 
 class KuisPage extends StatefulWidget {
@@ -66,7 +67,7 @@ class _KuisPageState extends State<KuisPage> {
       ),
       body: Obx(() {
         if (controller.isLoading.value && controller.soalAktif.value == null) {
-          return const Center(child: CircularProgressIndicator(color: accent));
+          return LoadingScreen();
         }
 
         if (controller.errorMessage.value.isNotEmpty) {
@@ -112,7 +113,11 @@ class _KuisPageState extends State<KuisPage> {
                 ),
                 const SizedBox(height: 20),
               ],
-              QuizSoalWidget(soal: soal, controller: controller, accent: accent),
+              QuizSoalWidget(
+                soal: soal,
+                controller: controller,
+                accent: accent,
+              ),
               const SizedBox(height: 20),
               Obx(() {
                 final hasil = controller.hasilAktif.value;
@@ -167,7 +172,9 @@ class _KuisPageState extends State<KuisPage> {
                       child: Row(
                         children: [
                           Icon(
-                            isCorrect ? Icons.check_circle : Icons.cancel_rounded,
+                            isCorrect
+                                ? Icons.check_circle
+                                : Icons.cancel_rounded,
                             color: color,
                           ),
                           const SizedBox(width: 10),

@@ -9,6 +9,7 @@ import 'package:tanqiy/pages/beranda.dart';
 import 'package:tanqiy/pages/games.dart';
 import 'package:tanqiy/pages/jelajahi.dart';
 import 'package:tanqiy/pages/kelas.dart';
+import 'package:tanqiy/pages/page3.dart';
 import 'package:tanqiy/pages/profil.dart';
 import 'package:tanqiy/pages/splashscreen.dart';
 import 'pages/panduan.dart';
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
         '/menu': (context) => const MenuPage(),
         // '/page1': (context) => Page1(),
         '/panduan': (context) => PanduanPage(),
-        // '/page3': (context) => Page3(),
+        '/page3': (context) => Page3(),
         // '/page4': (context) => Page4(),
         // '/page5': (context) => Page5(),
         '/games': (context) => GamesPage(),

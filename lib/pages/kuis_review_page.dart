@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tanqiy/controllers/babkuis_controller.dart';
 import 'package:tanqiy/core/colors.dart';
+import 'package:tanqiy/pages/loading.dart';
 import 'package:tanqiy/widgets/retry_dialog.dart';
 
 class KuisReviewPage extends StatefulWidget {
@@ -34,6 +35,24 @@ class _KuisReviewPageState extends State<KuisReviewPage> {
     super.dispose();
   }
 
+  String kategoriNilai(double nilai) {
+    return switch (nilai) {
+      >= 70 => 'cakra_3.png',
+      >= 40 => 'cakra_2.png',
+      >= 0 => 'cakra_1.png',
+      _ => 'cakra_1.png',
+    };
+  }
+
+  String kategoriFeedback(double nilai) {
+    return switch (nilai) {
+      >= 70 => 'أحسنت! لقد اجتزت هذا الباب',
+      >= 40 => 'بعض إجاباتك غير صحيحة. حاول مرة أخرى',
+      >= 0 => 'درجتك منخفضة. راجع الدرس ثم أعد المحاولة',
+      _ => '-',
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     const accent = AppColors.gold;
@@ -51,11 +70,12 @@ class _KuisReviewPageState extends State<KuisReviewPage> {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator(color: accent));
+          return LoadingScreen();
         }
 
         final nilai = controller.nilai.value;
         final lulus = nilai >= 70;
+        final cakraNilai = kategoriNilai(nilai);
         final benar = controller.soalList
             .where((s) => s.isCorrect == true)
             .length;
@@ -80,35 +100,45 @@ class _KuisReviewPageState extends State<KuisReviewPage> {
                 ),
                 child: Column(
                   children: [
-                    Icon(
-                      lulus ? Icons.emoji_events_rounded : Icons.refresh_rounded,
-                      color: lulus ? accent : Colors.orange,
-                      size: 40,
+                    NoteBox(text: kategoriFeedback(nilai)),
+                    Image.asset('lib/assets/$cakraNilai'),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          nilai.toStringAsFixed(0),
+                          style: const TextStyle(
+                            color: AppColors.textPrimary,
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Icon(
+                          lulus
+                              ? Icons.emoji_events_rounded
+                              : Icons.refresh_rounded,
+                          color: lulus ? accent : Colors.orange,
+                          size: 40,
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 12),
-                    Text(
-                      nilai.toStringAsFixed(0),
-                      style: const TextStyle(
-                        color: AppColors.textPrimary,
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      lulus
-                          ? 'ممتاز! لقد اجتزت الاختبار'
-                          : 'تحتاج ٧٠ على الأقل للنجاح',
-                      style: const TextStyle(
-                        color: AppColors.textMuted,
-                        fontSize: 12,
-                      ),
-                    ),
+
                     const SizedBox(height: 12),
                     Text(
                       '$benar / $total إجابات صحيحة',
                       style: const TextStyle(
                         color: AppColors.textSecondary,
                         fontSize: 13,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    Text(
+                      'ملاحظة: يلزم الحصول على ٧٠ درجة على الأقل لإكمال هذا الباب.',
+                      textAlign: TextAlign.right,
+                      style: const TextStyle(
+                        color: AppColors.textMuted,
+                        fontSize: 12,
                       ),
                     ),
                   ],
@@ -193,10 +223,18 @@ class _KuisReviewPageState extends State<KuisReviewPage> {
                           fontSize: 13,
                         ),
                       ),
-                      if (!isCorrect) ...[
+                      const SizedBox(height: 6),
+                      Text(
+                        'إجابتك:\n${s.jawabanUser}',
+                        style: const TextStyle(
+                          color: AppColors.textMuted,
+                          fontSize: 11,
+                        ),
+                      ),
+                      if (isCorrect) ...[
                         const SizedBox(height: 6),
                         Text(
-                          'جوابك: ${s.jawabanUser}',
+                          'جوابك:\n${s.penjelasan}',
                           style: const TextStyle(
                             color: AppColors.textMuted,
                             fontSize: 11,
@@ -211,6 +249,43 @@ class _KuisReviewPageState extends State<KuisReviewPage> {
           ),
         );
       }),
+    );
+  }
+}
+
+class NoteBox extends StatelessWidget {
+  final String text;
+
+  const NoteBox({super.key, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.amber.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.amber.withOpacity(0.35)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.info_outline_rounded, color: Colors.amber, size: 18),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              textAlign: TextAlign.right,
+              style: const TextStyle(
+                fontSize: 12,
+                color: AppColors.textPrimary,
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
