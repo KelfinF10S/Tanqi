@@ -6,7 +6,7 @@ class MateriBAB {
   final String id;
   final String judulArab;
   final String judulLatin;
-  final String aplikasi;
+  final String video;
   final StimulusData? stimulus;
   final DefinisiData? definisi;
   final List<NahwuNode> bab;   // <-- ini yang harus diganti dari List<KategoriKata>
@@ -15,7 +15,7 @@ class MateriBAB {
     required this.id,
     required this.judulArab,
     required this.judulLatin,
-    required this.aplikasi,
+    required this.video,
     this.stimulus,
     this.definisi,
     this.bab = const [],
@@ -25,7 +25,7 @@ class MateriBAB {
         id: j['id'] ?? '',
         judulArab: j['judul'] ?? '',
         judulLatin: j['judul_latin'] ?? '',
-        aplikasi: j['aplikasi'] ?? '',
+        video: j['video'] ?? '',
         stimulus: j['stimulus'] != null
             ? StimulusData.fromJson(j['stimulus'] as Map<String, dynamic>)
             : null,

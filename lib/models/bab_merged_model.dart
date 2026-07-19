@@ -20,7 +20,7 @@ class BabMerged {
   String get id          => materi.id;
   String get judulArab   => materi.judulArab;
   String get judulLatin  => materi.judulLatin;
-  String get aplikasi    => materi.aplikasi;
+  String get video    => materi.video;
 
   bool   get locked        => quiz?.locked       ?? true;
   bool   get isCompleted   => quiz?.isCompleted  ?? false;

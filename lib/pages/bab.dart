@@ -10,6 +10,8 @@ import 'package:tanqiy/models/bab_merged_model.dart';
 import 'package:tanqiy/pages/kuis_page.dart';
 import 'package:tanqiy/pages/loading.dart';
 import 'package:tanqiy/widgets/background_painter.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 // ─────────────────────────────────────────
 //  PAGE 1  (entry point)
@@ -98,7 +100,7 @@ class _BabPageState extends State<BabPage> with SingleTickerProviderStateMixin {
 // ─────────────────────────────────────────
 //  MAIN BODY
 // ─────────────────────────────────────────
-class _MateriBody extends StatelessWidget {
+class _MateriBody extends StatefulWidget {
   final MateriBAB materi;
   final BabMerged babMerged;
   final int activeKategori;
@@ -114,8 +116,47 @@ class _MateriBody extends StatelessWidget {
   });
 
   @override
+  State<_MateriBody> createState() => _MateriBodyState();
+}
+
+class _MateriBodyState extends State<_MateriBody> {
+  late YoutubePlayerController ytcontroller;
+
+  String extractVideoId(String url) {
+    final uri = Uri.parse(url);
+
+    if (uri.host.contains('youtu.be')) {
+      return uri.pathSegments.first;
+    }
+
+    return uri.queryParameters['v'] ?? '';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Youtube video materi
+    ytcontroller = YoutubePlayerController(
+      params: const YoutubePlayerParams(
+        showControls: true,
+        showFullscreenButton: true,
+        strictRelatedVideos: true,
+        enableCaption: true,
+      ),
+    );
+
+    ytcontroller.loadVideoById(videoId: extractVideoId(widget.babMerged.video));
+  }
+
+  @override
+  void dispose() {
+    ytcontroller.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final babId = int.tryParse(babMerged.id) ?? 1;
+    final babId = int.tryParse(widget.babMerged.id) ?? 1;
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
@@ -123,28 +164,42 @@ class _MateriBody extends StatelessWidget {
         _buildSliverAppBar(context),
         SliverToBoxAdapter(
           child: _ProgressBanner(
-            total: materi.bab.length,
-            done: activeKategori,
+            total: widget.materi.bab.length,
+            done: widget.activeKategori,
           ),
         ),
-        SliverToBoxAdapter(child: _StimulusSection(stimulus: materi.stimulus)),
+        SliverToBoxAdapter(
+          child: _StimulusSection(stimulus: widget.materi.stimulus),
+        ),
+        SliverToBoxAdapter(
+          child: VideoMateriCard(
+            controller: ytcontroller,
+            color: AppColors.gold.withOpacity(0.25),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: RingkasanCard(
+            imagePath: 'lib/assets/ringkasan_bab$babId.jpeg',
+            color: AppColors.gold.withOpacity(0.25),
+          ),
+        ),
         SliverToBoxAdapter(
           child: _KategoriPicker(
-            bab: materi.bab,
-            active: activeKategori,
-            onTap: onKategoriChange,
+            bab: widget.materi.bab,
+            active: widget.activeKategori,
+            onTap: widget.onKategoriChange,
           ),
         ),
         SliverToBoxAdapter(
           child: _KategoriDetail(
-            kategori: materi.bab[activeKategori],
-            slugToMateriId: slugToMateriId,
+            kategori: widget.materi.bab[widget.activeKategori],
+            slugToMateriId: widget.slugToMateriId,
           ),
         ),
         SliverToBoxAdapter(
           child: _KuisEntryCard(
             babId: babId,
-            babJudul: babMerged.materi.judulLatin,
+            babJudul: widget.babMerged.materi.judulLatin,
           ),
         ),
         // SliverToBoxAdapter(child: _GameEntryCard(babId: babId)),
@@ -210,7 +265,7 @@ class _MateriBody extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    babMerged.materi.judulArab,
+                    widget.babMerged.materi.judulArab,
                     style: const TextStyle(
                       color: AppColors.textPrimary,
                       fontSize: 28,
@@ -1367,6 +1422,248 @@ class _TabelTile extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class RingkasanCard extends StatelessWidget {
+  final String imagePath;
+  final Color color;
+
+  const RingkasanCard({
+    super.key,
+    required this.imagePath,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.divider),
+        ),
+        child: Theme(
+          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+          child: ExpansionTile(
+            tilePadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 6,
+            ),
+            iconColor: color,
+            collapsedIconColor: AppColors.textMuted,
+            leading: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: color.withOpacity(.1),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: color.withOpacity(.3)),
+              ),
+              child: Icon(Icons.summarize_sharp, color: color),
+            ),
+            title: const Text(
+              'ملخص الباب',
+              style: TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            subtitle: Text(
+              'اقرأ صورة ملخص الباب',
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 12,
+              ),
+            ),
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ImageViewerPage(imagePath: imagePath),
+                      ),
+                    );
+                  },
+                  child: Hero(
+                    tag: imagePath,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.asset(imagePath, fit: BoxFit.contain),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ImageViewerPage extends StatelessWidget {
+  final String imagePath;
+
+  const ImageViewerPage({super.key, required this.imagePath});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      appBar: AppBar(
+        backgroundColor: AppColors.bg,
+        foregroundColor: AppColors.textPrimary,
+        elevation: 0,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('صورة ملخص الباب'),
+            Row(
+              children: [
+                Icon(Icons.zoom_in, color: AppColors.textSecondary, size: 20),
+                Text(
+                  'يمكنك تكبير الصورة وتصغيرها',
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      body: PhotoView(
+        imageProvider: AssetImage(imagePath),
+        backgroundDecoration: const BoxDecoration(color: AppColors.bg),
+      ),
+    );
+  }
+}
+
+class VideoMateriCard extends StatefulWidget {
+  final YoutubePlayerController controller;
+  final Color color;
+
+  const VideoMateriCard({
+    super.key,
+    required this.controller,
+    required this.color,
+  });
+
+  @override
+  State<VideoMateriCard> createState() => _VideoMateriCardState();
+}
+
+class _VideoMateriCardState extends State<VideoMateriCard> {
+  bool _expanded = false;
+  bool _showPlayer = false;
+
+  Future<void> _handleExpansion(bool expanded) async {
+    if (expanded) {
+      setState(() {
+        _expanded = true;
+        _showPlayer = false;
+      });
+
+      // tampilkan loading sebentar
+      await Future.delayed(const Duration(seconds: 1));
+
+      if (mounted && _expanded) {
+        setState(() {
+          _showPlayer = true;
+        });
+      }
+    } else {
+      setState(() {
+        _expanded = false;
+        _showPlayer = false;
+      });
+
+      widget.controller.pauseVideo();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.divider),
+        ),
+        child: Theme(
+          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+          child: ExpansionTile(
+            onExpansionChanged: _handleExpansion,
+            tilePadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 6,
+            ),
+            iconColor: widget.color,
+            collapsedIconColor: AppColors.textMuted,
+            leading: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: widget.color.withOpacity(.1),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: widget.color.withOpacity(.3)),
+              ),
+              child: Icon(Icons.smart_display_rounded, color: widget.color),
+            ),
+            title: const Text(
+              "الفيديو التعليمي",
+              style: TextStyle(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
+            ),
+            subtitle: const Text(
+              "شاهد شرح الدرس",
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+            ),
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      child: _showPlayer
+                          ? YoutubePlayer(
+                              key: const ValueKey("player"),
+                              controller: widget.controller,
+                            )
+                          : Container(
+                              key: const ValueKey("loading"),
+                              color: AppColors.surface,
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
