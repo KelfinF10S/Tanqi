@@ -5,6 +5,7 @@ class KuisMetaModel {
   final int babid;
   final String judul;
   final double passingScore;
+  final int xpPerSoal;
   final int totalSoal;
   final int sudahDijawab;
   final int attempt;
@@ -16,6 +17,7 @@ class KuisMetaModel {
     required this.babid,
     required this.judul,
     required this.passingScore,
+    required this.xpPerSoal,
     required this.totalSoal,
     required this.sudahDijawab,
     required this.attempt,
@@ -24,14 +26,15 @@ class KuisMetaModel {
   });
 
   factory KuisMetaModel.fromJson(Map<String, dynamic> json) => KuisMetaModel(
-        id: json['id'],
-        babid: json['babid'],
-        judul: json['judul'] ?? 'Kuis',
-        passingScore: (json['passing_score'] ?? 70).toDouble(),
-        totalSoal: json['total_soal'] ?? 0,
-        sudahDijawab: json['sudah_dijawab'] ?? 0,
-        attempt: json['attempt'] ?? 1,
-        isCompleted: json['is_completed'] ?? false,
-        nilai: (json['nilai'] ?? 0).toDouble(),
-      );
+    id: json['id'],
+    babid: json['babid'],
+    judul: json['judul'] ?? 'Kuis',
+    passingScore: (json['passing_score'] ?? 70).toDouble(),
+    xpPerSoal: json['xp_per_soal'] ?? 0,
+    totalSoal: json['total_soal'] ?? 0,
+    sudahDijawab: json['sudah_dijawab'] ?? 0,
+    attempt: json['attempt'] ?? 1,
+    isCompleted: json['is_completed'] ?? false,
+    nilai: (json['nilai'] ?? 0).toDouble(),
+  );
 }

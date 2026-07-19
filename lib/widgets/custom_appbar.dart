@@ -4,7 +4,6 @@ import 'package:tanqiy/core/colors.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String arabicTitle;
-  final String title;
 
   final bool centerTitle;
   final bool showBackButton;
@@ -14,7 +13,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({
     super.key,
     required this.arabicTitle,
-    required this.title,
+
     this.centerTitle = true,
     this.showBackButton = true,
     this.actions,
@@ -44,8 +43,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             arabicTitle,
             style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
           ),
-
-          Text(title, style: const TextStyle(fontSize: 12)),
         ],
       ),
 

@@ -38,10 +38,7 @@ class _PanduanPageState extends State<PanduanPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        arabicTitle: 'دليل الاستخدام',
-        title: 'Panduan Penggunaan',
-      ),
+      appBar: CustomAppBar(arabicTitle: 'دليل الاستخدام'),
 
       body: Container(
         decoration: const BoxDecoration(gradient: AppColors.splashGradient),

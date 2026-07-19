@@ -14,9 +14,7 @@ import 'package:tanqiy/models/kuis_baru/kuis_meta_model.dart';
 import 'package:tanqiy/models/kuis_baru/review_soal_kuis_model.dart';
 import 'package:tanqiy/models/kuis_baru/soal_kuis_model.dart';
 import 'package:tanqiy/models/materibab_model.dart';
-import 'package:tanqiy/models/materi_model.dart';
 import 'package:tanqiy/models/nahwu_node_model.dart';
-import 'package:tanqiy/models/topik_model.dart';
 import 'package:tanqiy/widgets/snackbar.dart';
 
 final String _baseUrl = AppConst.baseUrl;
@@ -156,105 +154,6 @@ class BabController extends GetxController {
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
-// TopikController — list topik + materi dalam satu bab
-// ──────────────────────────────────────────────────────────────────────────────
-class TopikController extends GetxController {
-  final topikList = <TopikModel>[].obs;
-  final isLoading = false.obs;
-  final errorMessage = ''.obs;
-
-  Future<Map<String, String>> _headers() async {
-    final token = await AuthStorage.getToken();
-    return {
-      'Content-Type': 'application/json',
-      if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
-    };
-  }
-
-  Future<void> loadTopik(int babId) async {
-    try {
-      isLoading.value = true;
-      errorMessage.value = '';
-
-      final res = await http.get(
-        Uri.parse('$_baseUrl/api/bab/$babId/topik'),
-        headers: await _headers(),
-      );
-      if (res.statusCode != 200) throw Exception('API error ${res.statusCode}');
-
-      final body = jsonDecode(res.body);
-      final list = body['topik'] as List<dynamic>;
-      topikList.value = list
-          .map((e) => TopikModel.fromJson(e as Map<String, dynamic>))
-          .toList();
-    } catch (e) {
-      errorMessage.value = 'Gagal memuat topik: $e';
-    } finally {
-      isLoading.value = false;
-    }
-  }
-}
-
-// ──────────────────────────────────────────────────────────────────────────────
-// MateriController — list materi dalam satu bab
-// ──────────────────────────────────────────────────────────────────────────────
-class MateriController extends GetxController {
-  final materiList = <MateriModel>[].obs;
-  final isLoading = false.obs;
-  final errorMessage = ''.obs;
-
-  Future<Map<String, String>> _headers() async {
-    final token = await AuthStorage.getToken();
-    return {
-      'Content-Type': 'application/json',
-      if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
-    };
-  }
-
-  Future<void> loadMateri(int babId) async {
-    try {
-      isLoading.value = true;
-      errorMessage.value = '';
-
-      final res = await http.get(
-        Uri.parse('$_baseUrl/api/bab/$babId/materi'),
-        headers: await _headers(),
-      );
-      if (res.statusCode != 200) throw Exception('API error ${res.statusCode}');
-
-      final body = jsonDecode(res.body);
-      final list = body['materi'] as List<dynamic>;
-      materiList.value = list
-          .map((e) => MateriModel.fromJson(e as Map<String, dynamic>))
-          .toList();
-    } catch (e) {
-      errorMessage.value = 'Gagal memuat materi: $e';
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  // Tandai materi sudah dibaca/dipelajari
-  Future<void> selesaikanMateri(int materiId) async {
-    try {
-      final res = await http.post(
-        Uri.parse('$_baseUrl/api/bab/materi/$materiId/selesai'),
-        headers: await _headers(),
-      );
-      if (res.statusCode == 200) {
-        final idx = materiList.indexWhere((m) => m.id == materiId);
-        if (idx != -1) {
-          materiList[idx] = materiList[idx].copyWith(isCompleted: true);
-          materiList.refresh();
-        }
-      }
-    } catch (e) {
-      debugPrint('[MateriController] selesaikanMateri gagal: $e');
-    }
-  }
-}
-
-// ──────────────────────────────────────────────────────────────────────────────
 // QuizController — pengatur kuis per-bab, berurutan, feedback per soal
 // ──────────────────────────────────────────────────────────────────────────────
 class QuizController extends GetxController {
@@ -271,6 +170,12 @@ class QuizController extends GetxController {
   final quizSelesai = false.obs;
   final babSelesai = false.obs;
   final nilaiAkhir = 0.0.obs;
+
+  // ── XP ──────────────────────────────────────────────
+  final totalXpUser = 0.obs;
+  final xpPopupTrigger = 0
+      .obs; // di-increment tiap kali ada XP baru, dipakai UI buat trigger animasi
+  int xpPopupValue = 0; // nilai XP yang mau ditampilkan di popup
 
   final showReview = false.obs;
   final unlockDialogShown = false.obs;
@@ -407,6 +312,14 @@ class QuizController extends GetxController {
       }
 
       hasilAktif.value = JawabanKuisModel.fromJson(body);
+
+      totalXpUser.value = hasilAktif.value!.totalXp;
+
+      if (hasilAktif.value!.xpEarned > 0) {
+        xpPopupValue = hasilAktif.value!.xpEarned;
+        xpPopupTrigger
+            .value++; // trigger animasi di UI, walau nilainya sama kayak sebelumnya
+      }
     } catch (e) {
       showSnackbar('Error', 'Gagal mengirim jawaban');
     } finally {

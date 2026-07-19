@@ -76,4 +76,10 @@ class AppColors {
     ],
     stops: [0.0, 0.5, 1.0],
   );
+
+  // Kamus 
+  static const chipHuruf = Color(0xFFD9A441);
+  static const chipIsim = Color(0xFFC2703A);
+  static const chipFiil = Color(0xFF8B4A3D);
+  static const chipSemua = Color(0xFFE0995A);
 }

@@ -102,3 +102,16 @@ def get_users():
         "total": len(result),
         "data": result
     }), 200
+
+@profile_bp.route("/", methods=["GET"])
+@jwt_required()
+def get_leaderboard():
+    top_users = User.query.order_by(User.xp.desc()).limit(50).all()
+    return jsonify([
+        {
+            "rank": i + 1,
+            "username": u.username,
+            "xp": u.xp,
+        }
+        for i, u in enumerate(top_users)
+    ]), 200

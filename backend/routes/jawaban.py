@@ -3,9 +3,8 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from extensions import db
-import random
 from models.models import (
-    Kuis, SoalKuis, UserKuis, UserJawabanKuis, UserBab
+    Kuis, SoalKuis, UserKuis, UserJawabanKuis, UserBab, User
 )
 
 
@@ -127,6 +126,18 @@ def _cek_progress_kuis(user_id: int, kuis_id: int, bab_id: int):
 
     return True, bab_selesai, user_kuis.nilai
 
+# ──────────────────────────────────────────────
+# Helper: cek apakah user PERNAH benar soal ini (attempt manapun)
+# ──────────────────────────────────────────────
+def _pernah_benar(user_id: int, soal_kuis_id: int) -> bool:
+    return db.session.query(
+        UserJawabanKuis.query.filter_by(
+            userid=user_id,
+            soal_kuisid=soal_kuis_id,
+            is_correct=True
+        ).exists()
+    ).scalar()
+
 
 # ──────────────────────────────────────────────
 # POST /api/kuis/jawaban
@@ -203,6 +214,10 @@ def submit_jawaban_kuis():
 
     is_correct = _cek_jawaban(soal.tipe, soal.jawaban_benar, jawaban_user)
 
+    # Cek riwayat SEBELUM menyimpan jawaban baru ini
+    sudah_pernah_benar = _pernah_benar(user_id, soal_kuis_id)
+
+
     new_jawaban = UserJawabanKuis(
         userid=user_id,
         soal_kuisid=soal_kuis_id,
@@ -212,6 +227,16 @@ def submit_jawaban_kuis():
     )
     db.session.add(new_jawaban)
     db.session.commit()
+
+    # ─────────────────────────────────────
+    # XP: hanya diberikan kalau benar DAN belum pernah benar sebelumnya
+    # ─────────────────────────────────────
+    xp_earned = 0
+    if is_correct and not sudah_pernah_benar:
+        xp_earned = kuis.xp_per_soal
+        user = User.query.get(user_id)
+        user.xp += xp_earned
+        db.session.commit()
 
     kuis_selesai, bab_selesai, nilai = _cek_progress_kuis(
         user_id=user_id,
@@ -227,6 +252,8 @@ def submit_jawaban_kuis():
         "kuis_selesai": kuis_selesai,
         "bab_selesai": bab_selesai,
         "nilai": nilai,
+        "xp_earned": xp_earned,  
+        "total_xp": User.query.get(user_id).xp,  
         "data": new_jawaban.to_dict()
     }), 201
 

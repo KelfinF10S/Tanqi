@@ -8,6 +8,8 @@ class JawabanKuisModel {
   final bool kuisSelesai;
   final bool babSelesai;
   final double nilai;
+  final int xpEarned;      // <-- baru: 0 kalau tidak dapat XP baru
+  final int totalXp;  
 
   JawabanKuisModel({
     required this.message,
@@ -17,6 +19,8 @@ class JawabanKuisModel {
     required this.kuisSelesai,
     required this.babSelesai,
     required this.nilai,
+    required this.xpEarned,
+    required this.totalXp,
   });
 
   factory JawabanKuisModel.fromJson(Map<String, dynamic> json) =>
@@ -28,5 +32,7 @@ class JawabanKuisModel {
         kuisSelesai: json['kuis_selesai'] ?? false,
         babSelesai: json['bab_selesai'] ?? false,
         nilai: (json['nilai'] ?? 0).toDouble(),
+        xpEarned: json['xp_earned'] ?? 0,
+        totalXp: json['total_xp'] ?? 0,
       );
 }

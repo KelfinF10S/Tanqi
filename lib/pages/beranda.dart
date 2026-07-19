@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:tanqiy/controllers/babkuis_controller.dart';
 import 'package:tanqiy/core/colors.dart';
 import 'package:tanqiy/models/bab_merged_model.dart';
-import 'package:tanqiy/pages/bab1.dart';
+import 'package:tanqiy/pages/bab.dart';
 import 'package:tanqiy/widgets/snackbar.dart';
 
 class Beranda extends StatefulWidget {
@@ -43,13 +43,20 @@ class _BerandaState extends State<Beranda> {
             children: [
               const SizedBox(height: 15),
 
-              const Text(
-                'اهلا و سهلا',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textP,
-                ),
+               Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  const Text(
+                    'اهلا و سهلا',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const Icon(Icons.arrow_left_rounded, color: AppColors.textPrimary,),
+                ],
               ),
 
               const SizedBox(height: 15),
@@ -58,13 +65,20 @@ class _BerandaState extends State<Beranda> {
 
               const SizedBox(height: 15),
 
-              const Text(
-                'المحتويات',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textP,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  const Text(
+                    'المحتويات',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const Icon(Icons.arrow_left_rounded, color: AppColors.textPrimary,),
+                ],
               ),
 
               const SizedBox(height: 16),
@@ -86,6 +100,7 @@ class _BerandaState extends State<Beranda> {
                     context,
                     'لَوْحَةُ الصَّدَارَةِ',
                     'Leaderboard',
+                    Icons.leaderboard,
                     () {
                       Get.toNamed('/page3');
                     },
@@ -96,6 +111,7 @@ class _BerandaState extends State<Beranda> {
                     context,
                     'دليل الاستخدام',
                     'Panduan Penggunaan',
+                    Icons.question_mark_rounded,
                     () {
                       Get.toNamed('/panduan');
                     },
@@ -161,7 +177,7 @@ Widget _buildBabCard(BuildContext context, BabMerged bab) {
                   textAlign: TextAlign.center,
 
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 17,
                     fontWeight: FontWeight.bold,
                     color: bab.locked
                         ? AppColors.textDisabled
@@ -219,6 +235,7 @@ Widget _buildStaticCard(
   BuildContext context,
   String title,
   String subtitle,
+  IconData icon,
   VoidCallback onTap,
 ) {
   return GestureDetector(
@@ -239,12 +256,14 @@ Widget _buildStaticCard(
             Text(
               title,
               style: const TextStyle(
-                fontSize: 20,
+                fontSize: 17,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textP,
               ),
               textAlign: TextAlign.center,
             ),
+            SizedBox(height: 10),
+            Icon(icon, color: AppColors.cardFill),
             // const SizedBox(height: 8),
             // Text(
             //   subtitle,
@@ -262,10 +281,10 @@ Widget _welcomeCard(BuildContext context) {
   return Container(
     decoration: BoxDecoration(
       gradient: const LinearGradient(
-        colors: [AppColors.cardFill, AppColors.cardFillLight],
+        colors: [AppColors.cardFillLocked, AppColors.cardFillLightLocked],
       ),
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: AppColors.cardBorder),
+      border: Border.all(color: AppColors.cardBorderLocked),
     ),
     child: Padding(
       padding: const EdgeInsets.all(16),
@@ -281,8 +300,8 @@ Widget _welcomeCard(BuildContext context) {
                   textAlign: TextAlign.end,
                   style: const TextStyle(
                     fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textP,
+                    // fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
                   ),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
@@ -290,9 +309,7 @@ Widget _welcomeCard(BuildContext context) {
               ],
             ),
           ),
-
           const SizedBox(width: 12),
-
           Image.asset('lib/assets/cakra.png', scale: 3),
         ],
       ),

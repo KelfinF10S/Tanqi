@@ -20,6 +20,12 @@ class _KelasPageState extends State<KelasPage> {
   final Set<int> _expandedIndexes = {};
 
   @override
+  void initState() {
+    super.initState();
+    controller.fetchUsers();
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
@@ -74,7 +80,7 @@ class _KelasPageState extends State<KelasPage> {
                       // ── Guru ─────────────────────────────────────
                       if (gurus.isNotEmpty) ...[
                         _buildSectionLabel(
-                          icon: Icons.school_rounded,
+                          icon: Icons.school,
                           label: 'مدرس',
                           count: gurus.length,
                         ),
@@ -101,7 +107,7 @@ class _KelasPageState extends State<KelasPage> {
                       // ── Murid ────────────────────────────────────
                       if (murids.isNotEmpty) ...[
                         _buildSectionLabel(
-                          icon: Icons.people_alt_rounded,
+                          icon: Icons.people_alt,
                           label: 'طلاب',
                           count: murids.length,
                         ),
@@ -152,7 +158,7 @@ class _KelasPageState extends State<KelasPage> {
                     GestureDetector(
                       onTap: () => Get.back(),
                       child: const Icon(
-                        Icons.arrow_back_ios_new_rounded,
+                        Icons.arrow_back_ios_new,
                         color: AppColors.appBarTitle,
                         size: 20,
                       ),
@@ -167,7 +173,7 @@ class _KelasPageState extends State<KelasPage> {
                             'الفصل الدراسي',
                             style: TextStyle(
                               color: AppColors.appBarTitle,
-                              fontSize: 13,
+                              fontSize: 14,
                               fontWeight: FontWeight.w600,
                               letterSpacing: 1,
                             ),
@@ -190,7 +196,7 @@ class _KelasPageState extends State<KelasPage> {
                         '${controller.anggota.length} عضو',
                         style: const TextStyle(
                           color: AppColors.appBarTitle,
-                          fontSize: 11,
+                          fontSize: 12,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -215,7 +221,7 @@ class _KelasPageState extends State<KelasPage> {
                     children: [
                       const SizedBox(width: 12),
                       const Icon(
-                        Icons.search_rounded,
+                        Icons.search,
                         color: AppColors.textS,
                         size: 18,
                       ),
@@ -232,7 +238,7 @@ class _KelasPageState extends State<KelasPage> {
                             hintText: 'ابحث عن عضو...',
                             hintStyle: TextStyle(
                               color: AppColors.textS,
-                              fontSize: 13,
+                              fontSize: 14
                             ),
                             border: InputBorder.none,
                             isDense: true,
@@ -249,7 +255,7 @@ class _KelasPageState extends State<KelasPage> {
                           child: const Padding(
                             padding: EdgeInsets.only(right: 10),
                             child: Icon(
-                              Icons.close_rounded,
+                              Icons.close,
                               color: AppColors.textS,
                               size: 16,
                             ),
@@ -286,13 +292,13 @@ class _KelasPageState extends State<KelasPage> {
       child: Row(
         children: [
           _buildInfoStat(
-            icon: Icons.school_rounded,
+            icon: Icons.school,
             value: '$totalGuru',
             label: 'مدرس',
           ),
           _buildDivider(),
           _buildInfoStat(
-            icon: Icons.people_alt_rounded,
+            icon: Icons.people_alt,
             value: '$totalMurid',
             label: 'طلاب',
           ),
@@ -340,26 +346,8 @@ class _KelasPageState extends State<KelasPage> {
     required int count,
   }) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Container(
-          padding: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            gradient: AppColors.appBarGradient,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(icon, color: AppColors.appBarTitle, size: 14),
-        ),
-        const SizedBox(width: 10),
-        Text(
-          label,
-          style: const TextStyle(
-            color: AppColors.appBarTitle,
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
-          ),
-        ),
-        const SizedBox(width: 8),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
           decoration: BoxDecoration(
@@ -371,10 +359,29 @@ class _KelasPageState extends State<KelasPage> {
             '$count',
             style: const TextStyle(
               color: AppColors.textS,
-              fontSize: 11,
+              fontSize: 12,
               fontWeight: FontWeight.w600,
             ),
           ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          label,
+          style: const TextStyle(
+            color: AppColors.appBarTitle,
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.5,
+          ),
+        ),
+        const SizedBox(width: 10),
+        Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            gradient: AppColors.appBarGradient,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, color: AppColors.appBarTitle, size: 14),
         ),
       ],
     );
@@ -387,7 +394,7 @@ class _KelasPageState extends State<KelasPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.search_off_rounded, color: AppColors.textS, size: 48),
+          Icon(Icons.search_off, color: AppColors.textS, size: 48),
           const SizedBox(height: 12),
           Text(
             'لم يتم العثور على نتائج', // tidak ditemukan
@@ -489,19 +496,7 @@ class _MemberCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 3),
-                        Row(
-                          children: [
-                            _roleChip(),
-                            const SizedBox(width: 8),
-                            Text(
-                              'المستوى ${member.level}',
-                              style: const TextStyle(
-                                color: AppColors.textS,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
-                        ),
+                        _roleChip(),
                       ],
                     ),
                   ),
@@ -511,7 +506,7 @@ class _MemberCard extends StatelessWidget {
                     turns: isExpanded ? 0.5 : 0,
                     duration: const Duration(milliseconds: 250),
                     child: const Icon(
-                      Icons.keyboard_arrow_down_rounded,
+                      Icons.keyboard_arrow_down,
                       color: AppColors.textS,
                       size: 22,
                     ),
@@ -571,20 +566,15 @@ class _MemberCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          _statItem(
-            icon: Icons.star_rounded,
-            label: 'المستوى',
-            value: '${member.level}',
-          ),
           const SizedBox(width: 10),
           _statItem(
-            icon: Icons.bolt_rounded,
+            icon: Icons.star_rate,
             label: 'إجمالي XP',
             value: '${member.currentXP}',
           ),
           const SizedBox(width: 10),
           _statItem(
-            icon: Icons.menu_book_rounded,
+            icon: Icons.menu_book,
             label: 'الفصول المكتملة',
             value: '${member.babSelesai}',
           ),

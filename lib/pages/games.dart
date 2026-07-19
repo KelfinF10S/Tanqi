@@ -13,10 +13,7 @@ class GamesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.appBarEnd,
-      appBar: CustomAppBar(
-        arabicTitle: 'لعبة إلكترونية',
-        title: 'Permainan Digital',
-      ),
+      appBar: CustomAppBar(arabicTitle: 'لعبة إلكترونية'),
       body: Container(
         decoration: BoxDecoration(gradient: AppColors.splashGradient),
         child: SafeArea(

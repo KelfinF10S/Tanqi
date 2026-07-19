@@ -28,50 +28,46 @@ class Bab(db.Model):
     id    = db.Column(db.Integer, primary_key=True)
     judul = db.Column(db.String(100), nullable=False)
 
-    topiks  = db.relationship('Topik', backref='bab', order_by='Topik.urutan')
-    materis = db.relationship('Materi', backref='bab', order_by='Materi.urutan')
-    kuis    = db.relationship('Kuis', backref='bab', uselist=False)  # 1:1
+    kuis = db.relationship('Kuis', backref='bab', uselist=False)  # 1:1
 
     def to_dict(self):
         return {"id": self.id, "judul": self.judul}
 
 
-class Topik(db.Model):
-    __tablename__ = 'topik'
-    id     = db.Column(db.Integer, primary_key=True)
-    babid  = db.Column(db.Integer, db.ForeignKey('bab.id'), nullable=False)
-    judul  = db.Column(db.String(100), nullable=False)
-    urutan = db.Column(db.Integer, nullable=False)
+# class Topik(db.Model):
+#     __tablename__ = 'topik'
+#     id     = db.Column(db.Integer, primary_key=True)
+#     babid  = db.Column(db.Integer, db.ForeignKey('bab.id'), nullable=False)
+#     judul  = db.Column(db.String(100), nullable=False)
+#     urutan = db.Column(db.Integer, nullable=False)
 
-    materis = db.relationship('Materi', backref='topik', order_by='Materi.urutan')
+#     materis = db.relationship('Materi', backref='topik', order_by='Materi.urutan')
 
-    def to_dict(self):
-        return {
-            "id":     self.id,
-            "babid":  self.babid,
-            "judul":  self.judul,
-            "urutan": self.urutan,
-        }
+#     def to_dict(self):
+#         return {
+#             "id":     self.id,
+#             "babid":  self.babid,
+#             "judul":  self.judul,
+#             "urutan": self.urutan,
+#         }
 
 
-class Materi(db.Model):
-    __tablename__ = 'materi'
-    id      = db.Column(db.Integer, primary_key=True)
-    babid   = db.Column(db.Integer, db.ForeignKey('bab.id'), nullable=False)
-    topikid = db.Column(db.Integer, db.ForeignKey('topik.id'), nullable=True)
-    judul   = db.Column(db.String(100), nullable=False)
-    urutan  = db.Column(db.Integer, nullable=False)
-    slug    = db.Column(db.String(50), nullable=True)
+# class Materi(db.Model):
+#     __tablename__ = 'materi'
+#     id      = db.Column(db.Integer, primary_key=True)
+#     babid   = db.Column(db.Integer, db.ForeignKey('bab.id'), nullable=False)
+#     judul   = db.Column(db.String(100), nullable=False)
+#     urutan  = db.Column(db.Integer, nullable=False)
+#     slug    = db.Column(db.String(50), nullable=True)
 
-    def to_dict(self):
-        return {
-            "id":      self.id,
-            "babid":   self.babid,
-            "topikid": self.topikid,
-            "judul":   self.judul,
-            "urutan":  self.urutan,
-            "slug":    self.slug,
-        }
+#     def to_dict(self):
+#         return {
+#             "id":      self.id,
+#             "babid":   self.babid,
+#             "judul":   self.judul,
+#             "urutan":  self.urutan,
+#             "slug":    self.slug,
+#         }
 
 
 class UserBab(db.Model):
@@ -114,6 +110,7 @@ class Kuis(db.Model):
     babid         = db.Column(db.Integer, db.ForeignKey('bab.id'), nullable=False, unique=True)
     judul         = db.Column(db.String(100), default='Kuis')
     passing_score = db.Column(db.Float, default=70)
+    xp_per_soal = db.Column(db.Integer, nullable=False, default=10) 
 
     soal_list = db.relationship('SoalKuis', backref='kuis', order_by='SoalKuis.urutan', cascade='all, delete-orphan')
 

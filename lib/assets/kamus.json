@@ -1,0 +1,3077 @@
+[
+  {
+    "arab": "قد",
+    "arti": "sungguh/telah",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "أفلح",
+    "arti": "telah beruntung",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "مع",
+    "arti": "bersama",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الماضي",
+    "arti": "lampau",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يكون",
+    "arti": "menjadi",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "من",
+    "arti": "dari",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "المؤمنون",
+    "arti": "orang-orang beriman",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يقول",
+    "arti": "berkata",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "على",
+    "arti": "atas",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "السفهاء",
+    "arti": "orang-orang bodoh",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "نؤتي",
+    "arti": "Kami memberi",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "سوف",
+    "arti": "akan",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الناس",
+    "arti": "manusia",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "قالت",
+    "arti": "berkata (perempuan)",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "س",
+    "arti": "akan (dekat)",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "امرأة",
+    "arti": "istri/perempuan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "دخلت",
+    "arti": "masuk",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "وهي",
+    "arti": "dan ia",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "فرعون",
+    "arti": "Fir'aun",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "اتصلت",
+    "arti": "bersambung",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "هنا",
+    "arti": "di sini",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "حرف",
+    "arti": "huruf",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تفيد",
+    "arti": "memberikan makna",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "أو",
+    "arti": "atau",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "تنفيس",
+    "arti": "penangguhan waktu",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يدل",
+    "arti": "menunjukkan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "بحسب",
+    "arti": "menurut",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الاستقبال",
+    "arti": "masa depan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "مبني",
+    "arti": "dibangun (mabni)",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "إلى",
+    "arti": "kepada",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "البعيد",
+    "arti": "jauh",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أن",
+    "arti": "bahwa",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "القريب",
+    "arti": "dekat",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تاء",
+    "arti": "huruf ta",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "التأنيث",
+    "arti": "femininitas",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الساكنة",
+    "arti": "yang sukun",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الفاعل",
+    "arti": "pelaku",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "التحقيق",
+    "arti": "penegasan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "التقليل",
+    "arti": "sedikit",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "التكثير",
+    "arti": "banyak",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الاحتمال",
+    "arti": "kemungkinan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "السياق",
+    "arti": "konteks",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "وقوع",
+    "arti": "terjadinya",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الفتح",
+    "arti": "fathah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "مؤنث",
+    "arti": "perempuan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أجرًا",
+    "arti": "pahala",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "عظيمًا",
+    "arti": "besar/agung",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "في",
+    "arti": "di, dalam",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "ما",
+    "arti": "sesuatu yang",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "دلَّ",
+    "arti": "menunjukkan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "أي",
+    "arti": "yaitu",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "حدوث",
+    "arti": "terjadinya",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "ظلمت",
+    "arti": "aku telah menzalimi",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "قبل",
+    "arti": "sebelum",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الزمن",
+    "arti": "waktu",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "خلق",
+    "arti": "menciptakan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "ب",
+    "arti": "dengan",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "التكلم",
+    "arti": "berbicara",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "كفرت",
+    "arti": "engkau telah kafir",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "القسم",
+    "arti": "bagian",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "اتصل",
+    "arti": "bersambung",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "إن",
+    "arti": "sesungguhnya",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "مثال",
+    "arti": "contoh",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "بني",
+    "arti": "dibangun",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "رب",
+    "arti": "wahai Tuhanku",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "القرآن",
+    "arti": "Al-Qur'an",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "رفع",
+    "arti": "mengangkat",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "الكريم",
+    "arti": "mulia",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "ال",
+    "arti": "(kata sandang \"al-\")*",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "السورة",
+    "arti": "surah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "لاتصاله",
+    "arti": "karena bersambungnya",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الآية",
+    "arti": "ayat",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "به",
+    "arti": "dengannya",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "التحليل",
+    "arti": "analisis",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "بتاء",
+    "arti": "dengan ta",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "النحوي",
+    "arti": "nahwu",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "في محل",
+    "arti": "pada kedudukan",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "النمل",
+    "arti": "An-Naml",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الكهف",
+    "arti": "Al-Kahfi",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الأنعام",
+    "arti": "Al-An'am",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "بالذي",
+    "arti": "dengan (Tuhan) yang",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "ربي",
+    "arti": "Tuhanku",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "نفسي",
+    "arti": "diriku",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "السماوات",
+    "arti": "langit-langit",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الأرض",
+    "arti": "bumi",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الحدث",
+    "arti": "peristiwa",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "السكون",
+    "arti": "sukun",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تاء",
+    "arti": "huruf ta",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "ضمير",
+    "arti": "kata ganti",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "متصل",
+    "arti": "bersambung",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "محل",
+    "arti": "tempat/kedudukan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "المخاطب",
+    "arti": "orang yang diajak bicara",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "المذكر",
+    "arti": "laki-laki",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "المفرد",
+    "arti": "tunggal",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "المتكلم",
+    "arti": "orang yang berbicara",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "بـ",
+    "arti": "dengan",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "مريم",
+    "arti": "Maryam (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "رأيت",
+    "arti": "engkau (perempuan) telah melihat",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "لِ",
+    "arti": "untuk",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "آيات",
+    "arti": "tanda-tanda, ayat-ayat",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "خلقنا",
+    "arti": "Kami telah menciptakan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "نا",
+    "arti": "kami",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "نا الفاعلين",
+    "arti": "na sebagai pelaku",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "قلن",
+    "arti": "mereka (perempuan) berkata",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "بنون",
+    "arti": "dengan nun",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "النسوة",
+    "arti": "kaum perempuan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "قالوا",
+    "arti": "mereka (laki-laki) berkata",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "بواو",
+    "arti": "dengan waw",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "واو",
+    "arti": "huruf waw",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "آمنا",
+    "arti": "kami telah beriman",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "بألف",
+    "arti": "dengan alif",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الجماعة",
+    "arti": "kelompok",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "قالا",
+    "arti": "mereka berdua berkata",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "للتعذر",
+    "arti": "karena tidak memungkinkan",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "ألف",
+    "arti": "huruf alif",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "ظلمنا",
+    "arti": "kami telah menzalimi",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "الاثنين",
+    "arti": "dua orang",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يوسف",
+    "arti": "Yusuf (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الأعراف",
+    "arti": "Al-A'raf (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "العالمين",
+    "arti": "seluruh alam",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "ربنا",
+    "arti": "Tuhan kami",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أنفسنا",
+    "arti": "diri kami",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الضم",
+    "arti": "dhammah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "المقدر",
+    "arti": "yang diperkirakan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "التعذر",
+    "arti": "ketidakmungkinan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "المثنى",
+    "arti": "bentuk dua (mutsanna)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "جماعة",
+    "arti": "kelompok",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الذكور",
+    "arti": "laki-laki",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الإناث",
+    "arti": "perempuan-perempuan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "المخاطبة",
+    "arti": "orang yang diajak bicara (perempuan)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "المتكلمين",
+    "arti": "orang-orang yang berbicara",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الَّذي",
+    "arti": "yang",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "حدث",
+    "arti": "peristiwa, kejadian",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يقع",
+    "arti": "terjadi",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "أحد",
+    "arti": "salah satu",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الحال",
+    "arti": "masa sekarang",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يعرف",
+    "arti": "dikenali",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "غير",
+    "arti": "selain",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "نزلنا",
+    "arti": "Kami telah menurunkan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "لفظًا",
+    "arti": "secara lafaz",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "أحرف",
+    "arti": "huruf-huruf",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "اسكني",
+    "arti": "tinggallah",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "ك",
+    "arti": "seperti",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "المضارعة",
+    "arti": "huruf-huruf mudhari'",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "اهبطا",
+    "arti": "turunlah kalian berdua",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "ل",
+    "arti": "bagi, untuk",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "قل",
+    "arti": "katakanlah",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "أتوكأ",
+    "arti": "aku bersandar",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "الجمع",
+    "arti": "jamak",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أنا",
+    "arti": "saya",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الله",
+    "arti": "Allah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "طه",
+    "arti": "Thaha (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الحجر",
+    "arti": "Al-Hijr (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أنت",
+    "arti": "engkau (laki-laki)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الأعلى",
+    "arti": "Yang Paling Tinggi",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "زوج",
+    "arti": "pasangan, suami/istri",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الجنة",
+    "arti": "surga",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "التثنية",
+    "arti": "bentuk dua (tasniyah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "جميعًا",
+    "arti": "semuanya",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "آل عمران",
+    "arti": "Ali 'Imran (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "خير",
+    "arti": "sebaik-baik",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أمة",
+    "arti": "umat",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الأحزاب",
+    "arti": "Al-Ahzab (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "اسم",
+    "arti": "kata benda, nama",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "ليس",
+    "arti": "fi'il laysa",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الإخلاص",
+    "arti": "Al-Ikhlas (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أحد",
+    "arti": "Yang Maha Esa / satu",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "العصا",
+    "arti": "tongkat",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الغائب",
+    "arti": "orang yang tidak hadir",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الغائبة",
+    "arti": "perempuan yang tidak hadir",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الغائبين",
+    "arti": "orang-orang yang tidak hadir",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الغائبات",
+    "arti": "perempuan-perempuan yang tidak hadir",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "المخاطبات",
+    "arti": "perempuan yang diajak bicara",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "المخاطبين",
+    "arti": "orang-orang yang diajak bicara",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "المفردة",
+    "arti": "tunggal (muannats)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الذكر",
+    "arti": "adz-Dzikr (Al-Qur'an)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "لباس",
+    "arti": "pakaian",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "لكم",
+    "arti": "bagi kalian",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "منها",
+    "arti": "darinya",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "معناه",
+    "arti": "maknanya",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "هو",
+    "arti": "dia (laki-laki)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "هي",
+    "arti": "dia (perempuan)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "هما",
+    "arti": "mereka berdua",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "هم",
+    "arti": "mereka (laki-laki)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "هن",
+    "arti": "mereka (perempuan)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "نحن",
+    "arti": "kami",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أنتما",
+    "arti": "kalian berdua",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أنتم",
+    "arti": "kalian",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أنتن",
+    "arti": "kalian (perempuan)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "بعد",
+    "arti": "sesudah",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الأمر",
+    "arti": "perintah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "ادع",
+    "arti": "berdoalah / serulah",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "طلب",
+    "arti": "permintaan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يدعو",
+    "arti": "ia menyeru",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "مخاطب",
+    "arti": "orang yang diajak bicara",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "استغفروا",
+    "arti": "mohonlah ampun",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "لأن",
+    "arti": "karena",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "جهة",
+    "arti": "sisi, arah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يقل",
+    "arti": "ia berkata",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "الاستعلاء",
+    "arti": "kedudukan yang lebih tinggi",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "ولم",
+    "arti": "dan tidak",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الالتماس",
+    "arti": "permohonan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "شيء",
+    "arti": "sesuatu",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "آخر",
+    "arti": "akhir",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "صحيح",
+    "arti": "huruf yang sahih (bukan huruf illat)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "مضارعه",
+    "arti": "bentuk fi'il mudhari'-nya",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "المجزوم",
+    "arti": "yang dijazmkan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "حذف",
+    "arti": "penghapusan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "العلة",
+    "arti": "huruf illat",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "سبيل",
+    "arti": "jalan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "ربك",
+    "arti": "Tuhanmu",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "النحل",
+    "arti": "An-Nahl (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أصله",
+    "arti": "asalnya",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "معتل",
+    "arti": "mengandung huruf illat",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الآخر",
+    "arti": "bagian akhir",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الواو",
+    "arti": "huruf waw",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "نوح",
+    "arti": "Nuh (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "النون",
+    "arti": "huruf nun",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الأفعال",
+    "arti": "kata-kata kerja",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الخمسة",
+    "arti": "lima",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "مأخوذ",
+    "arti": "diambil",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "لا",
+    "arti": "jangan (larangan)",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "النهي",
+    "arti": "larangan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تخف",
+    "arti": "jangan takut",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "عن",
+    "arti": "dari",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الكف",
+    "arti": "menahan, mencegah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تدع",
+    "arti": "jangan menyeru",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "الناهية",
+    "arti": "yang berfungsi melarang",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الصيغة",
+    "arti": "bentuk",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تكونوا",
+    "arti": "janganlah kalian menjadi",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "الجازمة",
+    "arti": "yang menjazmkan",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "علامة",
+    "arti": "tanda",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "نسوا",
+    "arti": "mereka telah melupakan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "الداخلة",
+    "arti": "yang masuk kepada",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "جزمه",
+    "arti": "tanda jazmnya",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "إلهًا",
+    "arti": "sesembahan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "القصص",
+    "arti": "Al-Qashash (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الحشر",
+    "arti": "Al-Hasyr (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "كالذين",
+    "arti": "seperti orang-orang yang",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "معنى",
+    "arti": "makna",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "نفسها",
+    "arti": "dirinya sendiri",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "زمن",
+    "arti": "waktu",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "وضع",
+    "arti": "peletakan/penetapan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "كلمة",
+    "arti": "kata",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "لـ",
+    "arti": "untuk, milik",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الجر",
+    "arti": "kata depan (jar)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يتربصن",
+    "arti": "mereka (perempuan) menunggu",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "يا",
+    "arti": "wahai",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "التعريف",
+    "arti": "kata sandang al-",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "علّم",
+    "arti": "mengajarkan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "اللام (لام الأمر)",
+    "arti": "lam perintah",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الحمد",
+    "arti": "segala puji",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "آتوا",
+    "arti": "tunaikanlah / berikanlah",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "الهمزة (أ)",
+    "arti": "hamzah istifham",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الفاتحة",
+    "arti": "Al-Fatihah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أرنا",
+    "arti": "perlihatkanlah kepada kami",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "إنْ",
+    "arti": "jika",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "هدى",
+    "arti": "petunjuk",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تعقلون",
+    "arti": "kalian berpikir",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "المتقين",
+    "arti": "orang-orang yang bertakwa",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تقربوا",
+    "arti": "janganlah kalian mendekati",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "العصر",
+    "arti": "Al-'Ashr",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يعبدوا",
+    "arti": "hendaklah mereka menyembah",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "غفور",
+    "arti": "Maha Pengampun",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تنصروا",
+    "arti": "kalian menolong",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "رحيم",
+    "arti": "Maha Penyayang",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "ينصركم",
+    "arti": "Dia menolong kalian",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "الشمس",
+    "arti": "matahari",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "ضحاها",
+    "arti": "waktu dhuha-nya / sinarnya",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "رحمة",
+    "arti": "rahmat",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "المحسنين",
+    "arti": "orang-orang yang berbuat baik",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الحجرات",
+    "arti": "Al-Hujurat",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "زينب",
+    "arti": "Zainab",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الزكاة",
+    "arti": "zakat",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الاستعمال",
+    "arti": "penggunaan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "العربي",
+    "arti": "bahasa Arab",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الناحية",
+    "arti": "sisi, aspek",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الجنسية",
+    "arti": "jenis kelamin",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "العددية",
+    "arti": "bilangan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "واحد",
+    "arti": "satu",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "هذين",
+    "arti": "dua ini",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الياء",
+    "arti": "huruf ya",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "المطلقات",
+    "arti": "perempuan-perempuan yang ditalak",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أنفسهن",
+    "arti": "diri mereka sendiri",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الأسماء",
+    "arti": "nama-nama",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "كلها",
+    "arti": "seluruhnya",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "آدم",
+    "arti": "Adam",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تكسير",
+    "arti": "bentuk jamak tak beraturan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "صورة",
+    "arti": "bentuk",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "مفرده",
+    "arti": "bentuk tunggalnya",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "دليل",
+    "arti": "petunjuk, indikator",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "وظيفتها",
+    "arti": "fungsinya",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "العطف",
+    "arti": "penghubung (athaf)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "النداء",
+    "arti": "panggilan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "النفي",
+    "arti": "peniadaan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الاستفهام",
+    "arti": "pertanyaan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "التوكيد",
+    "arti": "penegasan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "النصب",
+    "arti": "nashab",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الشرط",
+    "arti": "syarat",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "محمد",
+    "arti": "Muhammad (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "قريش",
+    "arti": "Quraisy (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "البيت",
+    "arti": "rumah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الإسراء",
+    "arti": "Al-Isra'",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الزنا",
+    "arti": "zina",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الريب",
+    "arti": "keraguan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الإعراب",
+    "arti": "i'rab",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الخبر",
+    "arti": "khabar",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الجواب",
+    "arti": "jawaban",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الباب",
+    "arti": "bab",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "اختلف",
+    "arti": "berbeda",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "الثاني",
+    "arti": "kedua",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "غيّر",
+    "arti": "mengubah",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "المبني",
+    "arti": "mabni",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "خريطة",
+    "arti": "peta",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تغيير",
+    "arti": "perubahan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أواخر",
+    "arti": "bagian akhir",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الكلم",
+    "arti": "kata-kata",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "اختلاف",
+    "arti": "perbedaan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "العوامل",
+    "arti": "faktor-faktor / amil-amil",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الداخلة",
+    "arti": "yang masuk",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "لفظًا",
+    "arti": "secara lafaz",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تقديرًا",
+    "arti": "secara takdir (diperkirakan)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أقسام",
+    "arti": "bagian-bagian",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أربعة",
+    "arti": "empat",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الرفع",
+    "arti": "rafa'",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "علامات",
+    "arti": "tanda-tanda",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الضمة",
+    "arti": "dhammah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الألف",
+    "arti": "alif",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "نور",
+    "arti": "cahaya",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "آمن",
+    "arti": "beriman",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "يعلم",
+    "arti": "mengetahui",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "يؤمنون",
+    "arti": "mereka beriman",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "النور",
+    "arti": "An-Nur (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "اختصموا",
+    "arti": "mereka berselisih",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "التوبة",
+    "arti": "At-Taubah (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "بعض",
+    "arti": "sebagian",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أولياء",
+    "arti": "para penolong/pelindung",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أبوهما",
+    "arti": "ayah keduanya",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "صالحًا",
+    "arti": "orang yang saleh",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "خصمان",
+    "arti": "dua orang yang berselisih",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الغيب",
+    "arti": "perkara gaib",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الأسماء الخمسة",
+    "arti": "lima isim khusus",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أبوك",
+    "arti": "ayahmu",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أخوك",
+    "arti": "saudaramu laki-laki",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "حموك",
+    "arti": "mertuamu",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "فوك",
+    "arti": "mulutmu",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "ذو",
+    "arti": "pemilik, yang mempunyai",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "مال",
+    "arti": "harta",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "ثبوت",
+    "arti": "tetapnya",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تثنية",
+    "arti": "bentuk dua (dual)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "لَنْ",
+    "arti": "tidak akan",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "العدل",
+    "arti": "keadilan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يأمر",
+    "arti": "memerintahkan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "نبرح",
+    "arti": "meninggalkan / beranjak",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "آت",
+    "arti": "berikanlah",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "ذَا",
+    "arti": "pemilik (bentuk manshub dari ذو)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أضلّ",
+    "arti": "menyesatkan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "القربى",
+    "arti": "kerabat dekat",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تنالوا",
+    "arti": "kalian memperoleh",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "حق",
+    "arti": "hak",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يحب",
+    "arti": "mencintai",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "المسلمين",
+    "arti": "orang-orang Islam (laki-laki)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "المسلمات",
+    "arti": "orang-orang Islam (perempuan)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "نيابة",
+    "arti": "sebagai pengganti",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الموصول",
+    "arti": "kata sambung (isim maushul)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "ثان",
+    "arti": "kedua",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "فصلت",
+    "arti": "Fussilat (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "البر",
+    "arti": "kebajikan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تُرفع",
+    "arti": "diangkat",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "اللام",
+    "arti": "huruf lam",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "المنصرف",
+    "arti": "yang menerima tanwin (munsharif)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أذن",
+    "arti": "mengizinkan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "للإضافة",
+    "arti": "karena idhafah",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "بيوت",
+    "arti": "rumah-rumah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "كانت",
+    "arti": "adalah (perempuan)",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "القانتات",
+    "arti": "perempuan-perempuan yang taat",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يُذكر",
+    "arti": "disebut",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "التحريم",
+    "arti": "At-Tahrim (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أعطيناك",
+    "arti": "Kami telah memberimu",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "أبيكم",
+    "arti": "ayah kalian",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "جاء",
+    "arti": "datang",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "بيت",
+    "arti": "rumah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يعمل",
+    "arti": "mengerjakan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "كلا",
+    "arti": "kedua",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "دعا",
+    "arti": "berdoa / memanggil",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "الفريقين",
+    "arti": "dua golongan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يَتَرَبَّصْنَ",
+    "arti": "mereka (perempuan) menunggu",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "هود",
+    "arti": "Hud (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "لَيُسْجَنَنَّ",
+    "arti": "sungguh akan dipenjarakan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "الكافرين",
+    "arti": "orang-orang kafir",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "لَيَكُونًا",
+    "arti": "sungguh akan menjadi",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "مساجد",
+    "arti": "masjid-masjid",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "شكل",
+    "arti": "bentuk",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "موقع",
+    "arti": "kedudukan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الجملة",
+    "arti": "kalimat",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الضمائر",
+    "arti": "kata ganti",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الكوثر",
+    "arti": "Al-Kautsar (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أسماء الإشارة",
+    "arti": "kata tunjuk",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "هذا",
+    "arti": "ini",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "خلق",
+    "arti": "ciptaan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "لقمان",
+    "arti": "Luqman (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الأسماء الموصولة",
+    "arti": "isim maushul",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الصدق",
+    "arti": "kebenaran",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الزمر",
+    "arti": "Az-Zumar (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أسماء الشرط",
+    "arti": "kata syarat",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الصالحات",
+    "arti": "amal-amal saleh",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أسماء الاستفهام",
+    "arti": "kata tanya",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "القارعة",
+    "arti": "Al-Qari'ah (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الظروف",
+    "arti": "keterangan (zharaf)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "هنالك",
+    "arti": "di sana",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "ظرف",
+    "arti": "keterangan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "مكان",
+    "arti": "tempat",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "زكريا",
+    "arti": "Zakaria",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الأفعال المبنية",
+    "arti": "fi'il-fi'il mabni",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "نون التوكيد",
+    "arti": "nun taukid",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الثقيلة",
+    "arti": "yang berat (taukid tsaqilah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الصاغرين",
+    "arti": "orang-orang yang hina",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "ثم",
+    "arti": "kemudian",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "حروف",
+    "arti": "huruf-huruf",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يولد",
+    "arti": "dilahirkan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "أم",
+    "arti": "atau",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "يلد",
+    "arti": "melahirkan / beranak",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "بل",
+    "arti": "bahkan, melainkan",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الجزم",
+    "arti": "jazm",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أتى",
+    "arti": "datang",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "لكن",
+    "arti": "tetapi",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "إذن",
+    "arti": "maka, kalau begitu",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "لمّا",
+    "arti": "belum (hingga saat ini)",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الابتداء",
+    "arti": "permulaan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "كي",
+    "arti": "agar, supaya",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "العلق",
+    "arti": "Al-'Alaq (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "هل",
+    "arti": "apakah",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الإنسان",
+    "arti": "manusia",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أيا",
+    "arti": "wahai",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "هيا",
+    "arti": "wahai",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "أمثلة",
+    "arti": "contoh-contoh",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الكاف",
+    "arti": "huruf kaf",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الهمزة",
+    "arti": "huruf hamzah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أفاد",
+    "arti": "memberikan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "الاسمية",
+    "arti": "nominal (jumlah ismiyyah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تبدأ",
+    "arti": "dimulai",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "مِنْ",
+    "arti": "dari",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الفعلية",
+    "arti": "verbal (jumlah fi'liyyah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تتكون",
+    "arti": "tersusun",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "مبتدأ",
+    "arti": "mubtada'",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تركبت",
+    "arti": "tersusun",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "خبر",
+    "arti": "khabar",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تتم",
+    "arti": "menjadi sempurna",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "الجزء",
+    "arti": "bagian",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "بُنِيَ",
+    "arti": "dibangun",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "الفائدة",
+    "arti": "faedah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "ضُمَّ",
+    "arti": "didhammahkan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "صريح",
+    "arti": "jelas/eksplisit",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "كُسِرَ",
+    "arti": "dikasrahkan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "مؤول",
+    "arti": "ditakwil",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "فُتِحَ",
+    "arti": "difathahkan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "حُذِفَ",
+    "arti": "dihilangkan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "اللفظية",
+    "arti": "yang bersifat lafaz",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أُقِيمَ",
+    "arti": "ditempatkan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "الجملة الاسمية",
+    "arti": "jumlah ismiyyah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "صار",
+    "arti": "menjadi",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "الجملة الفعلية",
+    "arti": "jumlah fi'liyyah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يتعلق",
+    "arti": "bergantung",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "مفرد",
+    "arti": "tunggal",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يشبه",
+    "arti": "menyerupai",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "أولئك",
+    "arti": "mereka itu",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "سُمِّيَ",
+    "arti": "dinamakan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "جزاؤهم",
+    "arti": "balasan mereka",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يَنْطِقُ",
+    "arti": "berbicara",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "لعنة",
+    "arti": "laknat",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "فَلْيَتَوَكَّلْ",
+    "arti": "hendaklah bertawakal",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "الركب",
+    "arti": "rombongan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "اجعل",
+    "arti": "jadikanlah",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "أسفل",
+    "arti": "bawah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تُكَلِّمَ",
+    "arti": "berbicara",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "نائب",
+    "arti": "pengganti",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أَكْمَلْتُ",
+    "arti": "Aku telah menyempurnakan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "المجهول",
+    "arti": "pasif",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أَسْرَى",
+    "arti": "memperjalankan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "المعلوم",
+    "arti": "aktif",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يَنْفَعُ",
+    "arti": "memberi manfaat",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "عامل",
+    "arti": "amil",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يَجْعَلُ",
+    "arti": "menjadikan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "الجار",
+    "arti": "kata yang menjarkan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يَحُولُ",
+    "arti": "menghalangi",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "المجرور",
+    "arti": "kata yang dijarkan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تَجْرِي",
+    "arti": "mengalir",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "ظرف الزمان",
+    "arti": "keterangan waktu",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يُرْجَعُ",
+    "arti": "dikembalikan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "ظرف المكان",
+    "arti": "keterangan tempat",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يَتَوَكَّلْ",
+    "arti": "bertawakal",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "المفعول فيه",
+    "arti": "maf'ul fih",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أيام",
+    "arti": "hari-hari",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يوم",
+    "arti": "hari",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "حين",
+    "arti": "ketika",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الدهر",
+    "arti": "masa",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "ليلًا",
+    "arti": "malam hari",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "النهار",
+    "arti": "siang",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "معاشًا",
+    "arti": "penghidupan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "اليوم",
+    "arti": "hari ini",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "دين",
+    "arti": "agama",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "غدًا",
+    "arti": "esok",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الكذاب",
+    "arti": "pendusta",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الأشر",
+    "arti": "sangat sombong",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "جنات",
+    "arti": "surga-surga",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تحت",
+    "arti": "bawah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الأنهار",
+    "arti": "sungai-sungai",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "فوق",
+    "arti": "atas",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "عباد",
+    "arti": "hamba-hamba",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "المرء",
+    "arti": "manusia",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "قلب",
+    "arti": "hati",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "مفاتح",
+    "arti": "kunci-kunci",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "وراء",
+    "arti": "belakang",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "ملك",
+    "arti": "raja",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "حيث",
+    "arti": "tempat di mana",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "رسالة",
+    "arti": "risalah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الشعراء",
+    "arti": "Asy-Syu'ara",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "النبأ",
+    "arti": "An-Naba'",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "المائدة",
+    "arti": "Al-Ma'idah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "القمر",
+    "arti": "Al-Qamar",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الأنبياء",
+    "arti": "Al-Anbiya'",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "النجم",
+    "arti": "An-Najm",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الشورى",
+    "arti": "Asy-Syura",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "كما",
+    "arti": "sebagaimana",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "أنواع",
+    "arti": "macam-macam",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يؤدي",
+    "arti": "menghasilkan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "التراكيب",
+    "arti": "susunan-susunan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "التركيب",
+    "arti": "susunan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يختار",
+    "arti": "memilih",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "ارتباط",
+    "arti": "hubungan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "علاقة",
+    "arti": "hubungan/kaitan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "نحوية",
+    "arti": "yang berkaitan dengan nahwu",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "معين",
+    "arti": "tertentu",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تام",
+    "arti": "sempurna",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "التراكيب الوصفية",
+    "arti": "susunan sifat (tarkib washfi)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "التراكيب الإضافية",
+    "arti": "susunan idhafah (tarkib idhafi)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "التراكيب العطفية",
+    "arti": "susunan athaf (tarkib athfi)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الأساليب",
+    "arti": "gaya-gaya bahasa",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الأسلوب",
+    "arti": "gaya bahasa",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الطريقة",
+    "arti": "cara, metode",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "التعبير",
+    "arti": "pengungkapan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "المقام",
+    "arti": "konteks",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الغرض",
+    "arti": "tujuan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أسلوب الشرط",
+    "arti": "gaya bahasa syarat",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "المدح",
+    "arti": "pujian",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الذم",
+    "arti": "celaan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "التعجب",
+    "arti": "ungkapan kekaguman",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "فيه",
+    "arti": "di dalamnya",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الوصفي",
+    "arti": "deskriptif (washfi)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تركب",
+    "arti": "tersusun",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "منعوت",
+    "arti": "kata yang disifati (maushuf)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "يتبع",
+    "arti": "mengikuti",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "نعت",
+    "arti": "sifat (na'at)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الصراط",
+    "arti": "jalan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "المستقيم",
+    "arti": "yang lurus",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "البلد",
+    "arti": "negeri",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الأمين",
+    "arti": "yang aman",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "عذاب",
+    "arti": "azab",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أليم",
+    "arti": "pedih",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الفوز",
+    "arti": "kemenangan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "العظيم",
+    "arti": "agung",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الحياة",
+    "arti": "kehidupan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الدنيا",
+    "arti": "dunia",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "التين",
+    "arti": "At-Tin (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "صراط",
+    "arti": "jalan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "مستقيم",
+    "arti": "lurus",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "عينان",
+    "arti": "dua mata air",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "نضاختان",
+    "arti": "dua mata air yang memancar",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الرحمن",
+    "arti": "Ar-Rahman (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الغاشية",
+    "arti": "Al-Ghasyiyah (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "سرر",
+    "arti": "dipan-dipan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "مرفوعة",
+    "arti": "yang ditinggikan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "لو",
+    "arti": "seandainya",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الامتناع",
+    "arti": "ketidakterlaksanaan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "شاء",
+    "arti": "menghendaki",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "لولا",
+    "arti": "kalau bukan karena",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الهدى",
+    "arti": "petunjuk",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "جمع",
+    "arti": "mengumpulkan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "لَـ (لام جواب لو)",
+    "arti": "lam jawaban lau",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الفضل",
+    "arti": "karunia",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "اتبع",
+    "arti": "mengikuti",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "تَ (حرف القسم)",
+    "arti": "ta qasam",
+    "kategori": "Huruf"
+  },
+  {
+    "arab": "الرحمة",
+    "arti": "rahmat",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "آثر",
+    "arti": "mengutamakan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "المقسم",
+    "arti": "yang dijadikan sumpah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "بعث",
+    "arti": "membangkitkan",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "المقسم به",
+    "arti": "objek sumpah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "مدح",
+    "arti": "memuji",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "جواب القسم",
+    "arti": "jawaban sumpah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "ذم",
+    "arti": "mencela",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "القَسَم",
+    "arti": "sumpah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "نعم",
+    "arti": "sebaik-baiknya",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "بئس",
+    "arti": "seburuk-buruknya",
+    "kategori": "Fi'il"
+  },
+  {
+    "arab": "بلى",
+    "arti": "benar / ya",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "فضل",
+    "arti": "karunia",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الشيطان",
+    "arti": "setan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "قليلًا",
+    "arti": "sedikit",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "خسر",
+    "arti": "kerugian",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "آثرك",
+    "arti": "mengutamakanmu",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أسلوب المدح",
+    "arti": "gaya pujian",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أسلوب الذم",
+    "arti": "gaya celaan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "دار",
+    "arti": "rumah",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "العاملين",
+    "arti": "orang-orang yang beramal",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "العبد",
+    "arti": "hamba",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "أواب",
+    "arti": "banyak bertaubat",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "ص",
+    "arti": "Ṣād (nama surah)",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "سليمان",
+    "arti": "Sulaiman",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "بدلًا",
+    "arti": "pengganti",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "تمييز",
+    "arti": "tamyiz",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "المخصوص",
+    "arti": "yang dikhususkan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الظالمين",
+    "arti": "orang-orang zalim",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الفسوق",
+    "arti": "kefasikan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "الإيمان",
+    "arti": "keimanan",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "مثوى",
+    "arti": "tempat tinggal",
+    "kategori": "Isim"
+  },
+  {
+    "arab": "المتكبرين",
+    "arti": "orang-orang yang sombong",
+    "kategori": "Isim"
+  }
+]

@@ -4,7 +4,7 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from extensions import db
 from models.models import (
-    Bab, Topik, Materi, UserBab, UserMateri,
+    Bab, UserBab ,
     Kuis, SoalKuis, UserKuis, UserJawabanKuis
 )
 
@@ -49,87 +49,87 @@ def get_all_bab():
     return jsonify({"total": len(result), "data": result}), 200
 
 
-# ──────────────────────────────────────────────
-# GET /api/bab/<id>/materi
-# ──────────────────────────────────────────────
-@bab_bp.route("/<int:bab_id>/materi", methods=["GET"])
-@jwt_required()
-def get_materi_by_bab(bab_id):
-    user_id = int(get_jwt_identity())
+# # ──────────────────────────────────────────────
+# # GET /api/bab/<id>/materi
+# # ──────────────────────────────────────────────
+# @bab_bp.route("/<int:bab_id>/materi", methods=["GET"])
+# @jwt_required()
+# def get_materi_by_bab(bab_id):
+#     user_id = int(get_jwt_identity())
 
-    bab      = Bab.query.get_or_404(bab_id)
-    user_bab = UserBab.query.filter_by(userid=user_id, babid=bab_id).first()
+#     bab      = Bab.query.get_or_404(bab_id)
+#     user_bab = UserBab.query.filter_by(userid=user_id, babid=bab_id).first()
 
-    if not user_bab or user_bab.locked:
-        return jsonify({"message": "Bab ini masih terkunci"}), 403
+#     if not user_bab or user_bab.locked:
+#         return jsonify({"message": "Bab ini masih terkunci"}), 403
 
-    materi_list = Materi.query.filter_by(babid=bab_id).order_by(Materi.urutan).all()
+#     materi_list = Materi.query.filter_by(babid=bab_id).order_by(Materi.urutan).all()
 
-    result = []
-    for m in materi_list:
-        user_materi = UserMateri.query.filter_by(
-            userid=user_id, materiid=m.id
-        ).first()
+#     result = []
+#     for m in materi_list:
+#         user_materi = UserMateri.query.filter_by(
+#             userid=user_id, materiid=m.id
+#         ).first()
 
-        materi_data                 = m.to_dict()
-        materi_data["is_completed"] = user_materi.is_completed if user_materi else False
-        result.append(materi_data)
+#         materi_data                 = m.to_dict()
+#         materi_data["is_completed"] = user_materi.is_completed if user_materi else False
+#         result.append(materi_data)
 
-    kuis = Kuis.query.filter_by(babid=bab_id).first()
-    user_kuis = UserKuis.query.filter_by(
-        userid=user_id, kuisid=kuis.id
-    ).first() if kuis else None
+#     kuis = Kuis.query.filter_by(babid=bab_id).first()
+#     user_kuis = UserKuis.query.filter_by(
+#         userid=user_id, kuisid=kuis.id
+#     ).first() if kuis else None
 
-    bab_data                 = bab.to_dict()
-    bab_data["locked"]       = user_bab.locked
-    bab_data["is_completed"] = user_kuis.is_completed if user_kuis else False
-    bab_data["nilai"]        = user_kuis.nilai if user_kuis else 0
+#     bab_data                 = bab.to_dict()
+#     bab_data["locked"]       = user_bab.locked
+#     bab_data["is_completed"] = user_kuis.is_completed if user_kuis else False
+#     bab_data["nilai"]        = user_kuis.nilai if user_kuis else 0
 
-    return jsonify({
-        "bab":    bab_data,
-        "total":  len(result),
-        "materi": result
-    }), 200
+#     return jsonify({
+#         "bab":    bab_data,
+#         "total":  len(result),
+#         "materi": result
+#     }), 200
 
 
-# ──────────────────────────────────────────────
-# POST /api/bab/materi/<id>/selesai
-# Tandai materi sudah dibaca/dipelajari
-# ──────────────────────────────────────────────
-@bab_bp.route("/materi/<int:materi_id>/selesai", methods=["POST"])
-@jwt_required()
-def selesaikan_materi(materi_id):
-    user_id = int(get_jwt_identity())
+# # ──────────────────────────────────────────────
+# # POST /api/bab/materi/<id>/selesai
+# # Tandai materi sudah dibaca/dipelajari
+# # ──────────────────────────────────────────────
+# @bab_bp.route("/materi/<int:materi_id>/selesai", methods=["POST"])
+# @jwt_required()
+# def selesaikan_materi(materi_id):
+#     user_id = int(get_jwt_identity())
 
-    materi = Materi.query.get_or_404(materi_id)
+#     materi = Materi.query.get_or_404(materi_id)
 
-    user_bab = UserBab.query.filter_by(
-        userid=user_id, babid=materi.babid
-    ).first()
+#     user_bab = UserBab.query.filter_by(
+#         userid=user_id, babid=materi.babid
+#     ).first()
 
-    if not user_bab or user_bab.locked:
-        return jsonify({"message": "Bab ini masih terkunci"}), 403
+#     if not user_bab or user_bab.locked:
+#         return jsonify({"message": "Bab ini masih terkunci"}), 403
 
-    user_materi = UserMateri.query.filter_by(
-        userid=user_id, materiid=materi_id
-    ).first()
+#     user_materi = UserMateri.query.filter_by(
+#         userid=user_id, materiid=materi_id
+#     ).first()
 
-    if not user_materi:
-        user_materi = UserMateri(
-            userid=user_id,
-            materiid=materi_id,
-            is_completed=True
-        )
-        db.session.add(user_materi)
-    else:
-        user_materi.is_completed = True
+#     if not user_materi:
+#         user_materi = UserMateri(
+#             userid=user_id,
+#             materiid=materi_id,
+#             is_completed=True
+#         )
+#         db.session.add(user_materi)
+#     else:
+#         user_materi.is_completed = True
 
-    db.session.commit()
+#     db.session.commit()
 
-    return jsonify({
-        "message": "Materi ditandai selesai",
-        "data": user_materi.to_dict()
-    }), 200
+#     return jsonify({
+#         "message": "Materi ditandai selesai",
+#         "data": user_materi.to_dict()
+#     }), 200
 
 
 # ──────────────────────────────────────────────
@@ -162,12 +162,16 @@ def get_kuis_by_bab(bab_id):
         kuisid=kuis.id
     ).order_by(SoalKuis.urutan).all()
 
+    soal_ids = [s.id for s in soal_list]
+
     terjawab_ids = {
         j.soal_kuisid
-        for j in UserJawabanKuis.query.filter_by(
-            userid=user_id, attempt=user_kuis.attempt
+        for j in UserJawabanKuis.query.filter(
+            UserJawabanKuis.userid == user_id,
+            UserJawabanKuis.attempt == user_kuis.attempt,
+            UserJawabanKuis.soal_kuisid.in_(soal_ids)
         ).all()
-    }
+    }       
 
     next_soal = next((s for s in soal_list if s.id not in terjawab_ids), None)
 
@@ -176,6 +180,7 @@ def get_kuis_by_bab(bab_id):
         "babid":         kuis.babid,
         "judul":         kuis.judul,
         "passing_score": kuis.passing_score,
+        "xp_per_soal":   kuis.xp_per_soal,  
         "total_soal":    len(soal_list),
         "sudah_dijawab": len(terjawab_ids),
         "attempt":       user_kuis.attempt,
@@ -246,54 +251,3 @@ def review_kuis(bab_id):
     }), 200
 
 
-# ──────────────────────────────────────────────
-# GET /api/bab/<id>/topik
-# ──────────────────────────────────────────────
-@bab_bp.route("/<int:bab_id>/topik", methods=["GET"])
-@jwt_required()
-def get_topik_by_bab(bab_id):
-    user_id = int(get_jwt_identity())
-
-    bab      = Bab.query.get_or_404(bab_id)
-    user_bab = UserBab.query.filter_by(userid=user_id, babid=bab_id).first()
-
-    if not user_bab or user_bab.locked:
-        return jsonify({"message": "Bab ini masih terkunci"}), 403
-
-    topik_list = Topik.query.filter_by(babid=bab_id).order_by(Topik.urutan).all()
-
-    result = []
-    for t in topik_list:
-        materi_list = Materi.query.filter_by(
-            topikid=t.id
-        ).order_by(Materi.urutan).all()
-
-        materi_result = []
-        for m in materi_list:
-            user_materi = UserMateri.query.filter_by(
-                userid=user_id, materiid=m.id
-            ).first()
-
-            materi_data                 = m.to_dict()
-            materi_data["is_completed"] = user_materi.is_completed if user_materi else False
-            materi_result.append(materi_data)
-
-        topik_data           = t.to_dict()
-        topik_data["materi"] = materi_result
-        result.append(topik_data)
-
-    kuis = Kuis.query.filter_by(babid=bab_id).first()
-    user_kuis = UserKuis.query.filter_by(
-        userid=user_id, kuisid=kuis.id
-    ).first() if kuis else None
-
-    bab_data                 = bab.to_dict()
-    bab_data["locked"]       = user_bab.locked
-    bab_data["is_completed"] = user_kuis.is_completed if user_kuis else False
-    bab_data["nilai"]        = user_kuis.nilai if user_kuis else 0
-
-    return jsonify({
-        "bab":   bab_data,
-        "total": len(result),
-        "topik": result
-    }), 200

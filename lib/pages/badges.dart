@@ -69,7 +69,7 @@ class BadgePage extends StatelessWidget {
     final unlocked = badges.where((e) => e.unlocked).length;
 
     return Scaffold(
-      appBar: CustomAppBar(arabicTitle: 'مجموعة الشارات', title: 'Koleksi Lencana'),
+      appBar: CustomAppBar(arabicTitle: 'مجموعة الشارات'),
       body: Container(
         decoration: const BoxDecoration(gradient: AppColors.splashGradient),
 

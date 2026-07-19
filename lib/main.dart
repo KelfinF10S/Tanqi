@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tanqiy/controllers/auth_controller.dart';
 import 'package:tanqiy/core/colors.dart';
 import 'package:tanqiy/pages/badges.dart';
 import 'package:tanqiy/pages/beranda.dart';
 import 'package:tanqiy/pages/games.dart';
-import 'package:tanqiy/pages/jelajahi.dart';
+import 'package:tanqiy/pages/kamus_page.dart';
 import 'package:tanqiy/pages/kelas.dart';
-import 'package:tanqiy/pages/page3.dart';
+import 'package:tanqiy/pages/leaderboard.dart';
 import 'package:tanqiy/pages/profil.dart';
 import 'package:tanqiy/pages/splashscreen.dart';
 import 'pages/panduan.dart';
@@ -29,18 +30,23 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.appBarEnd),
         useMaterial3: true,
+        textTheme: GoogleFonts.amiriTextTheme(
+          Theme.of(
+            context,
+          ).textTheme, // opsional, biar warisi ukuran default Material
+        ),
       ),
       initialRoute: '/splash',
       routes: {
         '/menu': (context) => const MenuPage(),
         // '/page1': (context) => Page1(),
         '/panduan': (context) => PanduanPage(),
-        '/page3': (context) => Page3(),
+        '/page3': (context) => LeaderboardPage(),
         // '/page4': (context) => Page4(),
         // '/page5': (context) => Page5(),
         '/games': (context) => GamesPage(),
         '/splash': (context) => SplashScreen(),
-        '/badges' : (context) => BadgePage()
+        '/badges': (context) => BadgePage(),
       },
     );
   }
@@ -62,13 +68,13 @@ class _MenuPageState extends State<MenuPage> {
 
   final List<Widget> _pages = [
     Beranda(),
-    Jelajahi(),
+    KamusPage(),
     KelasPage(),
     ProfilePage(),
   ];
 
   // Label AppBar per tab
-  final List<String> _titles = ['تنقي', 'جستجو', 'كلاسي', 'پروفیل'];
+  final List<String> _mainPages = ['الرئيسية', 'القاموس', 'الفصل', 'حسابي'];
   final List<bool> _showAppBar = [true, false, false, false];
 
   @override
@@ -170,14 +176,23 @@ class _MenuPageState extends State<MenuPage> {
             Get.find<AuthController>().refreshUser();
           }
         },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
-          BottomNavigationBarItem(icon: Icon(Icons.explore), label: 'Jelajahi'),
+        items: [
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.home),
+            label: _mainPages[0],
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.explore),
+            label: _mainPages[1],
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.library_books),
-            label: 'Kelas Saya',
+            label: _mainPages[2],
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: _mainPages[3],
+          ),
         ],
       ),
     );

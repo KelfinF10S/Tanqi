@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tanqiy/controllers/auth_controller.dart';
+import 'package:tanqiy/controllers/leaderboard_controller.dart';
 import 'package:tanqiy/core/colors.dart';
 import 'package:tanqiy/data/auth_local.dart';
 import 'package:tanqiy/models/class_member_model.dart';
@@ -16,6 +17,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final auth_controller = Get.find<AuthController>();
+  final leaderboard_controller = Get.put(LeaderboardController());
   bool _isEditing = false;
   late TextEditingController _usernameController;
   final _formKey = GlobalKey<FormState>();
@@ -23,6 +25,8 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
+    auth_controller.refreshUser();
+    leaderboard_controller.fetchLeaderboard();
 
     _usernameController = TextEditingController(
       text: auth_controller.currentUser.value?.username,
@@ -53,6 +57,8 @@ class _ProfilePageState extends State<ProfilePage> {
             child: CircularProgressIndicator(color: AppColors.appBarTitle),
           );
         }
+
+        final myRank = leaderboard_controller.rankOf(user.username);
 
         return Container(
           decoration: const BoxDecoration(gradient: AppColors.splashGradient),
@@ -122,7 +128,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       currentXP: user.currentXP,
                       // maxXP: user.maxXP,
                       babSelesai: user.babSelesai,
-                      role: MemberRole.murid,
+                      role: user.role == 'murid'
+                          ? MemberRole.murid
+                          : MemberRole.guru,
                     ),
                   ),
                   SizedBox(height: 15),
@@ -147,7 +155,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           Row(
                             children: [
                               const Icon(
-                                Icons.person_outline_rounded,
+                                Icons.person_outline,
                                 color: AppColors.textS,
                                 size: 20,
                               ),
@@ -257,7 +265,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     children: [
                                       Icon(
                                         _isEditing
-                                            ? Icons.check_rounded
+                                            ? Icons.check
                                             : Icons.edit_outlined,
                                         color: AppColors.textP,
                                         size: 14,
@@ -304,115 +312,82 @@ class _ProfilePageState extends State<ProfilePage> {
 
                   const SizedBox(height: 16),
 
-                  // ── Card Level & Progress ────────────────────
                   _buildCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    gradient: AppColors.appBarGradient,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: const Icon(
-                                    Icons.star_rounded,
-                                    color: AppColors.appBarTitle,
-                                    size: 18,
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      'المستوى الحالي',
-                                      style: TextStyle(
-                                        color: AppColors.textS,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                    Text(
-                                      'المستوى ${user.level}',
-                                      style: const TextStyle(
-                                        color: AppColors.appBarTitle,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
                             Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
+                              padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: AppColors.cardFillLight,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: AppColors.cardBorder),
+                                gradient: AppColors.appBarGradient,
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                              child: Text(
-                                '${user.currentXP} / ${user.maxXP} XP',
-                                style: const TextStyle(
-                                  color: AppColors.textS,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                              child: const Icon(
+                                Icons.emoji_events,
+                                color: AppColors.appBarTitle,
+                                size: 18,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              'الترتيب والإنجازات',
+                              style: TextStyle(
+                                color: AppColors.appBarTitle,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ],
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          decoration: BoxDecoration(
+                            color: AppColors.cardFillLight,
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(color: AppColors.cardBorder),
+                          ),
+                          child: Column(
+                            children: [
+                              const Icon(
+                                Icons.leaderboard,
+                                color: AppColors.appBarTitle,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                myRank != null ? '#$myRank' : '-',
+                                style: const TextStyle(
+                                  color: AppColors.appBarTitle,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              const Text(
+                                'الترتيب الحالي',
+                                style: TextStyle(
+                                  color: AppColors.textS,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
 
                         const SizedBox(height: 16),
 
-                        // Progress Bar
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: LinearProgressIndicator(
-                            value: user.xpProgress,
-                            minHeight: 10,
-                            backgroundColor: AppColors.cardFillLight,
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                              AppColors.appBarTitle,
-                            ),
-                          ),
-                        ),
-
-                        const SizedBox(height: 8),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'المستوى ${user.level}',
-                              style: const TextStyle(
-                                color: AppColors.textS,
-                                fontSize: 11,
-                              ),
-                            ),
-                            Text(
-                              user.isMaxLevel
-                                  ? 'لقد وصلت إلى أعلى مستوى! 🎉'
-                                  : '${user.xpRemaining} نقطة خبرة للوصول إلى المستوى ${user.level + 1}',
-                              style: const TextStyle(
-                                color: AppColors.textS,
-                                fontSize: 11,
-                              ),
-                            ),
-                          ],
-                        ),
+                        if (myRank != null && myRank <= 4)
+                          _buildBadgeCard(myRank)
+                        else
+                          _buildNoBadgeCard(),
                       ],
                     ),
                   ),
-
                   const SizedBox(height: 16),
 
                   // ── Informasi Bab Selesai ────────────────────────────────
@@ -420,7 +395,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: [
                       Expanded(
                         child: _buildStatCard(
-                          icon: Icons.menu_book_rounded,
+                          icon: Icons.menu_book,
                           label: 'الفصول المكتملة',
                           value: '${user.babSelesai}',
                         ),
@@ -428,10 +403,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       SizedBox(width: 15),
                       Expanded(
                         child: _buildStatCard(
-                          icon: Icons.military_tech_rounded,
-                          label: 'الشارات',
-                          value: '${user.babSelesai}',
-                          onTap: () => Get.toNamed('/badges'),
+                          icon: Icons.star,
+                          label: 'إجمالي XP',
+                          value: '${user.currentXP}',
                         ),
                       ),
                     ],
@@ -494,7 +468,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Icons.logout_rounded,
+                            Icons.logout,
                             color: Color(0xFFEF4444),
                             size: 20,
                           ),
@@ -519,6 +493,139 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         );
       }),
+    );
+  }
+
+  Widget _buildBadgeCard(int rank) {
+    const titles = {
+      1: 'المركز الأول',
+      2: 'المركز الثاني',
+      3: 'المركز الثالث',
+      4: 'المركز الرابع',
+    };
+
+    const descriptions = {
+      1: 'صاحب أعلى عدد من\nنقاط الخبرة حاليًا',
+      2: 'في المرتبة الثانية\nضمن المتصدرين',
+      3: 'في المرتبة الثالثة\nضمن المتصدرين',
+      4: 'ضمن أفضل أربعة\nفي الترتيب',
+    };
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColors.cardFillLight,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.cardBorder),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              const Expanded(
+                child: Text(
+                  'شارة',
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              const Icon(
+                Icons.workspace_premium,
+                color: AppColors.appBarTitle,
+                size: 20,
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 16),
+
+          // Badge
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    titles[rank] ?? 'المركز $rank',
+                    textDirection: TextDirection.rtl,
+                    style: const TextStyle(
+                      color: AppColors.appBarTitle,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    descriptions[rank] ?? '',
+                    textDirection: TextDirection.rtl,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: AppColors.textS,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 10),
+              Container(
+                padding: const EdgeInsets.all(1),
+                decoration: BoxDecoration(
+                  color: AppColors.cardFillLight,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.cardBorder),
+                ),
+                child: Image.asset(
+                  'lib/assets/badge$rank.png',
+                  width: 80,
+                  height: 80,
+                  // fallback ke ikon biasa kalau asset belum ditambahkan
+                  errorBuilder: (context, error, stackTrace) => const Icon(
+                    Icons.workspace_premium,
+                    color: AppColors.appBarTitle,
+                    size: 48,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNoBadgeCard() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+      decoration: BoxDecoration(
+        color: AppColors.cardFillLight,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.cardBorder),
+      ),
+      child: Row(
+        children: [
+          const Expanded(
+            child: Text(
+              'لم تحصل على شارة بعد.\nادخل ضمن أفضل أربعة\nللحصول على الشارة.',
+              textAlign: TextAlign.end,
+              style: TextStyle(color: AppColors.textS, fontSize: 12),
+            ),
+          ),
+          const SizedBox(width: 12),
+          const Icon(
+            Icons.workspace_premium_outlined,
+            color: AppColors.textS,
+            size: 32,
+          ),
+        ],
+      ),
     );
   }
 

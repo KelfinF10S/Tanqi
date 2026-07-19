@@ -203,7 +203,7 @@ class _MateriBody extends StatelessWidget {
                       'TANQĪ • Nahwu Qurani',
                       style: TextStyle(
                         color: AppColors.gold,
-                        fontSize: 10,
+                        fontSize: 12,
                         letterSpacing: 2,
                       ),
                     ),
@@ -219,13 +219,13 @@ class _MateriBody extends StatelessWidget {
                     textDirection: TextDirection.rtl,
                   ),
 
-                  Text(
-                    babMerged.materi.judulLatin,
-                    style: const TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 13,
-                    ),
-                  ),
+                  // Text(
+                  //   babMerged.materi.judulLatin,
+                  //   style: const TextStyle(
+                  //     color: AppColors.textSecondary,
+                  //     fontSize: 13,
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -269,11 +269,7 @@ class _KuisEntryCard extends StatelessWidget {
                 shape: BoxShape.circle,
                 border: Border.all(color: AppColors.gold.withOpacity(0.4)),
               ),
-              child: const Icon(
-                Icons.quiz_rounded,
-                color: AppColors.gold,
-                size: 24,
-              ),
+              child: const Icon(Icons.quiz, color: AppColors.gold, size: 24),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -291,7 +287,7 @@ class _KuisEntryCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   const Text(
                     'اختبر فهمك لهذا الباب بأكمله',
-                    style: TextStyle(color: AppColors.textMuted, fontSize: 11),
+                    style: TextStyle(color: AppColors.textMuted, fontSize: 13),
                   ),
                 ],
               ),
@@ -330,84 +326,6 @@ class _KuisEntryCard extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────
-// GAME ENTRY CARD — 1 per bab
-// ─────────────────────────────────────────
-class _GameEntryCard extends StatelessWidget {
-  final int babId;
-
-  const _GameEntryCard({required this.babId});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: AppColors.cardFillLightLocked,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.cardFillLocked),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                color: AppColors.cardFillLightLocked,
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.cardFillLight),
-              ),
-              child: const Icon(
-                Icons.gamepad,
-                color: AppColors.cardFillLight,
-                size: 24,
-              ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'ألعاب هذا الباب',
-                    style: TextStyle(
-                      color: AppColors.textMuted,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    'أكمل التدريبات أو الاختبار أولًا',
-                    style: TextStyle(color: AppColors.textMuted, fontSize: 11),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 10),
-            TextButton(
-              onPressed: () {},
-              style: TextButton.styleFrom(
-                foregroundColor: AppColors.cardFillLight,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 12,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Icon(Icons.lock, size: 30),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────
 //  PROGRESS BANNER
 // ─────────────────────────────────────────
 class _ProgressBanner extends StatelessWidget {
@@ -435,7 +353,7 @@ class _ProgressBanner extends StatelessWidget {
           const SizedBox(width: 10),
           Text(
             'تم استكشاف ${(pct * 100).toInt()}٪',
-            style: const TextStyle(color: AppColors.textMuted, fontSize: 11),
+            style: const TextStyle(color: AppColors.textMuted, fontSize: 13),
           ),
         ],
       ),
@@ -493,7 +411,7 @@ class _StimulusSection extends StatelessWidget {
               child: Row(
                 children: [
                   const Icon(
-                    Icons.auto_stories_rounded,
+                    Icons.auto_stories,
                     color: AppColors.gold,
                     size: 16,
                   ),
@@ -502,7 +420,7 @@ class _StimulusSection extends StatelessWidget {
                     'الآية المحفزة',
                     style: TextStyle(
                       color: AppColors.gold,
-                      fontSize: 12,
+                      fontSize: 14,
                       letterSpacing: 1,
                     ),
                   ),
@@ -521,7 +439,7 @@ class _StimulusSection extends StatelessWidget {
                         s.sumber!,
                         style: const TextStyle(
                           color: AppColors.goldLight,
-                          fontSize: 10,
+                          fontSize: 12,
                         ),
                       ),
                     ),
@@ -585,7 +503,7 @@ class _StimulusSection extends StatelessWidget {
                         s.narasi!,
                         style: const TextStyle(
                           color: AppColors.textMuted,
-                          fontSize: 12,
+                          fontSize: 14,
                           height: 1.7,
                         ),
                       ),
@@ -627,7 +545,7 @@ class _KategoriPicker extends StatelessWidget {
               'اختر موضوعًا',
               style: TextStyle(
                 color: AppColors.textSecondary,
-                fontSize: 12,
+                fontSize: 14,
                 letterSpacing: 1.5,
               ),
             ),
@@ -646,7 +564,7 @@ class _KategoriPicker extends StatelessWidget {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 250),
                     curve: Curves.easeOut,
-                    width: 110,
+                    width: 130,
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
                       color: isActive
@@ -682,7 +600,7 @@ class _KategoriPicker extends StatelessWidget {
                         // ),
                         isActive
                             ? Icon(
-                                Icons.menu_book_rounded,
+                                Icons.menu_book,
                                 color: k.accentColor,
                                 size: 25,
                               )
@@ -696,7 +614,7 @@ class _KategoriPicker extends StatelessWidget {
                         Text(
                           k.judulLatin.split(' ').first,
                           style: TextStyle(
-                            fontSize: 11,
+                            fontSize: 13,
                             color: isActive
                                 ? k.accentColor
                                 : AppColors.textSecondary,
@@ -822,10 +740,7 @@ class _SectionHeader extends StatelessWidget {
                   //     fontWeight: FontWeight.bold,
                   //   ),
                   // ),
-                  child: Icon(
-                    Icons.menu_book_rounded,
-                    color: kategori.accentColor,
-                  ),
+                  child: Icon(Icons.menu_book, color: kategori.accentColor),
                 ),
               ),
               const SizedBox(width: 14),
@@ -846,7 +761,7 @@ class _SectionHeader extends StatelessWidget {
                       kategori.judulLatin,
                       style: const TextStyle(
                         color: AppColors.textSecondary,
-                        fontSize: 12,
+                        fontSize: 14,
                       ),
                     ),
                   ],
@@ -892,7 +807,7 @@ class _SectionLabel extends StatelessWidget {
         label.toUpperCase(),
         style: TextStyle(
           color: color,
-          fontSize: 10,
+          fontSize: 12,
           letterSpacing: 2,
           fontWeight: FontWeight.bold,
         ),
@@ -959,7 +874,7 @@ class _TandaUmumCard extends StatelessWidget {
                   ket,
                   style: const TextStyle(
                     color: AppColors.textSecondary,
-                    fontSize: 12,
+                    fontSize: 14,
                     height: 1.5,
                   ),
                 ),
@@ -1046,7 +961,7 @@ class _SubBabCardState extends State<_SubBabCard> {
                 '${widget.index + 1}',
                 style: TextStyle(
                   color: widget.accent,
-                  fontSize: 12,
+                  fontSize: 14,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -1069,7 +984,7 @@ class _SubBabCardState extends State<_SubBabCard> {
             judulLatin,
             style: const TextStyle(
               color: AppColors.textSecondary,
-              fontSize: 11,
+              fontSize: 13,
             ),
           ),
           backgroundColor: widget.accent.withOpacity(0.04),
@@ -1163,7 +1078,7 @@ class _DefinisiBox extends StatelessWidget {
             latin,
             style: const TextStyle(
               color: AppColors.textSecondary,
-              fontSize: 12,
+              fontSize: 14,
               fontStyle: FontStyle.italic,
               height: 1.6,
             ),
@@ -1193,6 +1108,8 @@ class _AyatTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.all(14),
+    width: double.infinity,
+
     decoration: BoxDecoration(
       gradient: LinearGradient(
         colors: [accent.withOpacity(0.06), AppColors.bg.withOpacity(0.4)],
@@ -1215,39 +1132,35 @@ class _AyatTile extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (tag.isNotEmpty) ...[
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: accent.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: accent.withOpacity(0.3)),
-                ),
-                child: Text(tag, style: TextStyle(color: accent, fontSize: 10)),
-              ),
-              const SizedBox(width: 8),
-            ],
-            if (sumber.isNotEmpty)
-              Text(
-                sumber,
-                style: const TextStyle(
-                  color: AppColors.textMuted,
-                  fontSize: 10,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-          ],
-        ),
+        if (tag.isNotEmpty) ...[
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            decoration: BoxDecoration(
+              color: accent.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: accent.withOpacity(0.3)),
+            ),
+            child: Text(tag, style: TextStyle(color: accent, fontSize: 10)),
+          ),
+          const SizedBox(width: 8),
+        ],
+        SizedBox(height: 10),
+        if (sumber.isNotEmpty)
+          Text(
+            sumber,
+            style: const TextStyle(
+              color: AppColors.textMuted,
+              fontSize: 12,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         if (terjemah.isNotEmpty) ...[
           const SizedBox(height: 6),
           Text(
             '"$terjemah"',
             style: const TextStyle(
               color: AppColors.textSecondary,
-              fontSize: 11,
+              fontSize: 13,
               fontStyle: FontStyle.italic,
               height: 1.6,
             ),
@@ -1260,7 +1173,7 @@ class _AyatTile extends StatelessWidget {
             analisis!,
             style: const TextStyle(
               color: AppColors.textMuted,
-              fontSize: 10,
+              fontSize: 12,
               height: 1.5,
             ),
             textAlign: TextAlign.center,
@@ -1298,24 +1211,12 @@ class _AturanTile extends StatelessWidget {
         border: Border.all(color: AppColors.divider),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 6),
-                child: Container(
-                  width: 6,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: accent,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   label,
@@ -1328,6 +1229,18 @@ class _AturanTile extends StatelessWidget {
                     color: accent,
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Container(
+                  width: 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: accent,
+                    shape: BoxShape.circle,
                   ),
                 ),
               ),
@@ -1347,7 +1260,7 @@ class _AturanTile extends StatelessWidget {
                 overflow: TextOverflow.visible,
                 style: const TextStyle(
                   color: AppColors.textMuted,
-                  fontSize: 10,
+                  fontSize: 12,
                 ),
               ),
             ),
@@ -1359,10 +1272,11 @@ class _AturanTile extends StatelessWidget {
               ket,
               softWrap: true,
               maxLines: null,
+              textDirection: TextDirection.rtl,
               overflow: TextOverflow.visible,
               style: const TextStyle(
                 color: AppColors.textSecondary,
-                fontSize: 11,
+                fontSize: 13,
                 height: 1.5,
               ),
             ),
@@ -1372,13 +1286,15 @@ class _AturanTile extends StatelessWidget {
             ...aturan.contoh.map(
               (c) => Padding(
                 padding: const EdgeInsets.only(top: 8),
-                child: _AyatTile(
-                  arab: c.arab,
-                  sumber: c.sumber ?? '',
-                  terjemah: c.terjemah ?? '',
-                  tag: c.kategoriLatin ?? c.kategoriArab ?? '',
-                  analisis: c.analisisLatin ?? c.analisisArab,
-                  accent: accent,
+                child: Center(
+                  child: _AyatTile(
+                    arab: c.arab,
+                    sumber: c.sumber ?? '',
+                    terjemah: c.terjemah ?? '',
+                    tag: c.kategoriLatin ?? c.kategoriArab ?? '',
+                    analisis: c.analisisLatin ?? c.analisisArab,
+                    accent: accent,
+                  ),
                 ),
               ),
             ),
@@ -1416,7 +1332,7 @@ class _TabelTile extends StatelessWidget {
               label,
               style: TextStyle(
                 color: accent,
-                fontSize: 12,
+                fontSize: 14,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -1433,7 +1349,7 @@ class _TabelTile extends StatelessWidget {
                       e.key,
                       style: const TextStyle(
                         color: AppColors.textMuted,
-                        fontSize: 10,
+                        fontSize: 12,
                       ),
                     ),
                   ),
@@ -1442,7 +1358,7 @@ class _TabelTile extends StatelessWidget {
                       e.value,
                       style: const TextStyle(
                         color: AppColors.textPrimary,
-                        fontSize: 12,
+                        fontSize: 14,
                       ),
                     ),
                   ),

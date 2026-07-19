@@ -30,6 +30,7 @@ class QuizSoalWidget extends StatelessWidget {
         children: [
           Text(
             soal.pertanyaan,
+            textAlign: TextAlign.right,
             style: const TextStyle(
               color: AppColors.textPrimary,
               fontSize: 15,
@@ -103,8 +104,13 @@ class _MultipleChoiceCard extends StatelessWidget {
           : null;
 
       return Column(
-        children: urutanKey.map((key) {
+        children: urutanKey.asMap().entries.map((entry) {
+          final displayIndex = entry.key; // posisi tampil: 0,1,2,3
+          final key = entry.value; // key asli dari data: A/B/C/D
           final teks = pilihan[key]!;
+          final displayLabel = String.fromCharCode(
+            65 + displayIndex,
+          ); // A,B,C,D urut
           final isSelected = selected == key;
 
           Color borderColor = accent.withOpacity(0.25);
@@ -149,7 +155,7 @@ class _MultipleChoiceCard extends StatelessWidget {
                     ),
                     child: Center(
                       child: Text(
-                        key,
+                        displayLabel,
                         style: TextStyle(
                           color: textColor,
                           fontSize: 11,

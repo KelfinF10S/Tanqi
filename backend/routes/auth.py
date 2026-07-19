@@ -4,7 +4,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 from extensions import db
-from models.models import User, UserBab, UserMateri, Bab, Materi, Kuis, UserKuis
+from models.models import User, UserBab, Bab, Kuis, UserKuis, UserJawabanKuis
 from config import Config
 
 auth_bp = Blueprint("auth", __name__)
@@ -77,25 +77,19 @@ def register():
     db.session.flush()
 
     # Auto-create UserBab
-    for bab in Bab.query.order_by(
-        Bab.id
-    ).all():
+    for bab in Bab.query.order_by(Bab.id).all():
+        if role == "guru":
+            is_locked = False
+        else:
+            is_locked = (bab.id != 1)
+
         db.session.add(
             UserBab(
                 userid=new_user.id,
                 babid=bab.id,
-                locked=(bab.id != 1),
+                locked=is_locked,
             )
-        )
-
-    # Auto-create UserMateri
-    for materi in Materi.query.all():
-        db.session.add(
-            UserMateri(
-                userid=new_user.id,
-                materiid=materi.id,
-            )
-        )
+         )
 
     # Auto-create UserKuis
     for kuis in Kuis.query.all():
@@ -139,6 +133,35 @@ def login():
         "access_token": access_token,
         "user":         user.to_dict()
     }), 200
+
+# ──────────────────────────────────────────────
+# GET /api/auth/delete-account
+# ──────────────────────────────────────────────
+@auth_bp.route("/delete-account", methods=["DELETE"])
+@jwt_required()
+def delete_account():
+    user_id = int(get_jwt_identity())
+
+    user = User.query.get_or_404(user_id)
+
+    try:
+        UserJawabanKuis.query.filter_by(userid=user_id).delete()
+        UserKuis.query.filter_by(userid=user_id).delete()
+        UserBab.query.filter_by(userid=user_id).delete()
+
+        db.session.delete(user)
+        db.session.commit()
+
+        return jsonify({
+            "message": "Akun berhasil dihapus"
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            "message": "Gagal menghapus akun",
+            "error": str(e)
+        }), 500
 
 
 # ──────────────────────────────────────────────
